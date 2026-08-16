@@ -23,6 +23,16 @@ is not interpretable:
 
 Beating `prior` is the real bar: it shows the planner uses the fingerprint,
 not just the base rate of XSS being common.
+
+**One residual leak, stated rather than hidden.** The planner smooths its
+conditional estimate toward a global class prior computed over every template
+in the graph — including the held-out ones. Removing a template from the
+evidence pool therefore does not remove its (tiny) contribution to that global
+aggregate. The effect is negligible: held-out templates are ~5% of the ~7.3k
+signature→weakness edges, spread across classes, and the `prior` baseline is
+computed the same way, so the comparison between arms is unaffected. It is
+recorded here because the per-product evidence exclusion is the part that
+actually matters, and it *is* strict.
 """
 from __future__ import annotations
 

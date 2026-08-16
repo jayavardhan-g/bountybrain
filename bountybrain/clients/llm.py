@@ -208,24 +208,43 @@ async def _abatch(
     done = 0
     lock = asyncio.Lock()
 
+    # Guided decoding constrains generation to the schema at the token level.
+    # The parameter name has moved between vLLM releases, so if the server
+    # rejects it we fall back to unconstrained decoding plus `_extract_json`
+    # rather than losing the whole batch. `guided_ok` is flipped once, on the
+    # first rejection, so the remaining requests skip straight to the fallback.
     extra: dict[str, Any] = {}
     if schema is not None and settings.llm_provider == "vllm":
         extra["extra_body"] = {"guided_json": schema.model_json_schema()}
+    guided_ok = {"value": bool(extra)}
+
+    async def _call(system: str, user: str, use_guided: bool):
+        kwargs = dict(extra) if (use_guided and extra) else {}
+        return await client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            temperature=temperature,
+            max_tokens=max_tokens,
+            **kwargs,
+        )
 
     async def one(i: int, system: str, user: str) -> None:
         nonlocal done
         async with sem:
             try:
-                resp = await client.chat.completions.create(
-                    model=model,
-                    messages=[
-                        {"role": "system", "content": system},
-                        {"role": "user", "content": user},
-                    ],
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                    **extra,
-                )
+                try:
+                    resp = await _call(system, user, guided_ok["value"])
+                except Exception as e:  # noqa: BLE001
+                    if not guided_ok["value"]:
+                        raise
+                    text = str(e).lower()
+                    if "guided" not in text and "structured" not in text and "extra" not in text:
+                        raise
+                    guided_ok["value"] = False
+                    resp = await _call(system, user, False)
                 results[i] = resp.choices[0].message.content or ""
             except Exception:
                 results[i] = None

@@ -64,6 +64,14 @@ def load_nuclei_gold(limit: int | None = None, seed: int = 17) -> list[GoldItem]
 
     Templates with several CWE ids are dropped: with more than one correct
     answer, a single-label accuracy number is not meaningful.
+
+    Caveat worth stating: a template's name often contains the vulnerability
+    class verbatim ("Swagger UI < 3.38.0 - Cross-Site Scripting"), which makes
+    this set easier than free prose and flatters the keyword baseline in
+    particular. It is kept because it is the largest human-labelled set
+    available and every strategy sees exactly the same input — but the
+    pentester.land set, where only a title is available and the class is
+    usually implied rather than named, is the harder and more telling one.
     """
     with Session() as s:
         rows = s.execute(
