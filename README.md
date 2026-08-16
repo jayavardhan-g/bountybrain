@@ -81,6 +81,13 @@ surrounded by a long tail of CVE/exploit pairs that connect to nothing else,
 because no nuclei template references them. Reporting only the core would flatter
 the numbers.
 
+Dropping that tail makes the shape explicit — the core is **35,278 nodes and
+63,340 edges**, a mean degree of ~3.6 rather than 1.73:
+
+```bash
+python export_graph.py --format both --core-only   # GraphML + node/edge CSV
+```
+
 ### CWE taxonomy shape
 
 10 pillar roots · 687 leaves · max depth 5 · mean leaf depth 2.58

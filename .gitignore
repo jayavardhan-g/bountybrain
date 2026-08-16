@@ -23,6 +23,13 @@ data/*.sqlite
 data/*.sqlite-wal
 data/*.sqlite-shm
 
+# Graph exports — tens of MB, regenerate with `python export_graph.py`.
+# The small JSON metrics in artifacts/ *are* committed: they are the evidence
+# for the numbers quoted in the README.
+artifacts/*.graphml
+artifacts/kg_nodes.csv
+artifacts/kg_edges.csv
+
 # Local run logs and compile caches.
 # Triton/Inductor caches must live on a local filesystem — creating them on a
 # GlusterFS mount fails with `OSError: [Errno 61] No data available`.
