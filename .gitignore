@@ -23,5 +23,8 @@ data/*.sqlite
 data/*.sqlite-wal
 data/*.sqlite-shm
 
-# Local run logs
+# Local run logs and compile caches.
+# Triton/Inductor caches must live on a local filesystem — creating them on a
+# GlusterFS mount fails with `OSError: [Errno 61] No data available`.
 .logs/
+.cache/

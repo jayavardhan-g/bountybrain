@@ -2,8 +2,9 @@ from .models import ReconFinding  # noqa: F401
 from .parsers import parse_recon_file  # noqa: F401
 
 
-def match_findings(*args, **kwargs):
-    """Lazy re-export — avoids importing qdrant/sentence-transformers unless used."""
-    from .matcher import match_findings as _mf
+def plan_from_findings(*args, **kwargs):
+    """Lazy re-export — importing the planner pulls in SQLAlchemy and the
+    graph, which callers that only need the parsers should not pay for."""
+    from .planner import plan_from_findings as _plan
 
-    return _mf(*args, **kwargs)
+    return _plan(*args, **kwargs)

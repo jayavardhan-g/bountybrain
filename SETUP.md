@@ -52,7 +52,40 @@ nvidia-smi --query-gpu=index,memory.used,memory.total,utilization.gpu --format=c
 ```
 
 The project uses at most two GPUs: one serves the LLM via vLLM, one runs
-embeddings and the cross-encoder reranker.
+embeddings and the cross-encoder reranker. `serve_llm.py` picks the freest GPU
+automatically and requests only 40% of it, rather than vLLM's 0.9 default —
+which would reserve ~130 GB of a 143 GB card for a 14B model and lock out
+everyone else for no benefit.
+
+## Known environment issues
+
+Three things bit during setup on this machine. All are environment problems,
+not project bugs, but they cost hours to diagnose so they are recorded here.
+
+**vLLM needs `--enforce-eager` on Python 3.11.** `flashinfer` (a vLLM
+dependency) annotates with `array.array[int]`, which is only subscriptable on
+Python 3.12+. vLLM imports it through its allreduce–RMS-norm fusion compile
+pass, so startup dies with `TypeError: type 'array.array' is not subscriptable`
+before the engine ever loads. The pass is useless for single-GPU inference, and
+`--enforce-eager` skips the compilation that triggers the import. Python 3.12
+would also fix it.
+
+**Put compile caches on a local filesystem.** Triton's cache directory cannot
+be created on a GlusterFS mount — `makedirs` fails with
+`OSError: [Errno 61] No data available` partway through engine init, after ten
+minutes of weight loading:
+
+```bash
+export TRITON_CACHE_DIR=/local/path/.cache/triton
+export TORCHINDUCTOR_CACHE_DIR=/local/path/.cache/inductor
+export VLLM_CACHE_ROOT=/local/path/.cache/vllm
+```
+
+**Log to local disk, not network storage.** NFS/GlusterFS write caching can
+hide a process's output for minutes, which makes a healthy-but-slow startup
+indistinguishable from a hang. Loading a 14B checkpoint from network storage
+runs at roughly 80 seconds per shard — about 11 minutes total. That is normal
+here; do not assume it has stalled.
 
 ## Running the pipeline
 

@@ -1,3 +1,3 @@
-"""BountyBrain — RAG + KG research assistant for bug bounty learning."""
+"""BountyBrain — a knowledge graph and retrieval system for learning bug bounty hunting."""
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"

@@ -328,13 +328,16 @@ def corpus_metrics(session) -> dict[str, Any]:
         for r in session.execute(select(func.length(Document.body))).all()
         if r[0] is not None
     ]
-    by_year = dict(
-        session.execute(
-            select(func.strftime("%Y", Document.published), func.count())
-            .where(Document.published.isnot(None))
-            .group_by(func.strftime("%Y", Document.published))
-        ).all()
-    )
+    # Grouped in Python rather than SQL: `strftime` is SQLite-only and
+    # `date_part` is Postgres-only, so doing it here keeps the metrics
+    # identical whichever backend DATABASE_URL points at.
+    year_counts: Counter = Counter()
+    for (published,) in session.execute(
+        select(Document.published).where(Document.published.isnot(None))
+    ).all():
+        if published is not None:
+            year_counts[str(published.year)] += 1
+    by_year = dict(sorted(year_counts.items()))
     return {
         "documents_total": sum(by_type.values()),
         "by_type": by_type,
@@ -342,7 +345,7 @@ def corpus_metrics(session) -> dict[str, Any]:
         "body_chars_mean": round(statistics.mean(lengths)) if lengths else 0,
         "body_chars_median": round(statistics.median(lengths)) if lengths else 0,
         "body_chars_total": sum(lengths),
-        "writeups_by_year": {k: v for k, v in sorted(by_year.items()) if k},
+        "writeups_by_year": by_year,
     }
 
 
