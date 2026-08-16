@@ -59,7 +59,7 @@ everyone else for no benefit.
 
 ## Known environment issues
 
-Three things bit during setup on this machine. All are environment problems,
+Four things bit during setup on this machine. All are environment problems,
 not project bugs, but they cost hours to diagnose so they are recorded here.
 
 **vLLM needs `--enforce-eager` on Python 3.11.** `flashinfer` (a vLLM
@@ -116,6 +116,14 @@ hide a process's output for minutes, which makes a healthy-but-slow startup
 indistinguishable from a hang. Loading a 14B checkpoint from network storage
 runs at roughly 80 seconds per shard — about 11 minutes total. That is normal
 here; do not assume it has stalled.
+
+**Keep the env's `bin/` on PATH when launching vLLM.** JIT kernel compilation
+shells out to `ninja`, which pip installs as `$CONDA_PREFIX/bin/ninja`. Launch
+vLLM from a bare environment (`env -i`, a bare `nohup`, most supervisors) and
+it fails with `FileNotFoundError: [Errno 2] No such file or directory: 'ninja'`
+— again *after* the full weight load, so it reads like a model problem rather
+than a PATH one. `conda activate` handles this; explicit launches need
+`PATH="$CONDA_PREFIX/bin:$PATH"`.
 
 ## Running the pipeline
 
