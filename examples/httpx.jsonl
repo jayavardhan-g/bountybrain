@@ -1,0 +1,6 @@
+{"url":"https://www.acme.example/","host":"www.acme.example","status_code":200,"title":"Acme Corp","tech":["WordPress","nginx","PHP","jQuery"],"webserver":"nginx/1.18.0"}
+{"url":"https://blog.acme.example/","host":"blog.acme.example","status_code":200,"title":"Acme Blog","tech":["WordPress","Apache","Elementor"],"webserver":"Apache/2.4.41"}
+{"url":"https://git.acme.example/","host":"git.acme.example","status_code":200,"title":"GitLab","tech":["GitLab","nginx"],"webserver":"nginx"}
+{"url":"https://jira.acme.example/","host":"jira.acme.example","status_code":200,"title":"Jira","tech":["Jira","Tomcat","Java"],"webserver":"Apache-Coyote/1.1"}
+{"url":"https://api.acme.example/graphql","host":"api.acme.example","status_code":200,"title":"GraphQL","tech":["GraphQL","Express","Node.js"],"webserver":"nginx"}
+{"url":"https://ci.acme.example/","host":"ci.acme.example","status_code":403,"title":"Jenkins","tech":["Jenkins","Jetty"],"webserver":"Jetty(9.4.z)"}

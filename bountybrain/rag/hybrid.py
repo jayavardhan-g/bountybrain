@@ -1,35 +1,48 @@
-"""Hybrid RAG: dense (Qdrant) + BM25 fused with reciprocal rank fusion,
-then re-ranked with a cross-encoder.
+"""Hybrid retrieval: dense vectors + BM25, fused with Reciprocal Rank Fusion,
+optionally re-ranked by a cross-encoder.
 
-Filters: `vuln_type`, `difficulty`, `date_from`, `date_to`, `target_tech`.
-`date_*` and `target_tech` are applied post-fusion (payload-level) since
-they aren't part of the base index shape.
+The retriever is written so each stage can be run *in isolation* — `mode` is
+one of `dense`, `bm25`, `hybrid`, `hybrid_rerank`. That is not an academic
+nicety: without the ability to run each arm on identical inputs there is no
+honest way to claim the hybrid actually beats its parts, and "we used hybrid
+search" becomes an unverifiable assertion. `eval_retrieval.py` runs all four.
+
+Why RRF rather than score interpolation: cosine similarity and BM25 scores
+live on incomparable scales, and normalising them requires per-query
+statistics that shift with corpus size. RRF only uses rank position, so it
+needs no tuning and is stable as the corpus grows.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
-from datetime import date
-from typing import Any
+from typing import Any, Literal
 
 from rank_bm25 import BM25Okapi
 
 from bountybrain.clients import embeddings
 from bountybrain.clients import qdrant as qc
-from bountybrain.kg.db import Session
-from bountybrain.kg.models import Report, ReportTargetsTech, Target
+from bountybrain.rag.index import load_chunk_cache
 from bountybrain.rag.reranker import rerank
 
-RRF_K = 60
+RRF_K = 60  # standard damping constant; results are insensitive to it
+
+Mode = Literal["dense", "bm25", "hybrid", "hybrid_rerank"]
+MODES: tuple[Mode, ...] = ("dense", "bm25", "hybrid", "hybrid_rerank")
+
+_TOKEN = re.compile(r"[a-z0-9_.-]+")
 
 
 @dataclass
 class Hit:
-    report_id: int
+    document_id: int
     chunk_idx: int
     text: str
     url: str
     title: str
     score: float
+    doc_type: str = ""
+    source: str = ""
     payload: dict = field(default_factory=dict)
 
 
@@ -37,196 +50,163 @@ class Hit:
 class HybridResult:
     hits: list[Hit]
     query: str
+    mode: str
+    timings_ms: dict[str, float] = field(default_factory=dict)
 
 
-# ---------- BM25 corpus (lazy, in-memory) ----------
+# ---------------------------------------------------------------- BM25 side
 
-_bm25_state: dict[str, Any] = {"bm25": None, "docs": [], "keys": []}
+_bm25_state: dict[str, Any] = {"bm25": None, "rows": []}
 
 
 def _tokenize(text: str) -> list[str]:
-    return [t.lower() for t in text.split() if t]
+    return _TOKEN.findall(text.lower())
 
 
-def _build_bm25() -> None:
-    """Build the BM25 index from whatever chunk source is available.
-
-    Prefer Qdrant (has pre-chunked payloads). If Qdrant is unreachable,
-    fall back to chunking the Postgres `raw_markdown` on the fly so the
-    zero-Docker path still has a lexical index.
-    """
-    docs: list[list[str]] = []
-    payloads: list[dict] = []
-
-    if qc.is_reachable():
-        for p in qc.scroll_all():
-            payloads.append({"id": p.id, "payload": p.payload})
-            docs.append(_tokenize(p.payload.get("text", "")))
-    else:
-        from bountybrain.ingestion.chunker import chunk_text
-        from bountybrain.kg.db import Session
-        from bountybrain.kg.models import Report
-
-        with Session() as s:
-            for r in s.query(Report).all():
-                for i, chunk in enumerate(chunk_text(r.raw_markdown or "")):
-                    payloads.append(
-                        {
-                            "id": f"{r.id}-{i}",
-                            "payload": {
-                                "report_id": r.id,
-                                "chunk_idx": i,
-                                "text": chunk,
-                                "url": r.url,
-                                "title": r.title,
-                                "date": r.date.isoformat() if r.date else None,
-                                "vuln_type": None,
-                                "difficulty": r.difficulty,
-                                "source": r.source,
-                            },
-                        }
-                    )
-                    docs.append(_tokenize(chunk))
-
-    _bm25_state["bm25"] = BM25Okapi(docs) if docs else None
-    _bm25_state["docs"] = docs
-    _bm25_state["keys"] = payloads
+def build_bm25(force: bool = False) -> None:
+    """Build the lexical index from the same chunk cache the dense side used."""
+    if _bm25_state["bm25"] is not None and not force:
+        return
+    rows = load_chunk_cache()
+    if not rows:
+        _bm25_state["bm25"] = None
+        _bm25_state["rows"] = []
+        return
+    corpus = [_tokenize(r.get("text", "")) for r in rows]
+    _bm25_state["bm25"] = BM25Okapi(corpus)
+    _bm25_state["rows"] = rows
 
 
 def invalidate_bm25() -> None:
     _bm25_state["bm25"] = None
+    _bm25_state["rows"] = []
 
 
-# ---------- Dense side ----------
+def _row_to_hit(row: dict, score: float) -> Hit:
+    return Hit(
+        document_id=row.get("document_id"),
+        chunk_idx=row.get("chunk_idx", 0),
+        text=row.get("text", ""),
+        url=row.get("url", ""),
+        title=row.get("title", ""),
+        doc_type=row.get("doc_type", ""),
+        source=row.get("source", ""),
+        score=score,
+        payload=row,
+    )
 
 
-def _dense(query: str, limit: int, flt: dict) -> list[Hit]:
-    if not qc.is_reachable():
-        return []
-    try:
-        vec = embeddings.embed_one(query)
-    except Exception:
-        return []
-    # only vuln_type + difficulty translate into Qdrant filters cleanly
-    q_filter = {
-        k: v for k, v in flt.items() if k in ("vuln_type", "difficulty", "source")
-    }
-    raw = qc.search(vec, limit=limit, flt=q_filter or None)
-    hits: list[Hit] = []
-    for r in raw:
-        p = r.payload or {}
-        hits.append(
-            Hit(
-                report_id=p.get("report_id"),
-                chunk_idx=p.get("chunk_idx", 0),
-                text=p.get("text", ""),
-                url=p.get("url", ""),
-                title=p.get("title", ""),
-                score=float(r.score),
-                payload=p,
-            )
-        )
-    return hits
-
-
-# ---------- BM25 side ----------
-
-
-def _bm25(query: str, limit: int) -> list[Hit]:
-    if _bm25_state["bm25"] is None:
-        _build_bm25()
+def _bm25_search(query: str, limit: int, flt: dict | None = None) -> list[Hit]:
+    build_bm25()
     bm = _bm25_state["bm25"]
     if bm is None:
         return []
-    tokens = _tokenize(query)
-    scores = bm.get_scores(tokens)
-    order = sorted(range(len(scores)), key=lambda i: -scores[i])[:limit]
+    rows = _bm25_state["rows"]
+    scores = bm.get_scores(_tokenize(query))
+    order = sorted(range(len(scores)), key=lambda i: -scores[i])
+
     hits: list[Hit] = []
     for i in order:
-        row = _bm25_state["keys"][i]
-        p = row["payload"] or {}
-        hits.append(
-            Hit(
-                report_id=p.get("report_id"),
-                chunk_idx=p.get("chunk_idx", 0),
-                text=p.get("text", ""),
-                url=p.get("url", ""),
-                title=p.get("title", ""),
-                score=float(scores[i]),
-                payload=p,
-            )
-        )
+        if scores[i] <= 0:
+            break
+        row = rows[i]
+        if flt and not _matches(row, flt):
+            continue
+        hits.append(_row_to_hit(row, float(scores[i])))
+        if len(hits) >= limit:
+            break
     return hits
 
 
-# ---------- Fusion + filters ----------
+def _matches(row: dict, flt: dict) -> bool:
+    for key, want in flt.items():
+        if want is None:
+            continue
+        have = row.get(key)
+        if isinstance(want, (list, tuple, set)):
+            if have not in want:
+                return False
+        elif have != want:
+            return False
+    return True
 
 
-def _rrf(runs: list[list[Hit]]) -> list[Hit]:
-    fused: dict[tuple, dict] = {}
+# --------------------------------------------------------------- dense side
+
+
+def _dense_search(query: str, limit: int, flt: dict | None = None) -> list[Hit]:
+    if not qc.is_reachable():
+        return []
+    try:
+        vec = embeddings.embed_query(query)
+    except Exception:
+        return []
+    raw = qc.search(vec, limit=limit, flt=flt)
+    hits: list[Hit] = []
+    for r in raw:
+        p = r.payload or {}
+        hits.append(_row_to_hit(p, float(r.score)))
+    return hits
+
+
+# ---------------------------------------------------------------- fusion
+
+
+def reciprocal_rank_fusion(runs: list[list[Hit]], k: int = RRF_K) -> list[Hit]:
+    """Fuse ranked lists by 1/(k + rank), summed across runs."""
+    scores: dict[tuple[int, int], float] = {}
+    best: dict[tuple[int, int], Hit] = {}
     for run in runs:
-        for rank, h in enumerate(run):
-            key = (h.report_id, h.chunk_idx)
-            slot = fused.setdefault(key, {"hit": h, "score": 0.0})
-            slot["score"] += 1.0 / (RRF_K + rank + 1)
-    out = []
-    for v in sorted(fused.values(), key=lambda x: -x["score"]):
-        v["hit"].score = v["score"]
-        out.append(v["hit"])
-    return out
+        for rank, hit in enumerate(run, start=1):
+            key = (hit.document_id, hit.chunk_idx)
+            scores[key] = scores.get(key, 0.0) + 1.0 / (k + rank)
+            if key not in best:
+                best[key] = hit
+    fused = []
+    for key, score in sorted(scores.items(), key=lambda kv: -kv[1]):
+        hit = best[key]
+        hit.score = score
+        fused.append(hit)
+    return fused
 
 
-def _apply_post_filters(hits: list[Hit], flt: dict) -> list[Hit]:
-    date_from: date | None = flt.get("date_from")
-    date_to: date | None = flt.get("date_to")
-    target_tech: str | None = flt.get("target_tech")
-
-    if not any([date_from, date_to, target_tech]):
-        return hits
-
-    target_report_ids: set[int] | None = None
-    if target_tech:
-        with Session() as s:
-            rows = (
-                s.query(Report.id)
-                .join(ReportTargetsTech, ReportTargetsTech.report_id == Report.id)
-                .join(Target, Target.id == ReportTargetsTech.target_id)
-                .filter(Target.name.ilike(target_tech))
-                .all()
-            )
-            target_report_ids = {r[0] for r in rows}
-
-    kept = []
-    for h in hits:
-        d = h.payload.get("date")
-        if date_from and (not d or d < date_from.isoformat()):
-            continue
-        if date_to and (not d or d > date_to.isoformat()):
-            continue
-        if target_report_ids is not None and h.report_id not in target_report_ids:
-            continue
-        kept.append(h)
-    return kept
-
-
-# ---------- Public entry ----------
+# ---------------------------------------------------------------- public API
 
 
 def search(
     query: str,
     top_k: int = 5,
-    fetch_k: int = 20,
-    filters: dict | None = None,
-    use_reranker: bool = True,
+    mode: Mode = "hybrid_rerank",
+    candidates: int = 40,
+    flt: dict | None = None,
 ) -> HybridResult:
-    flt = filters or {}
-    dense_hits = _dense(query, limit=fetch_k, flt=flt)
-    lex_hits = _bm25(query, limit=fetch_k)
-    fused = _rrf([dense_hits, lex_hits])
-    fused = _apply_post_filters(fused, flt)
-    fused = fused[: fetch_k]
-    if use_reranker and fused:
-        fused = rerank(query, fused, top_n=top_k)
+    """Retrieve `top_k` chunks for `query`.
+
+    `candidates` is the depth each arm retrieves before fusion/reranking;
+    it should comfortably exceed `top_k` or reranking has nothing to work with.
+    """
+    depth = max(candidates, top_k)
+
+    if mode == "dense":
+        hits = _dense_search(query, depth, flt)[:top_k]
+    elif mode == "bm25":
+        hits = _bm25_search(query, depth, flt)[:top_k]
     else:
-        fused = fused[:top_k]
-    return HybridResult(hits=fused, query=query)
+        dense = _dense_search(query, depth, flt)
+        lexical = _bm25_search(query, depth, flt)
+        runs = [r for r in (dense, lexical) if r]
+        fused = reciprocal_rank_fusion(runs) if runs else []
+        if mode == "hybrid_rerank":
+            hits = rerank(query, fused[:depth], top_n=top_k)
+        else:
+            hits = fused[:top_k]
+
+    return HybridResult(hits=hits, query=query, mode=mode)
+
+
+def available_modes() -> list[str]:
+    """Which arms can actually run right now, for honest eval reporting."""
+    modes = ["bm25"]
+    if qc.is_reachable() and qc.count() > 0:
+        modes = ["dense", "bm25", "hybrid", "hybrid_rerank"]
+    return modes

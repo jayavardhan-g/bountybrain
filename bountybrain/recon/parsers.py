@@ -156,7 +156,13 @@ def _parse_nuclei(text: str) -> list[ReconFinding]:
         info = obj.get("info") or {}
         severity = info.get("severity")
         name = info.get("name") or template
-        cves = (info.get("classification") or {}).get("cve-id") or []
+        # `cve-id` is a bare string for single-CVE templates and a list for
+        # multi-CVE ones. Iterating the string form yields one finding per
+        # *character*, so it has to be normalised before the loop below.
+        raw_cves = (info.get("classification") or {}).get("cve-id") or []
+        if isinstance(raw_cves, str):
+            raw_cves = [raw_cves]
+        cves = [c for c in raw_cves if str(c).upper().startswith("CVE-")]
         if template:
             out.append(
                 ReconFinding(

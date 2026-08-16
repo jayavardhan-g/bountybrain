@@ -1,31 +1,41 @@
-fastapi>=0.111
-uvicorn[standard]>=0.30
+# Core
 pydantic>=2.7
 pydantic-settings>=2.3
 sqlalchemy>=2.0
-psycopg[binary]>=3.1
-alembic>=1.13
+typer>=0.12
+rich>=13.7
+python-dotenv>=1.0
+httpx>=0.27
+
+# Datasets
+pyyaml>=6.0
+lxml>=5.2
+
+# Knowledge graph analysis
+networkx>=3.3
+python-louvain>=0.16
+pandas>=2.2
+numpy>=1.26
+
+# Retrieval
 qdrant-client>=1.10
 sentence-transformers>=3.0
 rank-bm25>=0.2.2
-httpx>=0.27
-tenacity>=8.2
-feedparser>=6.0
-beautifulsoup4>=4.12
-markdownify>=0.13
-lxml>=5.2
-python-dotenv>=1.0
-typer>=0.12
-rich>=13.7
-langgraph>=0.2
-instructor>=1.4
-ollama>=0.3
+
+# LLM clients (vLLM server speaks the OpenAI API)
 openai>=1.40
-anthropic>=0.34
+anthropic>=0.34          # optional alternative provider
+ollama>=0.3              # optional alternative provider
+langgraph>=0.2           # optional; the agent falls back without it
+
+# Interfaces
 streamlit>=1.36
-streamlit-agraph>=0.0.45
-pandas>=2.2
-numpy>=1.26
+fastapi>=0.111
+uvicorn[standard]>=0.30
+
+# Dev
 pytest>=8.2
-pytest-asyncio>=0.23
-respx>=0.21
+
+# Not listed here: `vllm`. Install it first and on its own — it pins the torch
+# build, and letting pip resolve it alongside everything else picks a
+# conflicting version. See SETUP.md.

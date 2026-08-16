@@ -1,0 +1,448 @@
+{
+  "tables": {
+    "vulnerabilities": 969,
+    "techniques": 615,
+    "cves": 29971,
+    "products": 10901,
+    "signatures": 13569,
+    "exploits": 46647,
+    "tools": 0,
+    "documents": 9224,
+    "weakness_relations": 1441,
+    "technique_relations": 727,
+    "technique_targets_weakness": 1212,
+    "weakness_observed_cve": 3118,
+    "signature_detects_weakness": 7309,
+    "signature_references_cve": 4196,
+    "signature_targets_product": 41248,
+    "exploit_references_cve": 30347,
+    "document_covers_weakness": 11403,
+    "document_covers_technique": 0,
+    "document_references_cve": 0,
+    "document_targets_product": 0,
+    "document_mentions_tool": 0
+  },
+  "structure": {
+    "nodes": 111896,
+    "edges": 96805,
+    "node_kinds": {
+      "weakness": 969,
+      "technique": 615,
+      "cve": 29971,
+      "product": 10901,
+      "signature": 13569,
+      "exploit": 46647,
+      "document": 9224
+    },
+    "edge_kinds": {
+      "weakness_relation": 1441,
+      "weakness_observed_cve": 3118,
+      "technique_relation": 727,
+      "technique_targets_weakness": 1212,
+      "signature_targets_product": 41248,
+      "signature_detects_weakness": 7309,
+      "exploit_references_cve": 30347,
+      "document_covers_weakness": 11403
+    },
+    "density": 1.546e-05,
+    "mean_degree": 1.73,
+    "median_degree": 1.0,
+    "max_degree": 3761,
+    "isolated_nodes": 24905,
+    "connected_components": 46998,
+    "largest_component_size": 35425,
+    "largest_component_share": 0.3166
+  },
+  "hierarchy": {
+    "childof_edges": 1160,
+    "roots": 10,
+    "leaves": 687,
+    "max_depth": 5,
+    "mean_depth": 2.58,
+    "abstraction_levels": {
+      "Base": 539,
+      "Class": 114,
+      "Compound": 7,
+      "Pillar": 10,
+      "Variant": 299
+    }
+  },
+  "centrality": {
+    "weakness_pagerank_top": [
+      {
+        "id": 664,
+        "name": "Improper Control of a Resource Through its Lifetime",
+        "score": 0.065753
+      },
+      {
+        "id": 710,
+        "name": "Improper Adherence to Coding Standards",
+        "score": 0.039221
+      },
+      {
+        "id": 284,
+        "name": "Improper Access Control",
+        "score": 0.037663
+      },
+      {
+        "id": 707,
+        "name": "Improper Neutralization",
+        "score": 0.0249
+      },
+      {
+        "id": 668,
+        "name": "Exposure of Resource to Wrong Sphere",
+        "score": 0.024435
+      },
+      {
+        "id": 693,
+        "name": "Protection Mechanism Failure",
+        "score": 0.018259
+      },
+      {
+        "id": 20,
+        "name": "Improper Input Validation",
+        "score": 0.013224
+      },
+      {
+        "id": 287,
+        "name": "Improper Authentication",
+        "score": 0.012219
+      },
+      {
+        "id": 138,
+        "name": "Improper Neutralization of Special Elements",
+        "score": 0.012187
+      },
+      {
+        "id": 119,
+        "name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
+        "score": 0.011489
+      }
+    ],
+    "technique_pagerank_top": [
+      {
+        "id": 151,
+        "name": "Identity Spoofing",
+        "score": 0.029966
+      },
+      {
+        "id": 169,
+        "name": "Footprinting",
+        "score": 0.020385
+      },
+      {
+        "id": 115,
+        "name": "Authentication Bypass",
+        "score": 0.017371
+      },
+      {
+        "id": 98,
+        "name": "Phishing",
+        "score": 0.013678
+      },
+      {
+        "id": 664,
+        "name": "Server Side Request Forgery",
+        "score": 0.013471
+      },
+      {
+        "id": 438,
+        "name": "Modification During Manufacture",
+        "score": 0.01342
+      },
+      {
+        "id": 224,
+        "name": "Fingerprinting",
+        "score": 0.012004
+      },
+      {
+        "id": 163,
+        "name": "Spear Phishing",
+        "score": 0.011536
+      },
+      {
+        "id": 94,
+        "name": "Adversary in the Middle (AiTM)",
+        "score": 0.011419
+      },
+      {
+        "id": 116,
+        "name": "Excavation",
+        "score": 0.011404
+      }
+    ]
+  },
+  "coverage": {
+    "weaknesses_total": 969,
+    "with_attack_pattern": 336,
+    "with_attack_pattern_pct": 0.3467,
+    "with_detection_signature": 166,
+    "with_detection_signature_pct": 0.1713,
+    "with_any_document": 969,
+    "with_any_document_pct": 1.0,
+    "with_any_document_note": "trivially near-100%: each CWE's own catalogue page is a document",
+    "with_disclosed_writeup": 89,
+    "with_disclosed_writeup_pct": 0.0918,
+    "with_external_document": 365,
+    "with_external_document_pct": 0.3767,
+    "with_observed_cve": 581,
+    "with_observed_cve_pct": 0.5996,
+    "with_vrt_priority": 57,
+    "with_vrt_priority_pct": 0.0588
+  },
+  "corpus": {
+    "documents_total": 9224,
+    "by_type": {
+      "article": 1243,
+      "technique": 615,
+      "weakness": 969,
+      "writeup": 6397
+    },
+    "by_source": {
+      "capec": 615,
+      "cwe": 969,
+      "payloadsallthethings": 676,
+      "pentesterland": 6397,
+      "wstg": 567
+    },
+    "body_chars_mean": 787,
+    "body_chars_median": 313,
+    "body_chars_total": 7263117,
+    "writeups_by_year": {
+      "2010": 2,
+      "2011": 1,
+      "2012": 4,
+      "2013": 32,
+      "2014": 29,
+      "2015": 29,
+      "2016": 86,
+      "2017": 213,
+      "2018": 520,
+      "2019": 644,
+      "2020": 813,
+      "2021": 987,
+      "2022": 1321,
+      "2023": 1124,
+      "2024": 588
+    }
+  },
+  "economics": {
+    "min_paid_threshold": 10,
+    "classes_ranked": 34,
+    "top_by_mean_bounty": [
+      {
+        "cwe_id": 787,
+        "name": "Out-of-bounds Write",
+        "writeups": 197,
+        "paid_writeups": 30,
+        "mean_bounty": 42326.23,
+        "median_bounty": 20000.0,
+        "max_bounty": 215000.0
+      },
+      {
+        "cwe_id": 78,
+        "name": "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')",
+        "writeups": 104,
+        "paid_writeups": 11,
+        "mean_bounty": 29963.64,
+        "median_bounty": 4000.0,
+        "max_bounty": 288500.0
+      },
+      {
+        "cwe_id": 94,
+        "name": "Improper Control of Generation of Code ('Code Injection')",
+        "writeups": 880,
+        "paid_writeups": 134,
+        "mean_bounty": 21183.84,
+        "median_bounty": 5550.0,
+        "max_bounty": 288500.0
+      },
+      {
+        "cwe_id": 269,
+        "name": "Improper Privilege Management",
+        "writeups": 464,
+        "paid_writeups": 52,
+        "mean_bounty": 20806.14,
+        "median_bounty": 8000.0,
+        "max_bounty": 200000.0
+      },
+      {
+        "cwe_id": 89,
+        "name": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')",
+        "writeups": 230,
+        "paid_writeups": 40,
+        "mean_bounty": 12934.38,
+        "median_bounty": 3000.0,
+        "max_bounty": 288500.0
+      },
+      {
+        "cwe_id": 918,
+        "name": "Server-Side Request Forgery (SSRF)",
+        "writeups": 285,
+        "paid_writeups": 67,
+        "mean_bounty": 12694.66,
+        "median_bounty": 3500.0,
+        "max_bounty": 288500.0
+      },
+      {
+        "cwe_id": 346,
+        "name": "Origin Validation Error",
+        "writeups": 33,
+        "paid_writeups": 13,
+        "mean_bounty": 11225.75,
+        "median_bounty": 3000.0,
+        "max_bounty": 62500.0
+      },
+      {
+        "cwe_id": 524,
+        "name": "Use of Cache Containing Sensitive Information",
+        "writeups": 62,
+        "paid_writeups": 23,
+        "mean_bounty": 10199.57,
+        "median_bounty": 2250.0,
+        "max_bounty": 50000.0
+      },
+      {
+        "cwe_id": 1188,
+        "name": "Initialization of a Resource with an Insecure Default",
+        "writeups": 64,
+        "paid_writeups": 16,
+        "mean_bounty": 9918.75,
+        "median_bounty": 1250.0,
+        "max_bounty": 120000.0
+      },
+      {
+        "cwe_id": 287,
+        "name": "Improper Authentication",
+        "writeups": 484,
+        "paid_writeups": 106,
+        "mean_bounty": 9744.54,
+        "median_bounty": 2112.5,
+        "max_bounty": 288500.0
+      },
+      {
+        "cwe_id": 640,
+        "name": "Weak Password Recovery Mechanism for Forgotten Password",
+        "writeups": 562,
+        "paid_writeups": 156,
+        "mean_bounty": 9579.34,
+        "median_bounty": 2575.0,
+        "max_bounty": 126000.0
+      },
+      {
+        "cwe_id": 307,
+        "name": "Improper Restriction of Excessive Authentication Attempts",
+        "writeups": 74,
+        "paid_writeups": 17,
+        "mean_bounty": 8187.06,
+        "median_bounty": 5000.0,
+        "max_bounty": 50000.0
+      },
+      {
+        "cwe_id": 306,
+        "name": "Missing Authentication for Critical Function",
+        "writeups": 69,
+        "paid_writeups": 13,
+        "mean_bounty": 7481.77,
+        "median_bounty": 2158.0,
+        "max_bounty": 30000.0
+      },
+      {
+        "cwe_id": 93,
+        "name": "Improper Neutralization of CRLF Sequences ('CRLF Injection')",
+        "writeups": 31,
+        "paid_writeups": 11,
+        "mean_bounty": 7231.82,
+        "median_bounty": 1500.0,
+        "max_bounty": 35000.0
+      },
+      {
+        "cwe_id": 285,
+        "name": "Improper Authorization",
+        "writeups": 275,
+        "paid_writeups": 100,
+        "mean_bounty": 7015.28,
+        "median_bounty": 1500.0,
+        "max_bounty": 288500.0
+      }
+    ],
+    "most_reported": [
+      {
+        "cwe_id": 79,
+        "name": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+        "writeups": 1184
+      },
+      {
+        "cwe_id": 94,
+        "name": "Improper Control of Generation of Code ('Code Injection')",
+        "writeups": 880
+      },
+      {
+        "cwe_id": 200,
+        "name": "Exposure of Sensitive Information to an Unauthorized Actor",
+        "writeups": 672
+      },
+      {
+        "cwe_id": 640,
+        "name": "Weak Password Recovery Mechanism for Forgotten Password",
+        "writeups": 562
+      },
+      {
+        "cwe_id": 287,
+        "name": "Improper Authentication",
+        "writeups": 484
+      },
+      {
+        "cwe_id": 639,
+        "name": "Authorization Bypass Through User-Controlled Key",
+        "writeups": 467
+      },
+      {
+        "cwe_id": 269,
+        "name": "Improper Privilege Management",
+        "writeups": 464
+      },
+      {
+        "cwe_id": 841,
+        "name": "Improper Enforcement of Behavioral Workflow",
+        "writeups": 379
+      },
+      {
+        "cwe_id": 918,
+        "name": "Server-Side Request Forgery (SSRF)",
+        "writeups": 285
+      },
+      {
+        "cwe_id": 285,
+        "name": "Improper Authorization",
+        "writeups": 275
+      },
+      {
+        "cwe_id": 352,
+        "name": "Cross-Site Request Forgery (CSRF)",
+        "writeups": 236
+      },
+      {
+        "cwe_id": 89,
+        "name": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')",
+        "writeups": 230
+      },
+      {
+        "cwe_id": 22,
+        "name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')",
+        "writeups": 203
+      },
+      {
+        "cwe_id": 787,
+        "name": "Out-of-bounds Write",
+        "writeups": 197
+      },
+      {
+        "cwe_id": 601,
+        "name": "URL Redirection to Untrusted Site ('Open Redirect')",
+        "writeups": 177
+      }
+    ]
+  }
+}

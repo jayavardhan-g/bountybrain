@@ -1,13 +1,15 @@
-"""LangGraph state machine for the 'teach me X' flow.
+"""LangGraph state machine for the "explain this to me" flow.
 
-Behavior:
-1. Try local RAG. If < 3 hits, fall back to live web search.
-2. Look up practice labs.
-3. Compose the final tutorial with generate_report.
+    resolve → retrieve → labs → write
 
-The graph is intentionally small — the interesting logic sits in the
-tools, which are also directly callable from the API/UI for the other
-pages that don't need an agent (Explore, Recon Match, Bypass Chains).
+`resolve` grounds the topic in the knowledge graph (CWE class, its attack
+patterns, real disclosures); `retrieve` pulls supporting passages from the
+local corpus; `write` composes a tutorial that must cite them.
+
+The graph is deliberately small — the interesting logic lives in `tools.py`,
+which the API and the Streamlit pages call directly without going through an
+agent. LangGraph is optional: if it is not installed the same nodes run in
+sequence, so nothing depends on it being present.
 """
 from __future__ import annotations
 
@@ -15,33 +17,30 @@ from typing import Any, TypedDict
 
 try:
     from langgraph.graph import END, StateGraph  # type: ignore
+
     HAVE_LANGGRAPH = True
 except ImportError:  # pragma: no cover
     HAVE_LANGGRAPH = False
 
 from .labs import find_practice_labs
-from .tools import generate_report, live_web_search, local_rag_search
+from .tools import generate_tutorial, kg_context, local_rag_search
 
 
 class AgentState(TypedDict, total=False):
     topic: str
+    context: dict
     rag: dict
-    web: list[dict]
     labs: list[dict]
     report: str
 
 
-def _node_rag(state: AgentState) -> AgentState:
-    state["rag"] = local_rag_search(state["topic"], top_k=5)
+def _node_resolve(state: AgentState) -> AgentState:
+    state["context"] = kg_context(state["topic"])
     return state
 
 
-def _node_web(state: AgentState) -> AgentState:
-    hits = state.get("rag", {}).get("hits", [])
-    if len(hits) < 3:
-        state["web"] = live_web_search(state["topic"], count=5)
-    else:
-        state["web"] = []
+def _node_retrieve(state: AgentState) -> AgentState:
+    state["rag"] = local_rag_search(state["topic"], top_k=6)
     return state
 
 
@@ -50,46 +49,42 @@ def _node_labs(state: AgentState) -> AgentState:
     return state
 
 
-def _node_report(state: AgentState) -> AgentState:
-    sources = state.get("rag", {}).get("hits", []) or []
-    # merge web summaries in as extra sources
-    for w in state.get("web", []) or []:
-        sources.append(
-            {
-                "title": w.get("title"),
-                "url": w.get("url"),
-                "text": w.get("summary") or w.get("snippet") or "",
-            }
-        )
-    md = generate_report(state["topic"], sources)
-    if state.get("labs"):
-        md += "\n\n## Practice labs\n"
-        for lab in state["labs"]:
-            md += f"- [{lab['name']}]({lab['url']}) — {lab['provider']}\n"
-    state["report"] = md
+def _node_write(state: AgentState) -> AgentState:
+    state["report"] = generate_tutorial(
+        state["topic"],
+        state.get("rag", {}).get("hits", []),
+        state.get("context"),
+    )
     return state
 
 
-def _linear_run(topic: str) -> AgentState:
-    """Fallback runner used when LangGraph isn't installed."""
-    state: AgentState = {"topic": topic}
-    for node in (_node_rag, _node_web, _node_labs, _node_report):
-        state = node(state)
-    return state
+_NODES = [
+    ("resolve", _node_resolve),
+    ("retrieve", _node_retrieve),
+    ("labs", _node_labs),
+    ("write", _node_write),
+]
+
+
+def build_graph() -> Any:
+    if not HAVE_LANGGRAPH:
+        return None
+    g = StateGraph(AgentState)
+    for name, fn in _NODES:
+        g.add_node(name, fn)
+    g.set_entry_point("resolve")
+    for (a, _), (b, _) in zip(_NODES, _NODES[1:]):
+        g.add_edge(a, b)
+    g.add_edge("write", END)
+    return g.compile()
 
 
 def run_agent(topic: str) -> AgentState:
-    if not HAVE_LANGGRAPH:
-        return _linear_run(topic)
-    g: Any = StateGraph(AgentState)
-    g.add_node("rag", _node_rag)
-    g.add_node("web", _node_web)
-    g.add_node("labs", _node_labs)
-    g.add_node("report", _node_report)
-    g.set_entry_point("rag")
-    g.add_edge("rag", "web")
-    g.add_edge("web", "labs")
-    g.add_edge("labs", "report")
-    g.add_edge("report", END)
-    app = g.compile()
-    return app.invoke({"topic": topic})
+    """Run the flow. Falls back to a plain sequence without LangGraph."""
+    state: AgentState = {"topic": topic}
+    graph = build_graph()
+    if graph is not None:
+        return graph.invoke(state)
+    for _, fn in _NODES:
+        state = fn(state)
+    return state

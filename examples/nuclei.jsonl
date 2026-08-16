@@ -1,0 +1,3 @@
+{"template-id":"CVE-2021-22205","host":"https://git.acme.example","matched-at":"https://git.acme.example/uploads/user","info":{"name":"GitLab CE/EE - Unauthenticated RCE","severity":"critical","tags":["cve","cve2021","gitlab","rce"],"classification":{"cve-id":"CVE-2021-22205"}}}
+{"template-id":"CVE-2022-29455","host":"https://blog.acme.example","matched-at":"https://blog.acme.example/","info":{"name":"WordPress Elementor - DOM XSS","severity":"medium","tags":["cve","cve2022","wordpress","xss"],"classification":{"cve-id":"CVE-2022-29455"}}}
+{"template-id":"tech-detect","host":"https://www.acme.example","matched-at":"https://www.acme.example","info":{"name":"Wappalyzer Technology Detection","severity":"info","tags":["tech"]}}

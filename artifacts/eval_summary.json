@@ -1,0 +1,98 @@
+{
+  "planner": {
+    "cases": 400,
+    "products": 147,
+    "top_k": 10,
+    "seed": 31,
+    "strategies": {
+      "planner (value-weighted)": {
+        "n": 400,
+        "precision@1": 0.4275,
+        "precision@3": 0.5625,
+        "precision@5": 0.65,
+        "precision@10": 0.72,
+        "mrr": 0.5174,
+        "unranked": 112
+      },
+      "planner (likelihood-only)": {
+        "n": 400,
+        "precision@1": 0.4225,
+        "precision@3": 0.57,
+        "precision@5": 0.6625,
+        "precision@10": 0.7375,
+        "mrr": 0.5216,
+        "unranked": 105
+      },
+      "prior": {
+        "n": 400,
+        "precision@1": 0.325,
+        "precision@3": 0.5325,
+        "precision@5": 0.5975,
+        "precision@10": 0.72,
+        "mrr": 0.4446,
+        "unranked": 112
+      },
+      "random": {
+        "n": 400,
+        "precision@1": 0.095,
+        "precision@3": 0.2825,
+        "precision@5": 0.44,
+        "precision@10": 0.72,
+        "mrr": 0.2455,
+        "unranked": 112
+      }
+    },
+    "per_product_top": [
+      {
+        "product": "tcp",
+        "precision@3": 1.0,
+        "cases": 3
+      },
+      {
+        "product": "deserialization",
+        "precision@3": 1.0,
+        "cases": 5
+      },
+      {
+        "product": "time-based-sqli",
+        "precision@3": 1.0,
+        "cases": 6
+      },
+      {
+        "product": "token",
+        "precision@3": 1.0,
+        "cases": 3
+      },
+      {
+        "product": "jndi",
+        "precision@3": 1.0,
+        "cases": 4
+      },
+      {
+        "product": "discovery",
+        "precision@3": 0.98,
+        "cases": 49
+      },
+      {
+        "product": "default-login",
+        "precision@3": 0.8,
+        "cases": 5
+      },
+      {
+        "product": "joomla",
+        "precision@3": 0.778,
+        "cases": 9
+      },
+      {
+        "product": "auth-bypass",
+        "precision@3": 0.75,
+        "cases": 8
+      },
+      {
+        "product": "vmware",
+        "precision@3": 0.75,
+        "cases": 4
+      }
+    ]
+  }
+}

@@ -6,10 +6,22 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-data/raw/
-data/reports/
-data/qdrant/
-data/pgdata/
-eval_results.json
-.streamlit/secrets.toml
+*.egg-info/
 .DS_Store
+.streamlit/secrets.toml
+
+# Downloaded datasets — ~1 GB, rebuild with `python fetch_data.py`.
+# Not committed: they are other projects' repositories under their own
+# licences, and vendoring them here would be both huge and wrong.
+data/raw/
+
+# Derived artefacts — rebuild with `build_graph.py` / `index_corpus.py`.
+data/qdrant/
+data/corpus/
+data/pgdata/
+data/*.sqlite
+data/*.sqlite-wal
+data/*.sqlite-shm
+
+# Local run logs
+.logs/

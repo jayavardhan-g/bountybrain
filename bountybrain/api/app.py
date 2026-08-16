@@ -1,15 +1,9 @@
-"""FastAPI wrapper around the tools + agent.
+"""FastAPI wrapper around the tools.
 
-Endpoints:
-  POST /learn         -> {"topic": "..."}                 -> agent run
-  POST /search        -> {"query", "filters", "top_k"}    -> hybrid RAG hits
-  POST /kg            -> {"entity_type", "entity_name"}   -> kg_query
-  POST /bypass        -> {"vuln_type", "target_tech?"}    -> bypass chains
-  POST /compare       -> {"report_ids": [..]}             -> compare
-  POST /recon/match   -> {"findings": [...], "top_k": 5}  -> matches
-  POST /recon/parse   -> upload file, returns findings
-  GET  /stats         -> corpus stats
-  GET  /health        -> {"ok": true}
+    uvicorn bountybrain.api.app:app --reload
+
+Every endpoint reads the local graph and corpus. Nothing here scans a target
+or calls an external service.
 """
 from __future__ import annotations
 
@@ -17,15 +11,18 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, File, UploadFile
-from pydantic import BaseModel
+from fastapi import FastAPI, File, HTTPException, UploadFile
+from pydantic import BaseModel, Field
 
-from bountybrain.agent import run_agent
 from bountybrain.agent import tools as agent_tools
+from bountybrain.kg import queries
 from bountybrain.kg.db import init_db
-from bountybrain.kg.queries import corpus_stats
 
-app = FastAPI(title="BountyBrain API", version="0.1.0")
+app = FastAPI(
+    title="BountyBrain API",
+    version="1.0.0",
+    description="Knowledge graph and retrieval over open security datasets.",
+)
 
 
 @app.on_event("startup")
@@ -33,34 +30,30 @@ def _startup() -> None:
     init_db()
 
 
-class LearnReq(BaseModel):
-    topic: str
+# --------------------------------------------------------------- schemas
 
 
 class SearchReq(BaseModel):
     query: str
-    top_k: int = 5
-    filters: dict[str, Any] | None = None
+    top_k: int = Field(default=5, ge=1, le=50)
+    mode: str = "hybrid_rerank"
 
 
-class KGReq(BaseModel):
-    entity_type: str
-    entity_name: str
-    relationship: str = "reports"
+class TopicReq(BaseModel):
+    topic: str
 
 
-class BypassReq(BaseModel):
-    vuln_type: str
-    target_tech: str | None = None
+class PlanReq(BaseModel):
+    findings: list[dict[str, Any]]
+    top_k: int = Field(default=8, ge=1, le=25)
 
 
-class CompareReq(BaseModel):
-    report_ids: list[int]
+class ProductReq(BaseModel):
+    name: str
+    limit: int = Field(default=25, ge=1, le=100)
 
 
-class MatchReq(BaseModel):
-    findings: list[dict]
-    top_k: int = 5
+# --------------------------------------------------------------- routes
 
 
 @app.get("/health")
@@ -70,43 +63,89 @@ def health() -> dict:
 
 @app.get("/stats")
 def stats() -> dict:
-    return corpus_stats()
-
-
-@app.post("/learn")
-def learn(req: LearnReq) -> dict:
-    return run_agent(req.topic)
+    return queries.corpus_summary()
 
 
 @app.post("/search")
 def search(req: SearchReq) -> dict:
-    return agent_tools.local_rag_search(req.query, filters=req.filters, top_k=req.top_k)
+    from bountybrain.rag.hybrid import search as rag_search
+
+    result = rag_search(req.query, top_k=req.top_k, mode=req.mode)
+    return {
+        "query": result.query,
+        "mode": result.mode,
+        "hits": [
+            {
+                "document_id": h.document_id,
+                "title": h.title,
+                "url": h.url,
+                "doc_type": h.doc_type,
+                "score": h.score,
+                "text": h.text[:1500],
+            }
+            for h in result.hits
+        ],
+    }
 
 
-@app.post("/kg")
-def kg(req: KGReq) -> list[dict]:
-    return agent_tools.kg_query(req.entity_type, req.entity_name, req.relationship)
+@app.post("/learn")
+def learn(req: TopicReq) -> dict:
+    context = agent_tools.kg_context(req.topic)
+    rag = agent_tools.local_rag_search(req.topic, top_k=6)
+    return {
+        "topic": req.topic,
+        "weakness": context.get("weakness"),
+        "techniques": context.get("techniques", []),
+        "sources": rag["hits"],
+        "tutorial": agent_tools.generate_tutorial(req.topic, rag["hits"], context),
+        "labs": agent_tools.find_practice_labs(req.topic),
+    }
 
 
-@app.post("/bypass")
-def bypass(req: BypassReq) -> list[dict]:
-    return agent_tools.get_bypass_chain(req.vuln_type, req.target_tech)
+@app.get("/weakness/{cwe_id}")
+def weakness(cwe_id: int) -> dict:
+    hierarchy = queries.weakness_hierarchy(cwe_id)
+    if not hierarchy:
+        raise HTTPException(status_code=404, detail=f"CWE-{cwe_id} not found")
+    return {
+        **hierarchy,
+        "techniques": queries.techniques_for_weakness(cwe_id),
+        "writeups": queries.documents_for_weakness(cwe_id, limit=15, doc_type="writeup"),
+    }
 
 
-@app.post("/compare")
-def compare(req: CompareReq) -> dict:
-    return agent_tools.compare_reports(req.report_ids)
+@app.get("/weakness")
+def find_weakness(q: str) -> dict:
+    result = queries.find_weakness(q)
+    if not result:
+        raise HTTPException(status_code=404, detail=f"no weakness matched {q!r}")
+    return result
 
 
-@app.post("/recon/match")
-def recon_match(req: MatchReq) -> dict:
-    return agent_tools.match_findings_to_kg(req.findings, top_k=req.top_k)
+@app.post("/product/signatures")
+def product_signatures(req: ProductReq) -> dict:
+    return {
+        "product": req.name,
+        "weaknesses": queries.weaknesses_for_product(req.name),
+        "signatures": queries.signatures_for_product(req.name, limit=req.limit),
+    }
 
 
 @app.post("/recon/parse")
-async def recon_parse(file: UploadFile = File(...), tool_hint: str | None = None) -> list[dict]:
-    body = await file.read()
-    with tempfile.NamedTemporaryFile("wb", suffix=Path(file.filename or "in").suffix, delete=False) as f:
-        f.write(body)
-        tmp_path = f.name
-    return agent_tools.parse_recon_file(tmp_path, tool_hint=tool_hint)
+async def recon_parse(file: UploadFile = File(...), tool_hint: str | None = None) -> dict:
+    data = await file.read()
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / (file.filename or "recon.txt")
+        path.write_bytes(data)
+        findings = agent_tools.parse_recon_file(str(path), tool_hint=tool_hint)
+    return {"count": len(findings), "findings": findings}
+
+
+@app.post("/recon/plan")
+def recon_plan(req: PlanReq) -> dict:
+    return agent_tools.plan_recon(req.findings, top_k=req.top_k)
+
+
+@app.post("/chains")
+def chains(req: TopicReq) -> dict:
+    return {"topic": req.topic, "chains": agent_tools.attack_chain(req.topic)}

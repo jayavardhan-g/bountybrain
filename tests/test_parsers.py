@@ -85,3 +85,50 @@ def test_parse_wappalyzer(tmp_path):
     out = parse_recon_file(p, tool_hint="wappalyzer")
     values = sorted(f.value for f in out)
     assert values == ["Nginx", "Rails"]
+
+
+def test_nuclei_cve_id_string_is_not_iterated_per_character(tmp_path):
+    """nuclei writes `cve-id` as a bare string for single-CVE templates.
+
+    Looping it directly yields one finding per character, which silently
+    floods the planner with garbage CVE ids.
+    """
+    p = _write(
+        tmp_path,
+        "nuclei.jsonl",
+        json.dumps(
+            {
+                "template-id": "CVE-2021-22205",
+                "host": "https://git.acme.example",
+                "matched-at": "https://git.acme.example/x",
+                "info": {
+                    "name": "GitLab RCE",
+                    "severity": "critical",
+                    "classification": {"cve-id": "CVE-2021-22205"},
+                },
+            }
+        ),
+    )
+    findings = parse_recon_file(p, tool_hint="nuclei")
+    cves = [f.value for f in findings if f.type == "cve"]
+    assert cves == ["CVE-2021-22205"]
+
+
+def test_nuclei_cve_id_list_still_works(tmp_path):
+    p = _write(
+        tmp_path,
+        "nuclei.jsonl",
+        json.dumps(
+            {
+                "template-id": "multi",
+                "host": "https://x.example",
+                "info": {
+                    "name": "Multi",
+                    "severity": "high",
+                    "classification": {"cve-id": ["CVE-2020-1111", "CVE-2020-2222"]},
+                },
+            }
+        ),
+    )
+    cves = {f.value for f in parse_recon_file(p, tool_hint="nuclei") if f.type == "cve"}
+    assert cves == {"CVE-2020-1111", "CVE-2020-2222"}

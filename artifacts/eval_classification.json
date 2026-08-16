@@ -1,0 +1,45 @@
+{
+  "seed": 17,
+  "sets": {
+    "nuclei": {
+      "keyword": {
+        "n": 500,
+        "accuracy": 0.398,
+        "hierarchy_match": 0.444,
+        "accuracy_when_answered": 0.6161,
+        "abstention_rate": 0.354,
+        "macro_f1": 0.2157,
+        "distinct_gold_classes": 51
+      },
+      "embedding": {
+        "n": 500,
+        "accuracy": 0.184,
+        "hierarchy_match": 0.3,
+        "accuracy_when_answered": 0.184,
+        "abstention_rate": 0.0,
+        "macro_f1": 0.0441,
+        "distinct_gold_classes": 51
+      }
+    },
+    "pentesterland": {
+      "keyword": {
+        "n": 500,
+        "accuracy": 0.402,
+        "hierarchy_match": 0.426,
+        "accuracy_when_answered": 0.8445,
+        "abstention_rate": 0.524,
+        "macro_f1": 0.2986,
+        "distinct_gold_classes": 53
+      },
+      "embedding": {
+        "n": 500,
+        "accuracy": 0.188,
+        "hierarchy_match": 0.314,
+        "accuracy_when_answered": 0.188,
+        "abstention_rate": 0.0,
+        "macro_f1": 0.0651,
+        "distinct_gold_classes": 53
+      }
+    }
+  }
+}

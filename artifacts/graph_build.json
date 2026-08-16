@@ -1,0 +1,19 @@
+{
+  "vulnerabilities": 969,
+  "weakness_relations": 1441,
+  "techniques": 615,
+  "technique_relations": 727,
+  "technique_targets_weakness": 1212,
+  "cves": 29971,
+  "products": 10901,
+  "signatures": 13569,
+  "signature_detects_weakness": 7309,
+  "signature_references_cve": 4196,
+  "signature_targets_product": 41248,
+  "exploits": 46647,
+  "exploit_references_cve": 30347,
+  "weakness_observed_cve": 3118,
+  "documents": 9224,
+  "document_covers_weakness(labelled)": 11403,
+  "_label_coverage": 0.931
+}

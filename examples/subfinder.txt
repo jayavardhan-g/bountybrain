@@ -1,0 +1,8 @@
+www.acme.example
+blog.acme.example
+git.acme.example
+jira.acme.example
+api.acme.example
+ci.acme.example
+staging.acme.example
+mail.acme.example

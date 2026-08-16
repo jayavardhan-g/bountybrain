@@ -1,121 +1,183 @@
-"""Agent-callable tools. Thin wrappers around lower-level modules.
+"""Tools the agent calls by name.
 
-Kept centralised so the LangGraph node can dispatch by name.
+Each one is a plain function returning JSON-able data, so the same code
+backs the LangGraph agent, the FastAPI routes and the Streamlit pages
+without a translation layer.
+
+There is deliberately **no web-search tool**. An earlier version had one
+behind a Brave API key; without a key it silently returned nothing, which is
+worse than not having it — the agent would claim to have searched and quietly
+ground its answer in nothing. Everything here answers from the local corpus,
+and when the corpus has nothing the tools say so.
 """
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
-from bountybrain.clients.llm import chat, load_prompt
-from bountybrain.kg.queries import compare_reports as _compare_reports
-from bountybrain.kg.queries import get_bypass_chain as _get_bypass_chain
-from bountybrain.kg.queries import kg_query as _kg_query
-from bountybrain.rag.hybrid import search as _rag_search
-from bountybrain.recon.matcher import match_findings as _match_findings
-from bountybrain.recon.parsers import parse_recon_file as _parse_recon_file
-from bountybrain.web.search import live_search as _live_search
+from bountybrain.clients.llm import LLMError, chat, load_prompt
+from bountybrain.kg import queries
+from bountybrain.rag.hybrid import search as rag_search
+from bountybrain.recon.parsers import parse_recon_file as _parse_file
+from bountybrain.recon.planner import plan_from_findings, render_markdown
 
-from .labs import find_practice_labs as _find_practice_labs
+from .labs import find_practice_labs  # noqa: F401  (re-exported for the agent)
 
 
 def local_rag_search(query: str, filters: dict | None = None, top_k: int = 5) -> dict:
-    result = _rag_search(query, top_k=top_k, filters=filters or {})
+    """Retrieve supporting passages from the local corpus."""
+    result = rag_search(query, top_k=top_k, flt=filters)
     return {
-        "query": result.query,
+        "query": query,
+        "mode": result.mode,
         "hits": [
             {
-                "report_id": h.report_id,
-                "chunk_idx": h.chunk_idx,
-                "text": h.text,
-                "url": h.url,
+                "document_id": h.document_id,
                 "title": h.title,
-                "score": h.score,
+                "url": h.url,
+                "doc_type": h.doc_type,
+                "source": h.source,
+                "score": round(h.score, 4),
+                "text": h.text,
             }
             for h in result.hits
         ],
     }
 
 
-def live_web_search(query: str, count: int = 5, persist: bool = False) -> list[dict]:
-    return [
-        {"url": h.url, "title": h.title, "snippet": h.snippet, "summary": h.summary_md}
-        for h in _live_search(query, count=count, persist=persist)
-    ]
+def resolve_topic(topic: str) -> dict | None:
+    """Map a free-text topic onto a CWE node in the graph."""
+    return queries.find_weakness(topic)
 
 
-def kg_query(entity_type: str, entity_name: str, relationship: str = "reports") -> list[dict]:
-    return _kg_query(entity_type, entity_name, relationship)
+def kg_context(topic: str) -> dict:
+    """Everything the graph knows about a topic, for grounding a tutorial."""
+    weakness = queries.find_weakness(topic)
+    if not weakness:
+        return {"weakness": None}
+    cwe_id = weakness["cwe_id"]
+    return {
+        "weakness": weakness,
+        "hierarchy": queries.weakness_hierarchy(cwe_id),
+        "techniques": queries.techniques_for_weakness(cwe_id),
+        "writeups": queries.documents_for_weakness(cwe_id, limit=8, doc_type="writeup"),
+    }
 
 
-def get_bypass_chain(vuln_type: str, target_tech: str | None = None) -> list[dict]:
-    return _get_bypass_chain(vuln_type, target_tech)
-
-
-def compare_reports(report_ids: list[int]) -> dict:
-    return _compare_reports(report_ids)
+def attack_chain(topic: str, depth: int = 3) -> list[list[dict]]:
+    """Multi-step chains from CAPEC `CanPrecede` edges for a topic."""
+    weakness = queries.find_weakness(topic)
+    if not weakness:
+        return []
+    chains: list[list[dict]] = []
+    for technique in queries.techniques_for_weakness(weakness["cwe_id"]):
+        chains.extend(queries.attack_chain(technique["capec_id"], depth=depth))
+    return chains
 
 
 def parse_recon_file(file_path: str, tool_hint: str | None = None) -> list[dict]:
-    return [f.model_dump() for f in _parse_recon_file(file_path, tool_hint=tool_hint)]
+    findings = _parse_file(Path(file_path), tool_hint=tool_hint)
+    return [f.model_dump() for f in findings]
 
 
-def match_findings_to_kg(findings: list[dict], top_k: int = 5) -> dict:
+def plan_recon(findings: list[dict], top_k: int = 8) -> dict:
+    """Rank next moves for parsed recon findings."""
     from bountybrain.recon.models import ReconFinding
 
-    typed = [ReconFinding(**f) for f in findings]
-    return _match_findings(typed, top_k=top_k)
+    parsed = [ReconFinding(**f) if isinstance(f, dict) else f for f in findings]
+    plans = plan_from_findings(parsed, top_k=top_k)
+    return {
+        "assets": len(plans),
+        "plans": [p.to_dict() for p in plans],
+        "markdown": render_markdown(plans),
+    }
 
 
-def find_practice_labs(topic: str) -> list[dict]:
-    return _find_practice_labs(topic)
-
-
-def generate_report(topic: str, sources: list[dict]) -> str:
-    """Compose a markdown tutorial from RAG hits.
-
-    `sources` is a list of hit-shaped dicts as returned by local_rag_search.
-    Falls back to a simple template if LLM isn't available.
-    """
-    numbered = []
-    for i, s in enumerate(sources, start=1):
-        numbered.append(f"[{i}] {s.get('title')} — {s.get('url')}\n{s.get('text', '')[:800]}")
-    joined = "\n\n---\n\n".join(numbered)
+def generate_tutorial(topic: str, sources: list[dict], context: dict | None = None) -> str:
+    """Write a cited tutorial. Falls back to a template when no LLM is up."""
+    if not sources:
+        return (
+            f"# {topic}\n\n"
+            "The local corpus has no passages for this topic. Build the index "
+            "with `python index_corpus.py`, or try a different phrasing."
+        )
+    numbered = "\n\n".join(
+        f"[{i}] {s['title']} ({s['url']})\n{s['text'][:1200]}"
+        for i, s in enumerate(sources, start=1)
+    )
     try:
         return chat(
-            system="You are a patient, plain-language tutor.",
-            user=load_prompt("tutorial", topic=topic, sources=joined),
+            system="You write clear, accurate security tutorials for beginners.",
+            user=load_prompt(
+                "tutorial",
+                topic=topic,
+                sources=numbered,
+                kg_context=json.dumps(_context_brief(context), indent=2) if context else "{}",
+            ),
+            max_tokens=2048,
         )
-    except Exception:
-        return _template_report(topic, sources)
+    except (LLMError, Exception):
+        return _template_tutorial(topic, sources, context)
 
 
-def _template_report(topic: str, sources: list[dict]) -> str:
-    if not sources:
-        return f"# {topic}\n\nNo local sources matched — try live web search.\n"
-    lines = [
-        f"# {topic}\n",
-        f"## What is {topic}?\n",
-        "This is a beginner overview stitched from real disclosed reports.\n",
-        "## How attackers find it\n",
-    ]
+def _context_brief(context: dict | None) -> dict:
+    """Trim KG context to what usefully fits in a prompt."""
+    if not context or not context.get("weakness"):
+        return {}
+    w = context["weakness"]
+    return {
+        "cwe": f"CWE-{w['cwe_id']}: {w['name']}",
+        "likelihood_of_exploit": w.get("likelihood"),
+        "aliases": w.get("aliases", [])[:6],
+        "attack_patterns": [
+            f"{t['key']}: {t['name']}" for t in (context.get("techniques") or [])[:6]
+        ],
+        "notable_disclosures": [
+            {"title": d["title"], "bounty": d["bounty"]}
+            for d in (context.get("writeups") or [])[:5]
+        ],
+    }
+
+
+def _template_tutorial(topic: str, sources: list[dict], context: dict | None) -> str:
+    """Deterministic fallback so the UI still works with no LLM running."""
+    lines = [f"# {topic}", ""]
+    w = (context or {}).get("weakness")
+    if w:
+        lines += [
+            f"**{w['key']}: {w['name']}**",
+            "",
+            (w.get("description") or "").strip(),
+            "",
+        ]
+        if w.get("likelihood"):
+            lines.append(f"_Likelihood of exploit: {w['likelihood']}_")
+            lines.append("")
+    techniques = (context or {}).get("techniques") or []
+    if techniques:
+        lines += ["## Attack patterns", ""]
+        for t in techniques[:6]:
+            lines.append(f"- [{t['key']}: {t['name']}]({t['url']}) — {t.get('description','')[:180]}")
+        lines.append("")
+    lines += ["## Sources from the corpus", ""]
     for i, s in enumerate(sources, start=1):
-        lines.append(f"- {s.get('title')} [[{i}]]({s.get('url')})")
-    lines.append("\n## Practice labs\n(see below)\n")
-    lines.append("## Key takeaways\n")
-    lines.append("- Look at real reports for real patterns")
-    lines.append("- Always test only in-scope targets")
-    lines.append("- Read the fix, not just the exploit")
+        lines.append(f"{i}. [{s['title']}]({s['url']}) — {s['text'][:220].strip()}…")
+    writeups = (context or {}).get("writeups") or []
+    if writeups:
+        lines += ["", "## Real disclosures", ""]
+        for d in writeups[:5]:
+            amount = f" — ${d['bounty']:,.0f}" if d.get("bounty") else ""
+            lines.append(f"- [{d['title'][:90]}]({d['url']}){amount}")
+    lines += [
+        "",
+        "_No LLM server was reachable, so this is a structured summary of the "
+        "retrieved sources rather than a generated tutorial. Start one with "
+        "`python serve_llm.py` for prose._",
+    ]
     return "\n".join(lines)
 
 
-TOOLS = {
-    "local_rag_search": local_rag_search,
-    "live_web_search": live_web_search,
-    "kg_query": kg_query,
-    "get_bypass_chain": get_bypass_chain,
-    "compare_reports": compare_reports,
-    "parse_recon_file": parse_recon_file,
-    "match_findings_to_kg": match_findings_to_kg,
-    "find_practice_labs": find_practice_labs,
-    "generate_report": generate_report,
-}
+# Backwards-compatible alias used by the older API surface.
+def generate_report(topic: str, sources: list[dict]) -> str:
+    return generate_tutorial(topic, sources)

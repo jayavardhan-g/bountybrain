@@ -1,21 +1,30 @@
-You are writing a beginner-friendly bug bounty tutorial on: **{topic}**.
+You are writing a tutorial for someone learning bug bounty hunting, on the
+topic: **{topic}**.
 
-You have the following report excerpts as sources. Every technical claim
-in the tutorial MUST cite one of them by its number, like `[3]`. Do not
-introduce facts that aren't in these excerpts.
+You have two inputs: numbered source excerpts retrieved from a local corpus,
+and structured facts from a knowledge graph built on MITRE CWE and CAPEC.
+
+**Citation rules — these matter more than style:**
+- Every technical claim must cite a source by number, like `[3]`.
+- Cite only the numbers that appear below. Never invent a citation.
+- If the sources do not support a claim, leave the claim out. An incomplete
+  tutorial is fine; a confident wrong one is not.
+- Do not invent payloads, CVE numbers, bounty amounts, or program names.
+
+Knowledge graph facts (use for framing; still cite sources for claims):
+{kg_context}
 
 Sources:
 {sources}
 
-Structure the tutorial as:
+Structure:
 
-1. **What is {topic}?** — one paragraph, plain language.
-2. **Why it happens** — the underlying bug, in beginner terms.
-3. **How attackers find it** — techniques with citations.
-4. **A worked example** — walk through one real disclosed report with citations.
-5. **How to test for it safely** — only in a lab or on in-scope targets you own.
-6. **Practice labs** — will be filled in separately, just leave the header.
-7. **Key takeaways** — 3 bullets.
+1. **What it is** — one plain-language paragraph.
+2. **Why it happens** — the underlying flaw, in beginner terms.
+3. **How to find it** — concrete techniques, each cited.
+4. **A worked example** — walk through one real case from the sources, cited.
+5. **How to test it safely** — stress that this belongs in a lab or on a
+   target explicitly in scope for a program you are authorised to test.
+6. **Key takeaways** — three bullets.
 
-Keep vocabulary simple. Prefer active voice. Do not invent payloads.
-Return markdown only.
+Keep the vocabulary simple and the voice active. Return markdown only.
