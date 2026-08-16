@@ -300,12 +300,18 @@ bountybrain/
   agent/       tutorial generation tools
   ui/          Streamlit pages
   clients/     LLM, embeddings, vector store
-prompts/       every prompt, loaded from file — never inlined in code
-fetch_data.py  download datasets
-build_graph.py parse -> graph + metrics
-index_corpus.py chunk + embed
-serve_llm.py   local vLLM server
-eval.py        run the suites
+prompts/        every prompt, loaded from file — never inlined in code
+examples/       synthetic recon files + a generated sample plan
+artifacts/      metrics and eval results as JSON (committed — the evidence
+                behind every number in this README)
+
+fetch_data.py   download the datasets
+build_graph.py  parse -> knowledge graph + metrics
+index_corpus.py chunk + embed -> vector store
+serve_llm.py    start a local vLLM server on a free GPU
+eval.py         run the evaluation suites
+report.py       render eval tables into this README
+export_graph.py GraphML / CSV export for Gephi, Neo4j, pandas
 ```
 
 ---
