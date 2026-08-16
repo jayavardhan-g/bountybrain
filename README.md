@@ -112,10 +112,10 @@ work in making the graph joinable. The alias table is built from three layers:
 1. official CWE names,
 2. official `Alternate_Terms`, plus short names hidden in quoted parentheticals
    (`...('Cross-site Scripting')`) and bare ones (`... (CSRF)`),
-3. a hand-curated layer of ~110 community terms MITRE does not carry at all
+3. a hand-curated layer of 109 community terms MITRE does not carry at all
    (IDOR, SSTI, account takeover, subdomain takeover, WAF bypass, …).
 
-**1,337 aliases** resolve onto 969 classes. Applied to pentester.land's 671
+**1,389 aliases** resolve onto 969 classes. Applied to pentester.land's 671
 distinct curated labels, this maps **93.1%** of vulnerability-labelled writeups
 onto the ontology (up from 76.5% before the parenthetical and curated layers).
 
@@ -350,7 +350,7 @@ python eval.py --all
 ## Tests
 
 ```bash
-pytest          # 29 tests, no network, no GPU, no downloads
+pytest          # 44 tests, no network, no GPU, no downloads
 ```
 
 They cover the invariants that actually bite: code fences surviving chunking,
