@@ -70,6 +70,36 @@ before the engine ever loads. The pass is useless for single-GPU inference, and
 `--enforce-eager` skips the compilation that triggers the import. Python 3.12
 would also fix it.
 
+### flashinfer patch (Python 3.11 only)
+
+`--enforce-eager` avoids the *compilation* pass that imports flashinfer, but
+vLLM's **kernel warmup** imports it too, from an unguarded import at the top of
+`vllm/model_executor/warmup/kernel_warmup.py`. Startup therefore still dies —
+and it dies *after* ten minutes of weight loading, right at
+`compile_or_warm_up_model`.
+
+The actual defect is a single annotation in flashinfer evaluated at import
+time:
+
+```python
+# flashinfer/comm/fd_exchange.py
+def _fd_ancillary(fd: int) -> tuple[tuple[int, int, array.array[int]]]:
+```
+
+`array.array` only became subscriptable in Python 3.12. The one-line fix is to
+make annotations lazy:
+
+```bash
+F=$CONDA_PREFIX/lib/python3.11/site-packages/flashinfer/comm/fd_exchange.py
+cp "$F" "$F.orig"
+sed -i '/^import array/i from __future__ import annotations\n' "$F"
+```
+
+**Using Python 3.12 avoids all of this** and is the better choice for a fresh
+environment. The patch is documented because it unblocks an existing 3.11
+environment without a 40-minute reinstall over network storage.
+
+
 **Put compile caches on a local filesystem.** Triton's cache directory cannot
 be created on a GlusterFS mount — `makedirs` fails with
 `OSError: [Errno 61] No data available` partway through engine init, after ten
@@ -111,32 +141,3 @@ use a standalone server instead.
 
 SQLite by default (`./data/bountybrain.sqlite`). Set `DATABASE_URL` to point
 at Postgres if you want concurrent writers.
-
-### flashinfer patch (Python 3.11 only)
-
-`--enforce-eager` avoids the *compilation* pass that imports flashinfer, but
-vLLM's **kernel warmup** imports it too, from an unguarded import at the top of
-`vllm/model_executor/warmup/kernel_warmup.py`. Startup therefore still dies —
-and it dies *after* ten minutes of weight loading, right at
-`compile_or_warm_up_model`.
-
-The actual defect is a single annotation in flashinfer evaluated at import
-time:
-
-```python
-# flashinfer/comm/fd_exchange.py
-def _fd_ancillary(fd: int) -> tuple[tuple[int, int, array.array[int]]]:
-```
-
-`array.array` only became subscriptable in Python 3.12. The one-line fix is to
-make annotations lazy:
-
-```bash
-F=$CONDA_PREFIX/lib/python3.11/site-packages/flashinfer/comm/fd_exchange.py
-cp "$F" "$F.orig"
-sed -i '/^import array/i from __future__ import annotations\n' "$F"
-```
-
-**Using Python 3.12 avoids all of this** and is the better choice for a fresh
-environment. The patch is documented because it unblocks an existing 3.11
-environment without a 40-minute reinstall over network storage.
