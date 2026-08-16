@@ -17,7 +17,6 @@ from bountybrain.recon.planner import (
     normalise_tech_token,
 )
 
-
 # ------------------------------------------------------------- weights
 
 

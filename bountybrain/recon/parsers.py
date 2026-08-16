@@ -10,7 +10,6 @@ import io
 import json
 import re
 from pathlib import Path
-from typing import Iterable
 
 from .models import ReconFinding
 

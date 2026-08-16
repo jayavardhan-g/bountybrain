@@ -42,7 +42,7 @@ def client() -> QdrantClient | None:
         atexit.register(_close_quietly, c)
         return c
     except Exception as e:  # noqa: BLE001
-        warnings.warn(f"Qdrant unavailable ({e}); dense search disabled.")
+        warnings.warn(f"Qdrant unavailable ({e}); dense search disabled.", stacklevel=2)
         return None
 
 
@@ -63,7 +63,7 @@ def is_reachable() -> bool:
         c.get_collections()
         _state["ok"] = True
     except Exception as e:  # noqa: BLE001
-        warnings.warn(f"Qdrant unreachable ({e}); running without dense search.")
+        warnings.warn(f"Qdrant unreachable ({e}); running without dense search.", stacklevel=2)
         _state["ok"] = False
     _state["checked"] = True
     return _state["ok"]
@@ -76,7 +76,7 @@ def ensure_collection(recreate: bool = False) -> bool:
     try:
         dim = embedding_dim()
     except Exception as e:  # noqa: BLE001
-        warnings.warn(f"Could not load embedding model ({e}); dense search disabled.")
+        warnings.warn(f"Could not load embedding model ({e}); dense search disabled.", stacklevel=2)
         return False
 
     existing = {col.name for col in c.get_collections().collections}
@@ -120,7 +120,7 @@ def search(vector: list[float], limit: int = 20, flt: dict | None = None):
             with_payload=True,
         ).points
     except Exception as e:  # noqa: BLE001
-        warnings.warn(f"Qdrant search failed ({e}).")
+        warnings.warn(f"Qdrant search failed ({e}).", stacklevel=2)
         return []
 
 
@@ -138,8 +138,7 @@ def scroll_all(batch: int = 1024):
             limit=batch,
             offset=offset,
         )
-        for p in pts:
-            yield p
+        yield from pts
         if offset is None:
             break
 

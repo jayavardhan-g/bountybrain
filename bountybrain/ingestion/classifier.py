@@ -208,7 +208,7 @@ def classify_llm(
 
     requests: list[tuple[str, str]] = []
     allowed: list[set[int]] = []
-    for text, shortlist in zip(texts, shortlists):
+    for text, shortlist in zip(texts, shortlists, strict=True):
         lines = []
         ids: set[int] = set()
         for pos in shortlist:
@@ -236,7 +236,7 @@ def classify_llm(
     )
 
     out: list[Prediction] = []
-    for reply, ids, shortlist in zip(replies, allowed, shortlists):
+    for reply, ids, shortlist in zip(replies, allowed, shortlists, strict=True):
         if reply is None:
             # fall back to the top embedding candidate rather than losing the row
             top = idx.cwe_ids[int(shortlist[0])] if shortlist else None

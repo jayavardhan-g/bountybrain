@@ -32,8 +32,8 @@ import json
 import math
 import re
 from collections import defaultdict
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass, field
-from typing import Any, Iterable
 
 from sqlalchemy import func, select
 
@@ -85,7 +85,7 @@ class ScoringWeights:
     weaponisation: float = 0.05
     economics: float = 0.25
 
-    def normalised(self) -> "ScoringWeights":
+    def normalised(self) -> ScoringWeights:
         total = self.applicability + self.exploitability + self.weaponisation + self.economics
         if total <= 0:
             return ScoringWeights()

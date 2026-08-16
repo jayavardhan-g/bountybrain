@@ -35,6 +35,7 @@ uvicorn[standard]>=0.30
 
 # Dev
 pytest>=8.2
+ruff>=0.6
 
 # Not listed here: `vllm`. Install it first and on its own — it pins the torch
 # build, and letting pip resolve it alongside everything else picks a

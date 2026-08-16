@@ -6,7 +6,6 @@ to identity (just truncate to top_n).
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Any
 
 from bountybrain.config import settings
 
@@ -29,7 +28,7 @@ def rerank(query: str, hits: list, top_n: int = 5) -> list:
         return hits[:top_n]
     pairs = [(query, h.text) for h in hits]
     scores = model.predict(pairs)
-    ranked = sorted(zip(hits, scores), key=lambda x: -x[1])
+    ranked = sorted(zip(hits, scores, strict=True), key=lambda x: -x[1])
     for h, s in ranked:
         h.score = float(s)
     return [h for h, _ in ranked[:top_n]]

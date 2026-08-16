@@ -65,7 +65,7 @@ class AttackPattern:
         """Lowest skill level the pattern can be attempted at."""
         order = {"Low": 0, "Medium": 1, "High": 2}
         levels = [s["level"] for s in self.skills if s.get("level") in order]
-        return min(levels, key=lambda l: order[l]) if levels else None
+        return min(levels, key=lambda lvl: order[lvl]) if levels else None
 
     def steps_for_phase(self, phase: str) -> list[AttackStep]:
         return [s for s in self.execution_flow if s.phase == phase]

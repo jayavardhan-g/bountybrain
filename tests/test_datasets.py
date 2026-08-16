@@ -17,10 +17,8 @@ from bountybrain.datasets import docs as docs_ds
 from bountybrain.datasets import exploitdb as edb_ds
 from bountybrain.datasets import nuclei as nuclei_ds
 from bountybrain.datasets import pentesterland as pl_ds
-from bountybrain.datasets.registry import DATASETS
 from bountybrain.datasets.fetch import resolve_unpacked
-from bountybrain.datasets.registry import BY_NAME
-
+from bountybrain.datasets.registry import BY_NAME, DATASETS
 
 # --------------------------------------------------------------- registry
 

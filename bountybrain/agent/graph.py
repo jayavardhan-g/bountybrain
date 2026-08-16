@@ -73,7 +73,7 @@ def build_graph() -> Any:
     for name, fn in _NODES:
         g.add_node(name, fn)
     g.set_entry_point("resolve")
-    for (a, _), (b, _) in zip(_NODES, _NODES[1:]):
+    for (a, _), (b, _) in zip(_NODES, _NODES[1:], strict=False):
         g.add_edge(a, b)
     g.add_edge("write", END)
     return g.compile()

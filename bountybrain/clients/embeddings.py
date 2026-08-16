@@ -15,8 +15,8 @@ over an hour on CPU.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from functools import lru_cache
-from typing import Sequence
 
 from bountybrain.config import settings
 

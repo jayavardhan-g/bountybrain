@@ -6,8 +6,7 @@ useless — it retrieves as noise and reads as garbage when cited.
 """
 from __future__ import annotations
 
-from bountybrain.ingestion.chunker import chunk_text, _split_blocks
-
+from bountybrain.ingestion.chunker import _split_blocks, chunk_text
 
 DOC = """# SQL Injection
 

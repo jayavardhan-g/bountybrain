@@ -20,7 +20,8 @@ from rich.console import Console
 from rich.progress import BarColumn, Progress, TextColumn, TimeRemainingColumn
 from sqlalchemy import func, select
 
-from bountybrain.clients import embeddings, qdrant as qc
+from bountybrain.clients import embeddings
+from bountybrain.clients import qdrant as qc
 from bountybrain.config import settings
 from bountybrain.ingestion.chunker import chunk_text
 from bountybrain.kg.db import Session
@@ -149,7 +150,7 @@ def build_index(
             qc.upsert_points(
                 [
                     qm.PointStruct(id=c.chunk_id, vector=v, payload=c.payload())
-                    for c, v in zip(window, vectors)
+                    for c, v in zip(window, vectors, strict=True)
                 ]
             )
             embedded += len(window)

@@ -31,7 +31,6 @@ import random
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 import networkx as nx
 from rich.console import Console
@@ -41,7 +40,12 @@ from sqlalchemy import select
 from bountybrain.config import settings
 from bountybrain.ingestion import classifier
 from bountybrain.kg.db import Session
-from bountybrain.kg.models import Signature, SignatureDetectsWeakness, Vulnerability, WeaknessRelation
+from bountybrain.kg.models import (
+    Signature,
+    SignatureDetectsWeakness,
+    Vulnerability,
+    WeaknessRelation,
+)
 
 console = Console()
 
@@ -183,7 +187,7 @@ def score(
     per_class_fp: Counter = Counter()
     per_class_fn: Counter = Counter()
 
-    for item, pred in zip(items, preds):
+    for item, pred in zip(items, preds, strict=True):
         if pred.cwe_id is None:
             abstained += 1
             per_class_fn[item.gold_cwe] += 1

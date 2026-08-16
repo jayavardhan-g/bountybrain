@@ -28,10 +28,10 @@ from bountybrain.config import settings
 from bountybrain.kg.db import Session
 from bountybrain.kg.models import (
     CVE,
-    Document,
-    DocumentCoversWeakness,
     EDGE_MODELS,
     ENTITY_MODELS,
+    Document,
+    DocumentCoversWeakness,
     Exploit,
     ExploitReferencesCVE,
     Product,
@@ -429,20 +429,24 @@ def render(metrics: dict[str, Any]) -> None:
     )
 
     t = Table(title="Nodes by type")
-    t.add_column("type"); t.add_column("count", justify="right")
+    t.add_column("type")
+    t.add_column("count", justify="right")
     for k, v in sorted(st["node_kinds"].items(), key=lambda kv: -kv[1]):
         t.add_row(k, f"{v:,}")
     console.print(t)
 
     t = Table(title="Edges by type")
-    t.add_column("type"); t.add_column("count", justify="right")
+    t.add_column("type")
+    t.add_column("count", justify="right")
     for k, v in sorted(st["edge_kinds"].items(), key=lambda kv: -kv[1]):
         t.add_row(k, f"{v:,}")
     console.print(t)
 
     cov = metrics["coverage"]
     t = Table(title=f"Weakness coverage (of {cov['weaknesses_total']:,} CWEs)")
-    t.add_column("backed by"); t.add_column("count", justify="right"); t.add_column("%", justify="right")
+    t.add_column("backed by")
+    t.add_column("count", justify="right")
+    t.add_column("%", justify="right")
     for label, key in [
         ("attack pattern (CAPEC)", "with_attack_pattern"),
         ("detection signature (nuclei)", "with_detection_signature"),

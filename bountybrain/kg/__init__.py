@@ -1,6 +1,8 @@
 from .db import Session, engine, init_db, reset_db  # noqa: F401
 from .models import (  # noqa: F401
     CVE,
+    EDGE_MODELS,
+    ENTITY_MODELS,
     Base,
     Document,
     DocumentCoversTechnique,
@@ -8,8 +10,6 @@ from .models import (  # noqa: F401
     DocumentMentionsTool,
     DocumentReferencesCVE,
     DocumentTargetsProduct,
-    EDGE_MODELS,
-    ENTITY_MODELS,
     Exploit,
     ExploitReferencesCVE,
     Product,

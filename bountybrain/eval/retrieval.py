@@ -84,7 +84,7 @@ def generate_queries(
     rng = random.Random(seed)
     per_type = max(1, n // max(1, len(by_type)))
     sample: list[dict] = []
-    for doc_type, items in sorted(by_type.items()):
+    for _doc_type, items in sorted(by_type.items()):
         rng.shuffle(items)
         sample.extend(items[:per_type])
     rng.shuffle(sample)
@@ -113,7 +113,7 @@ def generate_queries(
         )
 
     out: list[EvalQuery] = []
-    for row, reply in zip(sample, replies):
+    for row, reply in zip(sample, replies, strict=True):
         if reply is None or not reply.usable or not reply.query.strip():
             continue
         out.append(

@@ -35,8 +35,6 @@ from bountybrain.kg.models import (
     CVE,
     Document,
     DocumentCoversWeakness,
-    DocumentReferencesCVE,
-    DocumentTargetsProduct,
     Exploit,
     ExploitReferencesCVE,
     Product,

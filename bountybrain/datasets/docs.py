@@ -62,8 +62,8 @@ def _anchor(heading: str) -> str:
 
 def _looks_like_toc(heading: str, body: str) -> bool:
     if heading.strip().lower() in _TOC_HEADINGS:
-        link_lines = [l for l in body.splitlines() if l.strip().startswith(("*", "-"))]
-        if link_lines and sum(1 for l in link_lines if "](" in l) >= len(link_lines) * 0.6:
+        link_lines = [ln for ln in body.splitlines() if ln.strip().startswith(("*", "-"))]
+        if link_lines and sum(1 for ln in link_lines if "](" in ln) >= len(link_lines) * 0.6:
             return True
     return False
 

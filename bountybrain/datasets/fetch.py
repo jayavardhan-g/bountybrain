@@ -16,7 +16,7 @@ import httpx
 from rich.console import Console
 
 from bountybrain.config import settings
-from bountybrain.datasets.registry import DATASETS, BY_NAME, Dataset
+from bountybrain.datasets.registry import BY_NAME, DATASETS, Dataset
 
 console = Console()
 
