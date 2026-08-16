@@ -10,6 +10,7 @@ unavailable, so lexical search still works on its own.
 """
 from __future__ import annotations
 
+import atexit
 import warnings
 from functools import lru_cache
 from pathlib import Path
@@ -28,15 +29,28 @@ def client() -> QdrantClient | None:
     """Embedded client unless QDRANT_URL is set."""
     try:
         if settings.qdrant_url:
-            return QdrantClient(
-                url=settings.qdrant_url, timeout=10, check_compatibility=False
-            )
-        path = Path(settings.qdrant_path)
-        path.mkdir(parents=True, exist_ok=True)
-        return QdrantClient(path=str(path))
+            c = QdrantClient(url=settings.qdrant_url, timeout=10, check_compatibility=False)
+        else:
+            path = Path(settings.qdrant_path)
+            path.mkdir(parents=True, exist_ok=True)
+            c = QdrantClient(path=str(path))
+        # Close deterministically at exit. qdrant-client closes from __del__,
+        # which in embedded mode runs during interpreter teardown when
+        # sys.meta_path is already None — printing an ImportError traceback
+        # after every successful run. Closing here means __del__ finds nothing
+        # left to do.
+        atexit.register(_close_quietly, c)
+        return c
     except Exception as e:  # noqa: BLE001
         warnings.warn(f"Qdrant unavailable ({e}); dense search disabled.")
         return None
+
+
+def _close_quietly(c: QdrantClient) -> None:
+    try:
+        c.close()
+    except Exception:  # noqa: BLE001 - shutdown path, nothing useful to do
+        pass
 
 
 def is_reachable() -> bool:
