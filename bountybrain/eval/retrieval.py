@@ -172,8 +172,14 @@ def evaluate_mode(
             if hit_is_gold and rank is None:
                 rank = i
         ranks.append(rank)
-        # ideal ranking puts the single gold document first
-        ndcgs.append(_dcg(rels) / _dcg([1]) if rels else 0.0)
+
+        # The gold document is chunked, so several retrieved hits can be
+        # relevant. Normalising against a single-relevant ideal therefore lets
+        # nDCG exceed 1.0 — which it did (1.113) before this was fixed. The
+        # ideal ranking puts *all* the relevant hits found at the top.
+        n_relevant = sum(rels)
+        ideal = _dcg([1] * n_relevant) if n_relevant else 0.0
+        ndcgs.append(_dcg(rels) / ideal if ideal else 0.0)
 
     n = len(queries)
 

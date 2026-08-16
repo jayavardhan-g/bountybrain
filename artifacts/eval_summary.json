@@ -1,98 +1,99 @@
 {
-  "planner": {
-    "cases": 400,
-    "products": 147,
-    "top_k": 10,
-    "seed": 31,
-    "strategies": {
-      "planner (value-weighted)": {
-        "n": 400,
-        "precision@1": 0.4275,
-        "precision@3": 0.5625,
-        "precision@5": 0.65,
-        "precision@10": 0.72,
-        "mrr": 0.5174,
-        "unranked": 112
+  "retrieval": {
+    "queries": 200,
+    "modes": {
+      "dense": {
+        "mode": "dense",
+        "n": 200,
+        "recall@1": 0.665,
+        "recall@5": 0.88,
+        "recall@10": 0.925,
+        "mrr": 0.7584,
+        "ndcg@10": 0.7904,
+        "median_latency_ms": 37.8,
+        "p95_latency_ms": 38.3
       },
-      "planner (likelihood-only)": {
-        "n": 400,
-        "precision@1": 0.4225,
-        "precision@3": 0.57,
-        "precision@5": 0.6625,
-        "precision@10": 0.7375,
-        "mrr": 0.5216,
-        "unranked": 105
+      "bm25": {
+        "mode": "bm25",
+        "n": 200,
+        "recall@1": 0.655,
+        "recall@5": 0.85,
+        "recall@10": 0.89,
+        "mrr": 0.7351,
+        "ndcg@10": 0.7636,
+        "median_latency_ms": 15.5,
+        "p95_latency_ms": 21.8
       },
-      "prior": {
-        "n": 400,
-        "precision@1": 0.325,
-        "precision@3": 0.5325,
-        "precision@5": 0.5975,
-        "precision@10": 0.72,
-        "mrr": 0.4446,
-        "unranked": 112
+      "hybrid": {
+        "mode": "hybrid",
+        "n": 200,
+        "recall@1": 0.675,
+        "recall@5": 0.91,
+        "recall@10": 0.955,
+        "mrr": 0.7718,
+        "ndcg@10": 0.8079,
+        "median_latency_ms": 53.2,
+        "p95_latency_ms": 60.0
       },
-      "random": {
-        "n": 400,
-        "precision@1": 0.095,
-        "precision@3": 0.2825,
-        "precision@5": 0.44,
-        "precision@10": 0.72,
-        "mrr": 0.2455,
-        "unranked": 112
+      "hybrid_rerank": {
+        "mode": "hybrid_rerank",
+        "n": 200,
+        "recall@1": 0.8,
+        "recall@5": 0.965,
+        "recall@10": 0.975,
+        "mrr": 0.8613,
+        "ndcg@10": 0.8731,
+        "median_latency_ms": 148.6,
+        "p95_latency_ms": 166.3
       }
     },
-    "per_product_top": [
-      {
-        "product": "tcp",
-        "precision@3": 1.0,
-        "cases": 3
+    "skipped_modes": [],
+    "by_doc_type": {
+      "article": {
+        "mode": "hybrid_rerank",
+        "n": 50,
+        "recall@1": 0.7,
+        "recall@5": 0.94,
+        "recall@10": 0.94,
+        "mrr": 0.794,
+        "ndcg@10": 0.803,
+        "median_latency_ms": 149.2,
+        "p95_latency_ms": 166.9
       },
-      {
-        "product": "deserialization",
-        "precision@3": 1.0,
-        "cases": 5
+      "technique": {
+        "mode": "hybrid_rerank",
+        "n": 50,
+        "recall@1": 0.82,
+        "recall@5": 0.98,
+        "recall@10": 0.98,
+        "mrr": 0.8807,
+        "ndcg@10": 0.8835,
+        "median_latency_ms": 149.8,
+        "p95_latency_ms": 160.1
       },
-      {
-        "product": "time-based-sqli",
-        "precision@3": 1.0,
-        "cases": 6
+      "weakness": {
+        "mode": "hybrid_rerank",
+        "n": 50,
+        "recall@1": 0.76,
+        "recall@5": 0.94,
+        "recall@10": 0.98,
+        "mrr": 0.8188,
+        "ndcg@10": 0.842,
+        "median_latency_ms": 155.2,
+        "p95_latency_ms": 169.5
       },
-      {
-        "product": "token",
-        "precision@3": 1.0,
-        "cases": 3
-      },
-      {
-        "product": "jndi",
-        "precision@3": 1.0,
-        "cases": 4
-      },
-      {
-        "product": "discovery",
-        "precision@3": 0.98,
-        "cases": 49
-      },
-      {
-        "product": "default-login",
-        "precision@3": 0.8,
-        "cases": 5
-      },
-      {
-        "product": "joomla",
-        "precision@3": 0.778,
-        "cases": 9
-      },
-      {
-        "product": "auth-bypass",
-        "precision@3": 0.75,
-        "cases": 8
-      },
-      {
-        "product": "vmware",
-        "precision@3": 0.75,
-        "cases": 4
+      "writeup": {
+        "mode": "hybrid_rerank",
+        "n": 50,
+        "recall@1": 0.92,
+        "recall@5": 1.0,
+        "recall@10": 1.0,
+        "mrr": 0.9517,
+        "ndcg@10": 0.9639,
+        "median_latency_ms": 138.4,
+        "p95_latency_ms": 162.3
       }
-    ]
+    },
+    "breakdown_mode": "hybrid_rerank"
   }
 }

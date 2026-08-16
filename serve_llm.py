@@ -21,6 +21,7 @@ import os
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 import httpx
 import typer
@@ -122,6 +123,29 @@ def main(
 
     env = dict(os.environ)
     env["CUDA_VISIBLE_DEVICES"] = str(chosen)
+
+    # vLLM's JIT kernel compilation shells out to `ninja`, which pip installs
+    # into the interpreter's own bin directory. If that directory is not on
+    # PATH — common when launching outside an activated env — startup fails
+    # with FileNotFoundError *after* the full weight load, which reads like a
+    # model problem rather than a PATH one.
+    bin_dir = str(Path(sys.executable).parent)
+    if bin_dir not in env.get("PATH", "").split(os.pathsep):
+        env["PATH"] = bin_dir + os.pathsep + env.get("PATH", "")
+
+    # Triton and Inductor caches cannot be created on some network filesystems
+    # (GlusterFS returns Errno 61). Default them next to the project unless the
+    # caller has already chosen somewhere.
+    cache_root = Path(settings.data_dir).parent / ".cache"
+    for var, sub in (
+        ("TRITON_CACHE_DIR", "triton"),
+        ("TORCHINDUCTOR_CACHE_DIR", "inductor"),
+        ("VLLM_CACHE_ROOT", "vllm"),
+    ):
+        if not env.get(var):
+            path = cache_root / sub
+            path.mkdir(parents=True, exist_ok=True)
+            env[var] = str(path)
 
     cmd = [
         sys.executable,

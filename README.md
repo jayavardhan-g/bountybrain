@@ -15,6 +15,11 @@ It answers three questions:
 targets you are authorised to test; it parses the files you produced and
 reasons over a local graph. There is no network egress at query time.
 
+> **Docs:** [RESULTS.md](RESULTS.md) — every metric, with caveats and the bugs
+> the evaluations caught · [PROGRESS.md](PROGRESS.md) — current state and what
+> to do next · [SETUP.md](SETUP.md) — environment, including four vLLM traps ·
+> [ATTRIBUTION.md](ATTRIBUTION.md) — dataset licences.
+
 ---
 
 ## Why the data is bulk-downloaded, not scraped
@@ -159,6 +164,26 @@ to every arm, so the comparison stands.
 
 <!-- RETRIEVAL_TABLE -->
 
+**200 held-out queries.** Higher is better; latency is per query on one GPU.
+
+| mode | R@1 | R@5 | R@10 | MRR | nDCG@10 | median ms |
+|---|---:|---:|---:|---:|---:|---:|
+| dense (embeddings only) | 0.665 | 0.880 | 0.925 | 0.758 | 0.790 | 38 |
+| BM25 (lexical only) | 0.655 | 0.850 | 0.890 | 0.735 | 0.764 | 16 |
+| hybrid (RRF fusion) | 0.675 | 0.910 | 0.955 | 0.772 | 0.808 | 53 |
+| **hybrid + cross-encoder rerank** | **0.800** | **0.965** | **0.975** | **0.861** | **0.873** | 149 |
+
+Per document type (hybrid_rerank):
+
+| document type | n | R@5 | MRR |
+|---|---:|---:|---:|
+| article | 50 | 0.940 | 0.794 |
+| technique | 50 | 0.980 | 0.881 |
+| weakness | 50 | 0.940 | 0.819 |
+| writeup | 50 | 1.000 | 0.952 |
+
+<!-- /RETRIEVAL_TABLE -->
+
 ### 2. CWE classification — against two independent gold sets
 
 Agreeing with one labeller could be an artefact of that labeller's conventions,
@@ -182,6 +207,50 @@ predicting CWE-89. **Abstention rate** is reported because a classifier that
 declines often can post good accuracy on whatever remains.
 
 <!-- CLASSIFICATION_TABLE -->
+
+**Gold set: nuclei templates (name + description + impact)**
+
+| strategy | n | accuracy | hierarchy ±2 | macro F1 | abstained |
+|---|---:|---:|---:|---:|---:|
+| **keyword** | 500 | **0.398** | 0.444 | 0.216 | 0.354 |
+| embedding | 500 | 0.184 | 0.300 | 0.044 | 0.000 |
+| llm | 500 | 0.368 | 0.440 | 0.097 | 0.314 |
+
+**Gold set: disclosed writeups (title only — a harder task)**
+
+| strategy | n | accuracy | hierarchy ±2 | macro F1 | abstained |
+|---|---:|---:|---:|---:|---:|
+| **keyword** | 500 | **0.402** | 0.426 | 0.299 | 0.524 |
+| embedding | 500 | 0.188 | 0.314 | 0.065 | 0.000 |
+| llm | 500 | 0.280 | 0.342 | 0.114 | 0.392 |
+
+<!-- /CLASSIFICATION_TABLE -->
+
+**The retrieval-augmented LLM classifier does not beat the keyword alias
+table.** That is the result, and it stays in the README because a suite that
+can only confirm what you hoped is not an evaluation.
+
+On nuclei the two are close — 0.368 vs 0.398 exact, and 0.440 vs 0.444 once
+sibling classes count — so the model lands in the right neighbourhood about as
+often and just picks a sibling more frequently. On writeup *titles* it is
+clearly worse (0.280 vs 0.402): a title names an outcome, and inferring the
+root weakness from it is where the model commits confidently to a plausible
+wrong class. Its macro F1 is much lower on both sets, meaning it concentrates
+on common classes and fails on the tail — the opposite of what the shortlist
+was meant to buy.
+
+One caveat limits the *writeup* comparison specifically: that set's gold labels
+come from applying the alias table to the curated `Bugs` field, while the
+keyword baseline searches the title using the same table. The inputs differ, so
+it is not straightforwardly circular, but the shared vocabulary hands the
+baseline free wins whenever a title happens to name the bug. **The nuclei set
+is the fair comparison**, and there the gap is small.
+
+The practical consequence: keyword is the right default for bulk CWE
+assignment here — faster, free, and at least as accurate. The LLM earns its
+place generating cited prose, which the retrieval numbers support, not
+assigning labels. [RESULTS.md](RESULTS.md) records the follow-up analysis this
+needs.
 
 ### 3. Recon planner — next-move ranking
 

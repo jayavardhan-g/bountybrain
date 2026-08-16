@@ -1,0 +1,1602 @@
+[
+  {
+    "query": "validate all http request parts against allowlist",
+    "document_id": 8568,
+    "chunk_idx": 1,
+    "title": "CWE-85: Doubled Character XSS Manipulations",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/85.html"
+  },
+  {
+    "query": "detect double free using fuzzing static dynamic analysis",
+    "document_id": 8194,
+    "chunk_idx": 1,
+    "title": "CWE-415: Double Free",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/415.html"
+  },
+  {
+    "query": "source code review finding implementation flaws",
+    "document_id": 692,
+    "chunk_idx": 1,
+    "title": "Introduction",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/2-Introduction/README.md#source-code-review"
+  },
+  {
+    "query": "how to gather info using footprinting techniques",
+    "document_id": 8683,
+    "chunk_idx": 1,
+    "title": "CAPEC-169: Footprinting",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/169.html"
+  },
+  {
+    "query": "sharp printer vulnerabilities pierre kim 2024",
+    "document_id": 1460,
+    "chunk_idx": 0,
+    "title": "17 vulnerabilities in Sharp Multi-Function Printers",
+    "doc_type": "writeup",
+    "url": "https://pierrekim.github.io/blog/2024-06-27-sharp-mfp-17-vulnerabilities.html"
+  },
+  {
+    "query": "importance of source code for security review",
+    "document_id": 688,
+    "chunk_idx": 7,
+    "title": "Introduction",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/2-Introduction/README.md#principles-of-testing"
+  },
+  {
+    "query": "security advisory nagios vulnerabilities rce auth bypass",
+    "document_id": 1873,
+    "chunk_idx": 0,
+    "title": "Technical Advisory \u2013 Multiple Vulnerabilities in Nagios XI",
+    "doc_type": "writeup",
+    "url": "https://research.nccgroup.com/2023/12/13/technical-advisory-multiple-vulnerabilities-in-nagios-xi/"
+  },
+  {
+    "query": "reverse engineering skills required for binary files",
+    "document_id": 8703,
+    "chunk_idx": 0,
+    "title": "CAPEC-188: Reverse Engineering",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/188.html"
+  },
+  {
+    "query": "passive interception of communication without altering content",
+    "document_id": 8670,
+    "chunk_idx": 0,
+    "title": "CAPEC-157: Sniffing Attacks",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/157.html"
+  },
+  {
+    "query": "local privilege escalation nsis insecure temporary directory",
+    "document_id": 2214,
+    "chunk_idx": 0,
+    "title": "Technical Advisory \u2013 Nullsoft Scriptable Installer System (NSIS) \u2013 Insecure Temporary Directory Usage",
+    "doc_type": "writeup",
+    "url": "https://research.nccgroup.com/2023/07/03/technical-advisory-nullsoft-scriptable-installer-system-nsis-insecure-temporary-directory-usage/"
+  },
+  {
+    "query": "reduce code complexity improve maintainability security",
+    "document_id": 7742,
+    "chunk_idx": 0,
+    "title": "CWE-1121: Excessive McCabe Cyclomatic Complexity",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1121.html"
+  },
+  {
+    "query": "transient execution attack on shared address space",
+    "document_id": 7917,
+    "chunk_idx": 1,
+    "title": "CWE-1422: Exposure of Sensitive Information caused by Incorrect Data Forwarding during Transient Execution",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1422.html"
+  },
+  {
+    "query": "bypass samesite lax csrf horizontal privilege escalation",
+    "document_id": 2776,
+    "chunk_idx": 0,
+    "title": "Bypassing SameSite=lax cookie restrictions to preform CSRF resulting to a horizontal privilege escalation via poor email verification mechanism",
+    "doc_type": "writeup",
+    "url": "https://medium.com/@deadoverflow/bypassing-samesite-lax-cookie-restrictions-to-preform-csrf-resulting-to-a-horizontal-privilege-1dfc8fb17b0a"
+  },
+  {
+    "query": "how to generate random uuid version 4",
+    "document_id": 214,
+    "chunk_idx": 0,
+    "title": "Insecure Randomness",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Insecure%20Randomness/README.md#guid-uuid"
+  },
+  {
+    "query": "how to prevent directory listing apache",
+    "document_id": 8639,
+    "chunk_idx": 2,
+    "title": "CAPEC-127: Directory Indexing",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/127.html"
+  },
+  {
+    "query": "hardware security flaw data propagation before check",
+    "document_id": 7816,
+    "chunk_idx": 0,
+    "title": "CWE-1264: Hardware Logic with Insecure De-Synchronization between Control and Data Channels",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1264.html"
+  },
+  {
+    "query": "java thread run method instead of start",
+    "document_id": 8347,
+    "chunk_idx": 0,
+    "title": "CWE-572: Call to Thread run() instead of start()",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/572.html"
+  },
+  {
+    "query": "risks misconfigured http security headers",
+    "document_id": 797,
+    "chunk_idx": 0,
+    "title": "Test Other HTTP Security Header Misconfigurations",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/14-Test_Other_HTTP_Security_Header_Misconfigurations.md#risks-of-misconfigured-security-headers"
+  },
+  {
+    "query": "detect compromised data source using multiple independent checks",
+    "document_id": 7848,
+    "chunk_idx": 0,
+    "title": "CWE-1293: Missing Source Correlation of Multiple Independent Data",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1293.html"
+  },
+  {
+    "query": "detecting hidden functionality in software code",
+    "document_id": 8582,
+    "chunk_idx": 0,
+    "title": "CWE-912: Hidden Functionality",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/912.html"
+  },
+  {
+    "query": "analyze tcp isn gcd for os detection",
+    "document_id": 8842,
+    "chunk_idx": 0,
+    "title": "CAPEC-322: TCP (ISN) Greatest Common Divisor Probe",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/322.html"
+  },
+  {
+    "query": "test directory traversal file inclusion linux passwd",
+    "document_id": 852,
+    "chunk_idx": 1,
+    "title": "Testing Directory Traversal File Include",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/05-Authorization_Testing/01-Testing_Directory_Traversal_File_Include.md#how-to-test"
+  },
+  {
+    "query": "css injection test user controlled style attribute",
+    "document_id": 1123,
+    "chunk_idx": 0,
+    "title": "Testing for CSS Injection",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/11-Client-side_Testing/05-Testing_for_CSS_Injection.md#how-to-test"
+  },
+  {
+    "query": "google broken access control session revoke shared link",
+    "document_id": 4033,
+    "chunk_idx": 0,
+    "title": "Broken session control leads to access private videos using the shared link even after revoking the access for specific time!! \u2014 #GoogleVRP",
+    "doc_type": "writeup",
+    "url": "https://naveenroy008.medium.com/broken-session-control-leads-to-access-private-videos-using-the-shared-link-even-after-revoking-the-84e31ac16fe4"
+  },
+  {
+    "query": "how to create convincing identity for social engineering",
+    "document_id": 8885,
+    "chunk_idx": 0,
+    "title": "CAPEC-407: Pretexting",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/407.html"
+  },
+  {
+    "query": "CORS misconfiguration account takeover bounty",
+    "document_id": 6144,
+    "chunk_idx": 0,
+    "title": "CORS Misconfiguration to Account TakeOver [Out of scope to grab items In-Scope]",
+    "doc_type": "writeup",
+    "url": "https://medium.com/@mashoud1122/cors-misconfiguration-account-takeover-out-of-scope-to-grab-items-in-scope-66d9d18c7a46"
+  },
+  {
+    "query": "how to find dom based xss entry points",
+    "document_id": 9074,
+    "chunk_idx": 1,
+    "title": "CAPEC-588: DOM-Based XSS",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/588.html"
+  },
+  {
+    "query": "udp flood attack firewall resource overload",
+    "document_id": 8969,
+    "chunk_idx": 0,
+    "title": "CAPEC-486: UDP Flood",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/486.html"
+  },
+  {
+    "query": "bypass authentication without proper checks",
+    "document_id": 8628,
+    "chunk_idx": 0,
+    "title": "CAPEC-115: Authentication Bypass",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/115.html"
+  },
+  {
+    "query": "how to focus fuzz testing on application inputs",
+    "document_id": 1036,
+    "chunk_idx": 2,
+    "title": "Testing for Improper Error Handling",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/08-Testing_for_Error_Handling/01-Testing_For_Improper_Error_Handling.md#how-to-test"
+  },
+  {
+    "query": "scripted search for backup files with predictable extensions",
+    "document_id": 762,
+    "chunk_idx": 6,
+    "title": "Review Old Backup and Unreferenced Files for Sensitive Information",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/04-Review_Old_Backup_and_Unreferenced_Files_for_Sensitive_Information.md#how-to-test"
+  },
+  {
+    "query": "http request smuggling google cloud vulnerability",
+    "document_id": 1401,
+    "chunk_idx": 0,
+    "title": "Unveiling TE.0 HTTP Request Smuggling: Discovering a Critical Vulnerability in Thousands of Google Cloud Websites",
+    "doc_type": "writeup",
+    "url": "https://www.bugcrowd.com/blog/unveiling-te-0-http-request-smuggling-discovering-a-critical-vulnerability-in-thousands-of-google-cloud-websites/"
+  },
+  {
+    "query": "how to prevent malicious file uploads",
+    "document_id": 1098,
+    "chunk_idx": 0,
+    "title": "Test Upload of Unexpected File Types",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/10-Business_Logic_Testing/08-Test_Upload_of_Unexpected_File_Types.md#references"
+  },
+  {
+    "query": "certificate validation expired impact mitigation",
+    "document_id": 8079,
+    "chunk_idx": 0,
+    "title": "CWE-298: Improper Validation of Certificate Expiration",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/298.html"
+  },
+  {
+    "query": "disable inline dtd xml parsing entity expansion",
+    "document_id": 8975,
+    "chunk_idx": 1,
+    "title": "CAPEC-491: Quadratic Data Expansion",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/491.html"
+  },
+  {
+    "query": "j2ee misconfiguration storing plain text password",
+    "document_id": 8331,
+    "chunk_idx": 0,
+    "title": "CWE-555: J2EE Misconfiguration: Plaintext Password in Configuration File",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/555.html"
+  },
+  {
+    "query": "security test cors wildcard access control allow origin",
+    "document_id": 1126,
+    "chunk_idx": 1,
+    "title": "Testing Cross Origin Resource Sharing",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing.md#summary"
+  },
+  {
+    "query": "attacker uses code of different language to exploit sandbox vulnerabilities",
+    "document_id": 8754,
+    "chunk_idx": 1,
+    "title": "CAPEC-237: Escaping a Sandbox by Calling Code in Another Language",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/237.html"
+  },
+  {
+    "query": "identifying web frameworks during security testing",
+    "document_id": 740,
+    "chunk_idx": 0,
+    "title": "Fingerprint Web Application Framework",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/01-Information_Gathering/08-Fingerprint_Web_Application_Framework.md#summary"
+  },
+  {
+    "query": "adversary tries common passwords multiple user accounts avoid lockout",
+    "document_id": 9049,
+    "chunk_idx": 0,
+    "title": "CAPEC-565: Password Spraying",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/565.html"
+  },
+  {
+    "query": "passing mutable objects untrusted method security impact",
+    "document_id": 8158,
+    "chunk_idx": 0,
+    "title": "CWE-374: Passing Mutable Objects to an Untrusted Method",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/374.html"
+  },
+  {
+    "query": "handling all relevant exceptions in code",
+    "document_id": 8171,
+    "chunk_idx": 1,
+    "title": "CWE-391: Unchecked Error Condition",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/391.html"
+  },
+  {
+    "query": "implement bounds checking on user input",
+    "document_id": 7773,
+    "chunk_idx": 3,
+    "title": "CWE-122: Heap-based Buffer Overflow",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/122.html"
+  },
+  {
+    "query": "validate data before using as command line argument sql injection",
+    "document_id": 8620,
+    "chunk_idx": 2,
+    "title": "CAPEC-108: Command Line Execution through SQL Injection",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/108.html"
+  },
+  {
+    "query": "buffer overflow western digital cloud pro series",
+    "document_id": 2485,
+    "chunk_idx": 0,
+    "title": "CVE-2022-29844: A Classic Buffer Overflow On The Western Digital My Cloud Pro Series PR4100",
+    "doc_type": "writeup",
+    "url": "https://www.zerodayinitiative.com/blog/2023/4/19/cve-2022-29844-a-classic-buffer-overflow-on-the-western-digital-my-cloud-pro-series-pr4100"
+  },
+  {
+    "query": "detecting path traversal vulnerabilities using sast",
+    "document_id": 8154,
+    "chunk_idx": 0,
+    "title": "CWE-37: Path Traversal: '/absolute/pathname/here'",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/37.html"
+  },
+  {
+    "query": "sql injection bypass host header sports company",
+    "document_id": 7072,
+    "chunk_idx": 0,
+    "title": "#BugBounty \u2014\" Database hacked of India\u2019s Popular Sports company\"-Bypassing Host Header to SQL injection to dumping Database\u200a\u2014\u200aAn unusual case of SQL injection.",
+    "doc_type": "writeup",
+    "url": "https://medium.com/@logicbomb_1/bugbounty-database-hacked-of-indias-popular-sports-company-bypassing-host-header-to-sql-7b9af997c610"
+  },
+  {
+    "query": "bug bounty aws s3 misconfiguration dropbox",
+    "document_id": 6433,
+    "chunk_idx": 0,
+    "title": "How I earned $1,500 in just 15 mins due to Amazon S3 bucket misconfiguration?",
+    "doc_type": "writeup",
+    "url": "https://web.archive.org/web/20201107231430/https://medium.com/@protector47/how-i-earned-1-500-in-just-15-mins-due-to-amazon-s3-bucket-misconfiguration-953b28242f95"
+  },
+  {
+    "query": "web application discovery techniques dns reverse ip",
+    "document_id": 729,
+    "chunk_idx": 0,
+    "title": "Attack Surface Identification",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/01-Information_Gathering/04-Attack_Surface_Identification.md#how-to-test"
+  },
+  {
+    "query": "adversary impersonates person without using stolen credentials",
+    "document_id": 8711,
+    "chunk_idx": 0,
+    "title": "CAPEC-195: Principal Spoof",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/195.html"
+  },
+  {
+    "query": "email client filters non-latin characters homoglyph attacks",
+    "document_id": 7642,
+    "chunk_idx": 2,
+    "title": "CWE-1007: Insufficient Visual Distinction of Homoglyphs Presented to User",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1007.html"
+  },
+  {
+    "query": "how dns rebinding allows accessing internal network through browser",
+    "document_id": 8794,
+    "chunk_idx": 1,
+    "title": "CAPEC-275: DNS Rebinding",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/275.html"
+  },
+  {
+    "query": "bypass jwt none algorithm case insensitive",
+    "document_id": 906,
+    "chunk_idx": 3,
+    "title": "Testing JSON Web Tokens",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/06-Session_Management_Testing/10-Testing_JSON_Web_Tokens.md#how-to-test"
+  },
+  {
+    "query": "Ivanti vulnerability exploit details published 2021",
+    "document_id": 3423,
+    "chunk_idx": 0,
+    "title": "Riding The Inforail To Exploit Ivanti Avalanche  Part 2",
+    "doc_type": "writeup",
+    "url": "https://www.zerodayinitiative.com/blog/2022/9/7/riding-the-inforail-to-exploit-ivanti-avalanche-part-2"
+  },
+  {
+    "query": "how to prevent users from changing their privileges in app",
+    "document_id": 858,
+    "chunk_idx": 0,
+    "title": "Testing for Privilege Escalation",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/05-Authorization_Testing/03-Testing_for_Privilege_Escalation.md#summary"
+  },
+  {
+    "query": "security attribute translation vulnerability in fabric bridge",
+    "document_id": 7864,
+    "chunk_idx": 0,
+    "title": "CWE-1311: Improper Translation of Security Attributes by Fabric Bridge",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1311.html"
+  },
+  {
+    "query": "automated sql injection testing tools",
+    "document_id": 928,
+    "chunk_idx": 24,
+    "title": "Testing for SQL Injection",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md#how-to-test"
+  },
+  {
+    "query": "attacker manipulates file extension mime type to expose raw data",
+    "document_id": 8622,
+    "chunk_idx": 1,
+    "title": "CAPEC-11: Cause Web Server Misclassification",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/11.html"
+  },
+  {
+    "query": "buffer overflow impact on memory unsafe languages",
+    "document_id": 7769,
+    "chunk_idx": 0,
+    "title": "CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/120.html"
+  },
+  {
+    "query": "ruby ssti execute remote command",
+    "document_id": 553,
+    "chunk_idx": 0,
+    "title": "Server Side Template Injection - Ruby",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Server%20Side%20Template%20Injection/Ruby.md#ruby"
+  },
+  {
+    "query": "how to exploit google bard ai for config file details",
+    "document_id": 1747,
+    "chunk_idx": 0,
+    "title": "Bypass instructions to manipulate Google Bard AI (Conversational generative AI chatbot) to reveal its security vulnerability i.e. configuration file details exposure",
+    "doc_type": "writeup",
+    "url": "https://medium.com/@kiranmaraju/bypass-instructions-to-manipulate-google-bard-ai-conversational-generative-ai-chatbot-to-reveal-ac23156d5eee"
+  },
+  {
+    "query": "adversary communication tactics rapport building",
+    "document_id": 8908,
+    "chunk_idx": 0,
+    "title": "CAPEC-428: Influence via Modes of Thinking",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/428.html"
+  },
+  {
+    "query": "how to prevent code injection attacks security",
+    "document_id": 8760,
+    "chunk_idx": 0,
+    "title": "CAPEC-242: Code Injection",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/242.html"
+  },
+  {
+    "query": "crafting overflow content for environment variable attack",
+    "document_id": 8611,
+    "chunk_idx": 1,
+    "title": "CAPEC-10: Buffer Overflow via Environment Variables",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/10.html"
+  },
+  {
+    "query": "detecting server side template injection using static application security testing",
+    "document_id": 7890,
+    "chunk_idx": 1,
+    "title": "CWE-1336: Improper Neutralization of Special Elements Used in a Template Engine",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1336.html"
+  },
+  {
+    "query": "samba code execution vulnerability details pwn2own",
+    "document_id": 4187,
+    "chunk_idx": 0,
+    "title": "CVE-2021-44142: Details On A Samba Code Execution Bug Demonstrated At Pwn2Own Austin",
+    "doc_type": "writeup",
+    "url": "https://www.zerodayinitiative.com/blog/2022/2/1/cve-2021-44142-details-on-a-samba-code-execution-bug-demonstrated-at-pwn2own-austin"
+  },
+  {
+    "query": "security vulnerability counter strike global offensive out of bounds write",
+    "document_id": 1813,
+    "chunk_idx": 0,
+    "title": "Exploring Counter-strike: Global Offensive Attack Surface",
+    "doc_type": "writeup",
+    "url": "https://www.synacktiv.com/publications/exploring-counter-strike-global-offensive-attack-surface"
+  },
+  {
+    "query": "security coding guidelines java net",
+    "document_id": 1210,
+    "chunk_idx": 0,
+    "title": "Suggested Reading",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/6-Appendix/B-Suggested_Reading.md#useful-sites"
+  },
+  {
+    "query": "tools for ip rotation and brute forcing google phone numbers",
+    "document_id": 19,
+    "chunk_idx": 0,
+    "title": "Brute Force & Rate Limit",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Brute%20Force%20Rate%20Limit/README.md#tools"
+  },
+  {
+    "query": "how to inject code into running process exploit",
+    "document_id": 9133,
+    "chunk_idx": 1,
+    "title": "CAPEC-640: Inclusion of Code in Existing Process",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/640.html"
+  },
+  {
+    "query": "xml external entity vulnerability detection example",
+    "document_id": 657,
+    "chunk_idx": 0,
+    "title": "XML External Entity",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XXE%20Injection/README.md#detect-the-vulnerability"
+  },
+  {
+    "query": "secure server side request forgery by validating urls",
+    "document_id": 9157,
+    "chunk_idx": 2,
+    "title": "CAPEC-664: Server Side Request Forgery",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/664.html"
+  },
+  {
+    "query": "servlet unhandled exception reveals sensitive info",
+    "document_id": 8378,
+    "chunk_idx": 0,
+    "title": "CWE-600: Uncaught Exception in Servlet",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/600.html"
+  },
+  {
+    "query": "blind xxe out of band exfiltrate data example",
+    "document_id": 662,
+    "chunk_idx": 0,
+    "title": "XML External Entity",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XXE%20Injection/README.md#exploiting-blind-xxe-to-exfiltrate-data-out-of-band"
+  },
+  {
+    "query": "misconfigured lotus domino server information disclosure",
+    "document_id": 2330,
+    "chunk_idx": 0,
+    "title": "How a misconfigured Lotus Domino Server can lead to Disclosure of PII Data of Employees, Configuration Details about the Active Directory, etc",
+    "doc_type": "writeup",
+    "url": "https://medium.com/@ar_hawk/how-a-misconfigured-lotus-domino-server-can-lead-to-disclosure-of-pii-data-of-employees-badad691dad"
+  },
+  {
+    "query": "how to prevent dns blocking attacks",
+    "document_id": 9075,
+    "chunk_idx": 0,
+    "title": "CAPEC-589: DNS Blocking",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/589.html"
+  },
+  {
+    "query": "protecting sensitive information during debug mode",
+    "document_id": 7793,
+    "chunk_idx": 0,
+    "title": "CWE-1243: Sensitive Non-Volatile Information Not Protected During Debug",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1243.html"
+  },
+  {
+    "query": "oracle e-business exposed registration vulnerability",
+    "document_id": 3877,
+    "chunk_idx": 0,
+    "title": "My New Discovery In Oracle E-Business Login Panel That Allowed To Access For All Employees Information's & In Some cases Passwords At More Than 1000 Companies",
+    "doc_type": "writeup",
+    "url": "https://orwaatyat.medium.com/my-new-discovery-in-oracle-e-business-login-panel-that-allowed-to-access-for-all-employees-ed0ec4cad7ac"
+  },
+  {
+    "query": "j2ee serialize objects crash prevention",
+    "document_id": 8371,
+    "chunk_idx": 0,
+    "title": "CWE-594: J2EE Framework: Saving Unserializable Objects to Disk",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/594.html"
+  },
+  {
+    "query": "exploit orm injection using sql techniques",
+    "document_id": 8621,
+    "chunk_idx": 1,
+    "title": "CAPEC-109: Object Relational Mapping Injection",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/109.html"
+  },
+  {
+    "query": "password reset token security requirements",
+    "document_id": 841,
+    "chunk_idx": 4,
+    "title": "Testing for Weak Password Change or Reset Functionalities",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/04-Authentication_Testing/09-Testing_for_Weak_Password_Change_or_Reset_Functionalities.md#how-to-test"
+  },
+  {
+    "query": "integrity check encrypted inputs without proper encryption",
+    "document_id": 8422,
+    "chunk_idx": 1,
+    "title": "CWE-649: Reliance on Obfuscation or Encryption of Security-Relevant Inputs without Integrity Checking",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/649.html"
+  },
+  {
+    "query": "oracle sql injection execute commands java",
+    "document_id": 422,
+    "chunk_idx": 0,
+    "title": "Oracle SQL Injection",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/OracleSQL%20Injection.md#oracle-sql-command-execution"
+  },
+  {
+    "query": "function call wrong number arguments detection",
+    "document_id": 8454,
+    "chunk_idx": 0,
+    "title": "CWE-685: Function Call With Incorrect Number of Arguments",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/685.html"
+  },
+  {
+    "query": "servlet error message reveals file location and code details",
+    "document_id": 8310,
+    "chunk_idx": 0,
+    "title": "CWE-536: Servlet Runtime Error Message Containing Sensitive Information",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/536.html"
+  },
+  {
+    "query": "impact of absolute path traversal on file integrity and confidentiality",
+    "document_id": 8144,
+    "chunk_idx": 1,
+    "title": "CWE-36: Absolute Path Traversal",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/36.html"
+  },
+  {
+    "query": "integrity check hardware config power save restore",
+    "document_id": 7861,
+    "chunk_idx": 1,
+    "title": "CWE-1304: Improperly Preserved Integrity of Hardware Configuration State During a Power Save/Restore Operation",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1304.html"
+  },
+  {
+    "query": "api call buffer overflow experiment steps",
+    "document_id": 9203,
+    "chunk_idx": 1,
+    "title": "CAPEC-8: Buffer Overflow in an API Call",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/8.html"
+  },
+  {
+    "query": "mozilla firefox renderer vulnerability browser hacking",
+    "document_id": 3508,
+    "chunk_idx": 0,
+    "title": "But You Told Me You Were Safe: Attacking The Mozilla Firefox Renderer (Part 1)",
+    "doc_type": "writeup",
+    "url": "https://www.zerodayinitiative.com/blog/2022/8/17/but-you-told-me-you-were-safe-attacking-the-mozilla-firefox-renderer-part-1"
+  },
+  {
+    "query": "input validation accept known good reject malformed",
+    "document_id": 7840,
+    "chunk_idx": 1,
+    "title": "CWE-1286: Improper Validation of Syntactic Correctness of Input",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1286.html"
+  },
+  {
+    "query": "dns rebinding attack internal network discovery",
+    "document_id": 8794,
+    "chunk_idx": 0,
+    "title": "CAPEC-275: DNS Rebinding",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/275.html"
+  },
+  {
+    "query": "program mixes trusted untrusted data same structure",
+    "document_id": 8279,
+    "chunk_idx": 0,
+    "title": "CWE-501: Trust Boundary Violation",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/501.html"
+  },
+  {
+    "query": "passive wifi mac address tracking techniques",
+    "document_id": 9102,
+    "chunk_idx": 0,
+    "title": "CAPEC-612: WiFi MAC Address Tracking",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/612.html"
+  },
+  {
+    "query": "markdown vulnerability third party vscode extensions",
+    "document_id": 1922,
+    "chunk_idx": 0,
+    "title": "Visual Studio Code Security: Markdown Vulnerabilities in Third-Party Extensions (2/3)",
+    "doc_type": "writeup",
+    "url": "https://www.sonarsource.com/blog/vscode-security-markdown-vulnerabilities-in-extensions/"
+  },
+  {
+    "query": "password cracking without salt",
+    "document_id": 9033,
+    "chunk_idx": 1,
+    "title": "CAPEC-55: Rainbow Table Password Cracking",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/55.html"
+  },
+  {
+    "query": "intel dcm authentication bypass kerberos ldap",
+    "document_id": 3105,
+    "chunk_idx": 0,
+    "title": "From Zero to Hero Part 1: Bypassing Intel DCM\u2019s Authentication by Spoofing Kerberos and LDAP Responses (CVE-2022-33942)",
+    "doc_type": "writeup",
+    "url": "https://www.rcesecurity.com/2022/11/from-zero-to-hero-part-1-bypassing-intel-dcms-authentication-cve-2022-33942/"
+  },
+  {
+    "query": "csv injection dde calc exploit",
+    "document_id": 46,
+    "chunk_idx": 0,
+    "title": "CSV Injection",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/CSV%20Injection/README.md#methodology"
+  },
+  {
+    "query": "finding open redirect vulnerability payment gateway",
+    "document_id": 6936,
+    "chunk_idx": 0,
+    "title": "How I find Open-Redirect Vulnerability in redacted.com (One of the top online payment processing service website)",
+    "doc_type": "writeup",
+    "url": "https://web.archive.org/web/20200904145527/https://medium.com/@protector47/how-i-find-open-redirect-vulnerability-in-redacted-com-one-of-the-top-payment-gateway-e9b92afdc114"
+  },
+  {
+    "query": "detecting uncleared sensitive info during power state transition",
+    "document_id": 7825,
+    "chunk_idx": 1,
+    "title": "CWE-1272: Sensitive Information Uncleared Before Debug/Power State Transition",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1272.html"
+  },
+  {
+    "query": "websockets origin header validation vulnerability",
+    "document_id": 1132,
+    "chunk_idx": 0,
+    "title": "Testing WebSockets",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/11-Client-side_Testing/10-Testing_WebSockets.md#summary"
+  },
+  {
+    "query": "web widget security risk untrusted source",
+    "document_id": 8554,
+    "chunk_idx": 0,
+    "title": "CWE-830: Inclusion of Web Functionality from an Untrusted Source",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/830.html"
+  },
+  {
+    "query": "detect null pointer exception java static analysis",
+    "document_id": 8175,
+    "chunk_idx": 1,
+    "title": "CWE-395: Use of NullPointerException Catch to Detect NULL Pointer Dereference",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/395.html"
+  },
+  {
+    "query": "oracle virtualbox local privilege escalation exploit pwn2own",
+    "document_id": 1535,
+    "chunk_idx": 0,
+    "title": "CVE-2024-21115: An Oracle Virtualbox LPE Used To Win Pwn2Own",
+    "doc_type": "writeup",
+    "url": "https://www.zerodayinitiative.com/blog/2024/5/9/cve-2024-21115-an-oracle-virtualbox-lpe-used-to-win-pwn2own"
+  },
+  {
+    "query": "Ahold Delhaize remote code execution vulnerability bounty",
+    "document_id": 1869,
+    "chunk_idx": 0,
+    "title": "Remote Code execution at ws1.aholdusa.com \u2014 Compromising logins of Ahold Delhaize USA employees for >3.5 years (or even 18 years?)",
+    "doc_type": "writeup",
+    "url": "https://medium.com/@jonathanbouman/remote-code-execution-at-ws1-aholdusa-com-compromising-logins-of-ahold-delhaize-usa-employees-c7c9aca7e05d"
+  },
+  {
+    "query": "facebook fundraiser organizer blocked view remove",
+    "document_id": 5265,
+    "chunk_idx": 0,
+    "title": "Facebook bug bounty (500 USD) : A blocked fundraiser organizer would be unable to view or remove themselves from the fundraiser.",
+    "doc_type": "writeup",
+    "url": "https://medium.com/bugbountywriteup/facebook-bug-bounty-500-usd-a-blocked-fundraiser-organizer-would-be-unable-to-view-or-remove-5da9f86d2fa0"
+  },
+  {
+    "query": "detect cleartext sensitive information network traffic monitoring",
+    "document_id": 8101,
+    "chunk_idx": 2,
+    "title": "CWE-319: Cleartext Transmission of Sensitive Information",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/319.html"
+  },
+  {
+    "query": "impact of cross site websocket hijacking on web applications",
+    "document_id": 7901,
+    "chunk_idx": 1,
+    "title": "CWE-1385: Missing Origin Validation in WebSockets",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1385.html"
+  },
+  {
+    "query": "malicious code inserted by trusted developer supply chain",
+    "document_id": 8923,
+    "chunk_idx": 0,
+    "title": "CAPEC-443: Malicious Logic Inserted Into Product by Authorized Developer",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/443.html"
+  },
+  {
+    "query": "server spoofing trusted destinations through incorrect communication",
+    "document_id": 8602,
+    "chunk_idx": 1,
+    "title": "CWE-941: Incorrectly Specified Destination in a Communication Channel",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/941.html"
+  },
+  {
+    "query": "reduce maintainability due to machine dependent functionality",
+    "document_id": 7724,
+    "chunk_idx": 0,
+    "title": "CWE-1105: Insufficient Encapsulation of Machine-Dependent Functionality",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1105.html"
+  },
+  {
+    "query": "testing mfa trusted ip addresses weaknesses",
+    "document_id": 847,
+    "chunk_idx": 10,
+    "title": "Testing Multi-Factor Authentication (MFA)",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/04-Authentication_Testing/11-Testing_Multi-Factor_Authentication.md#how-to-test"
+  },
+  {
+    "query": "tcp window scan operating system detection complexity",
+    "document_id": 8824,
+    "chunk_idx": 0,
+    "title": "CAPEC-306: TCP Window Scan",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/306.html"
+  },
+  {
+    "query": "detect use after free vulnerabilities fuzzing static analysis",
+    "document_id": 8195,
+    "chunk_idx": 1,
+    "title": "CWE-416: Use After Free",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/416.html"
+  },
+  {
+    "query": "xss attack through http headers likelihood severity",
+    "document_id": 9210,
+    "chunk_idx": 0,
+    "title": "CAPEC-86: XSS Through HTTP Headers",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/86.html"
+  },
+  {
+    "query": "old kubernetes components vulnerability cloud platforms",
+    "document_id": 6057,
+    "chunk_idx": 0,
+    "title": "In Cloud we \u201cTrust\u201d: Wrong Kubernetes implementation by Google Cloud Platform & Microsoft Azure affecting customers",
+    "doc_type": "writeup",
+    "url": "https://faun.pub/in-cloud-we-trust-wrong-kubernetes-implementation-by-google-cloud-platform-microsoft-azure-a60f50ba943f"
+  },
+  {
+    "query": "security analysis of communication protocols using wireshark",
+    "document_id": 8708,
+    "chunk_idx": 1,
+    "title": "CAPEC-192: Protocol Analysis",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/192.html"
+  },
+  {
+    "query": "bug bounty path traversal price manipulation",
+    "document_id": 2680,
+    "chunk_idx": 0,
+    "title": "How I Earned $$$ for Excessive Data Exposure Through Directory Traversal Leads to Product Price Manipulation",
+    "doc_type": "writeup",
+    "url": "https://mshibilmp.medium.com/how-i-earned-for-excessive-data-exposure-through-directory-traversal-leads-to-product-price-4582e5371774"
+  },
+  {
+    "query": "crlf injection ftp vulnerability microsoft dot net",
+    "document_id": 1634,
+    "chunk_idx": 0,
+    "title": "CVE-2023-36049: Microsoft .NET CRLF Injection Arbitrary File Write/deletion Vulnerability",
+    "doc_type": "writeup",
+    "url": "https://www.zerodayinitiative.com/blog/2024/3/6/cve-2023-36049-microsoft-net-crlf-injection-arbitrary-file-writedeletion-vulnerability"
+  },
+  {
+    "query": "ms access sql injection top last operators",
+    "document_id": 945,
+    "chunk_idx": 2,
+    "title": "Testing for MS Access",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05.5-Testing_for_MS_Access.md#how-to-test"
+  },
+  {
+    "query": "obtain public key payment gateway encryption",
+    "document_id": 1106,
+    "chunk_idx": 6,
+    "title": "Test Payment Functionality",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/10-Business_Logic_Testing/10-Test-Payment-Functionality.md#how-to-test"
+  },
+  {
+    "query": "unicode xss filter bypass examples",
+    "document_id": 617,
+    "chunk_idx": 0,
+    "title": "XSS Filter Bypass",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XSS%20Injection/1%20-%20XSS%20Filter%20Bypass.md#bypass-using-unicode"
+  },
+  {
+    "query": "Microsoft Azure Defender IoT remote code execution vulnerabilities",
+    "document_id": 4013,
+    "chunk_idx": 0,
+    "title": "Pwning Microsoft Azure Defender for IoT | Multiple Flaws Allow Remote Code Execution for All",
+    "doc_type": "writeup",
+    "url": "https://www.sentinelone.com/labs/pwning-microsoft-azure-defender-for-iot-multiple-flaws-allow-remote-code-execution-for-all/"
+  },
+  {
+    "query": "how to identify and switch between application roles during testing",
+    "document_id": 803,
+    "chunk_idx": 0,
+    "title": "Test Role Definitions",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/03-Identity_Management_Testing/01-Test_Role_Definitions.md#how-to-test"
+  },
+  {
+    "query": "open redirect vulnerability chaining oauth token",
+    "document_id": 6832,
+    "chunk_idx": 0,
+    "title": "Full Account Takeover via Referer Header (OAuth token Steal, Open Redirect Vulnerability Chaining)",
+    "doc_type": "writeup",
+    "url": "https://web.archive.org/web/20201030131757/https://medium.com/@protector47/full-account-takeover-via-referrer-header-oauth-token-steal-open-redirect-vulnerability-chaining-324a14a1567"
+  },
+  {
+    "query": "secure password reset implementation requirements",
+    "document_id": 840,
+    "chunk_idx": 0,
+    "title": "Testing for Weak Password Change or Reset Functionalities",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/04-Authentication_Testing/09-Testing_for_Weak_Password_Change_or_Reset_Functionalities.md#summary"
+  },
+  {
+    "query": "how to test api broken object level authorization by changing object ids",
+    "document_id": 1163,
+    "chunk_idx": 0,
+    "title": "API Broken Object Level Authorization",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/12-API_Testing/02-API_Broken_Object_Level_Authorization.md#how-to-test"
+  },
+  {
+    "query": "standardized naming system for vulnerabilities",
+    "document_id": 1196,
+    "chunk_idx": 0,
+    "title": "Vulnerability Naming Schemes",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/5-Reporting/02-Naming_Schemes.md"
+  },
+  {
+    "query": "mysql injection test numeric vulnerability",
+    "document_id": 401,
+    "chunk_idx": 0,
+    "title": "MySQL Injection",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/MySQL%20Injection.md#mysql-testing-injection"
+  },
+  {
+    "query": "abusing 2fa maintain persistence password change google microsoft",
+    "document_id": 6676,
+    "chunk_idx": 0,
+    "title": "How I abused 2FA to maintain persistence after a password change (Google, Microsoft, Instagram, Cloudflare, etc)",
+    "doc_type": "writeup",
+    "url": "https://medium.com/@lukeberner/how-i-abused-2fa-to-maintain-persistence-after-a-password-change-google-microsoft-instagram-7e3f455b71a1"
+  },
+  {
+    "query": "detect php remote file inclusion manual analysis automated static",
+    "document_id": 8608,
+    "chunk_idx": 1,
+    "title": "CWE-98: Improper Control of Filename for Include/Require Statement in PHP Program ('PHP Remote File Inclusion')",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/98.html"
+  },
+  {
+    "query": "how to exploit session token in application",
+    "document_id": 9080,
+    "chunk_idx": 0,
+    "title": "CAPEC-593: Session Hijacking",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/593.html"
+  },
+  {
+    "query": "confidential information protection osat vendors",
+    "document_id": 7852,
+    "chunk_idx": 0,
+    "title": "CWE-1297: Unprotected Confidential Information on Device is Accessible by OSAT Vendors",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1297.html"
+  },
+  {
+    "query": "test local file inclusion php file parameter",
+    "document_id": 973,
+    "chunk_idx": 0,
+    "title": "Testing for File Inclusion",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/07-Input_Validation_Testing/11.1-Testing_for_File_Inclusion.md#how-to-test"
+  },
+  {
+    "query": "adversary manipulate buffer access data",
+    "document_id": 8635,
+    "chunk_idx": 0,
+    "title": "CAPEC-123: Buffer Manipulation",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/123.html"
+  },
+  {
+    "query": "detect missing encryption of sensitive data manually",
+    "document_id": 8093,
+    "chunk_idx": 1,
+    "title": "CWE-311: Missing Encryption of Sensitive Data",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/311.html"
+  },
+  {
+    "query": "XML injection malformed document examples",
+    "document_id": 957,
+    "chunk_idx": 1,
+    "title": "Testing for XML Injection",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/07-Input_Validation_Testing/07-Testing_for_XML_Injection.md#how-to-test"
+  },
+  {
+    "query": "dependency hijacking maven android projects",
+    "document_id": 1777,
+    "chunk_idx": 0,
+    "title": "Introducing MavenGate: a supply chain attack method for Java and Android applications",
+    "doc_type": "writeup",
+    "url": "https://blog.oversecured.com/Introducing-MavenGate-a-supply-chain-attack-method-for-Java-and-Android-applications/#vulnerable-dependencies-in-real-projects"
+  },
+  {
+    "query": "input validation strategy for substitution characters",
+    "document_id": 7936,
+    "chunk_idx": 1,
+    "title": "CWE-153: Improper Neutralization of Substitution Characters",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/153.html"
+  },
+  {
+    "query": "how dns cache poisoning redirects clients to malicious sites",
+    "document_id": 8656,
+    "chunk_idx": 0,
+    "title": "CAPEC-142: DNS Cache Poisoning",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/142.html"
+  },
+  {
+    "query": "client side prototype pollution exploit bounty apple atlassian",
+    "document_id": 4510,
+    "chunk_idx": 0,
+    "title": "\"A tale of making internet pollution free\" - Exploiting Client-Side Prototype Pollution in the wild",
+    "doc_type": "writeup",
+    "url": "https://blog.s1r1us.ninja/research/PP"
+  },
+  {
+    "query": "study dkim deployment email spoofing phishing",
+    "document_id": 4000,
+    "chunk_idx": 0,
+    "title": "A Large-scale and Longitudinal Measurement Study of DKIM Deployment",
+    "doc_type": "writeup",
+    "url": "https://shenkaiwen.com/publication/2022-dkim/"
+  },
+  {
+    "query": "detect path traversal doubled triple dot slash sast",
+    "document_id": 8134,
+    "chunk_idx": 0,
+    "title": "CWE-35: Path Traversal: '.../...//'",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/35.html"
+  },
+  {
+    "query": "clickjacking test without javascript",
+    "document_id": 1130,
+    "chunk_idx": 0,
+    "title": "Testing for Clickjacking",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/11-Client-side_Testing/09-Testing_for_Clickjacking.md#how-to-test"
+  },
+  {
+    "query": "sql injection test input fields hidden post requests",
+    "document_id": 928,
+    "chunk_idx": 0,
+    "title": "Testing for SQL Injection",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection.md#how-to-test"
+  },
+  {
+    "query": "race condition rce app temporary file storage amazon s3",
+    "document_id": 6252,
+    "chunk_idx": 0,
+    "title": "Race Condition that could Result to RCE\u200a- (A story with an App that temporary stored an uploaded file within 2 seconds before moving it to Amazon S3)",
+    "doc_type": "writeup",
+    "url": "https://medium.com/bugbountywriteup/race-condition-that-could-result-to-rce-a-story-with-an-app-that-temporary-stored-an-uploaded-9a4065368ba3"
+  },
+  {
+    "query": "risks of exposing git svn folders in production",
+    "document_id": 226,
+    "chunk_idx": 0,
+    "title": "Insecure Source Code Management",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Insecure%20Source%20Code%20Management/README.md"
+  },
+  {
+    "query": "prompt injection chatgpt plugin exploit",
+    "document_id": 326,
+    "chunk_idx": 0,
+    "title": "Prompt Injection",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Prompt%20Injection/README.md#references"
+  },
+  {
+    "query": "testing self dom based xss using innerhtml and developer console",
+    "document_id": 1114,
+    "chunk_idx": 1,
+    "title": "Testing for Self DOM Based Cross-Site Scripting",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/11-Client-side_Testing/01.1-Testing_for_Self_DOM_Based_Cross_Site_Scripting.md#how-to-test"
+  },
+  {
+    "query": "dell unisphere powermax parameter injection vulnerability",
+    "document_id": 2739,
+    "chunk_idx": 0,
+    "title": "Multiple vulnerabilities in Dell Unisphere for PowerMax vApp, VASA Provider vApp and Solutions Enabler vApp CVE-2022-45103 / CVE-2022-45104",
+    "doc_type": "writeup",
+    "url": "https://www.synacktiv.com/sites/default/files/2023-02/Synacktiv-Security_Advisory-Dell_EMC_vApp_Manager-Multiple_Vulnerabilities.pdf"
+  },
+  {
+    "query": "j2ee direct thread usage risks",
+    "document_id": 8165,
+    "chunk_idx": 0,
+    "title": "CWE-383: J2EE Bad Practices: Direct Use of Threads",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/383.html"
+  },
+  {
+    "query": "icmp error message quoted data length variability os detection",
+    "document_id": 8849,
+    "chunk_idx": 0,
+    "title": "CAPEC-329: ICMP Error Message Quoting Probe",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/329.html"
+  },
+  {
+    "query": "critical vulnerability ai service replicate rce",
+    "document_id": 1522,
+    "chunk_idx": 0,
+    "title": "The risk in malicious AI models: Wiz Research discovers critical vulnerability in AI-as-a-Service provider, Replicate",
+    "doc_type": "writeup",
+    "url": "https://www.wiz.io/blog/wiz-research-discovers-critical-vulnerability-in-replicate"
+  },
+  {
+    "query": "how wsdl scanning reveals service vulnerabilities",
+    "document_id": 9220,
+    "chunk_idx": 0,
+    "title": "CAPEC-95: WSDL Scanning",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/95.html"
+  },
+  {
+    "query": "abuse http headers request line parameters for smuggling",
+    "document_id": 8850,
+    "chunk_idx": 0,
+    "title": "CAPEC-33: HTTP Request Smuggling",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/33.html"
+  },
+  {
+    "query": "malformed http request server identification",
+    "document_id": 723,
+    "chunk_idx": 2,
+    "title": "Fingerprint Web Server",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/01-Information_Gathering/02-Fingerprint_Web_Server.md#how-to-test"
+  },
+  {
+    "query": "xml injection test dtd file content disclosure",
+    "document_id": 957,
+    "chunk_idx": 10,
+    "title": "Testing for XML Injection",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/07-Input_Validation_Testing/07-Testing_for_XML_Injection.md#how-to-test"
+  },
+  {
+    "query": "adversary manipulates application to call malicious library",
+    "document_id": 8672,
+    "chunk_idx": 1,
+    "title": "CAPEC-159: Redirect Access to Libraries",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/159.html"
+  },
+  {
+    "query": "adversary modifies message and checksum to bypass integrity check",
+    "document_id": 8659,
+    "chunk_idx": 0,
+    "title": "CAPEC-145: Checksum Spoofing",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/145.html"
+  },
+  {
+    "query": "azure cloud shell kubernetes cluster privilege escalation",
+    "document_id": 5129,
+    "chunk_idx": 0,
+    "title": "I Own your Cloud Shell: Taking over \u201cAzure Cloud Shell\u201d Kubernetes Cluster Through Unsecured Kubelet API 30,000$ Bounty",
+    "doc_type": "writeup",
+    "url": "https://hencohen10.medium.com/i-own-your-cloud-shell-taking-over-azure-cloud-shell-kubernetes-cluster-through-unsecured-558621519cf9"
+  },
+  {
+    "query": "imap smtp injection example fetch capability",
+    "document_id": 969,
+    "chunk_idx": 5,
+    "title": "Testing for IMAP SMTP Injection",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/07-Input_Validation_Testing/10-Testing_for_IMAP_SMTP_Injection.md#how-to-test"
+  },
+  {
+    "query": "chaining vulnerabilities remote code execution payment service",
+    "document_id": 3195,
+    "chunk_idx": 0,
+    "title": "Chaining Multiple Vulnerabilities Leads to Remote Code Execution (RCE) on One of the Payment Service Companies.",
+    "doc_type": "writeup",
+    "url": "https://rohit-soni.medium.com/chaining-multiple-vulnerabilities-leads-to-remote-code-execution-rce-on-paytm-e77f2fd2295e"
+  },
+  {
+    "query": "how to trick victim into clicking hidden controls clickjacking",
+    "document_id": 8615,
+    "chunk_idx": 2,
+    "title": "CAPEC-103: Clickjacking",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/103.html"
+  },
+  {
+    "query": "architecture risks ai service providers customer data vulnerability",
+    "document_id": 1596,
+    "chunk_idx": 0,
+    "title": "Wiz Research finds architecture risks that may compromise AI-as-a-Service providers and consequently risk customer data; works with Hugging Face on mitigations",
+    "doc_type": "writeup",
+    "url": "https://www.wiz.io/blog/wiz-and-hugging-face-address-risks-to-ai-infrastructure"
+  },
+  {
+    "query": "covert storage channel impact on confidentiality integrity",
+    "document_id": 8290,
+    "chunk_idx": 0,
+    "title": "CWE-515: Covert Storage Channel",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/515.html"
+  },
+  {
+    "query": "static member data performance vulnerability",
+    "document_id": 7655,
+    "chunk_idx": 0,
+    "title": "CWE-1042: Static Member Data Element outside of a Singleton Class Element",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/1042.html"
+  },
+  {
+    "query": "invalidate session before authorization cwe 384",
+    "document_id": 8166,
+    "chunk_idx": 1,
+    "title": "CWE-384: Session Fixation",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/384.html"
+  },
+  {
+    "query": "pandora fms vulnerabilities account takeover information disclosure",
+    "document_id": 1830,
+    "chunk_idx": 0,
+    "title": "Technical Advisory \u2013 Multiple Vulnerabilities in PandoraFMS Enterprise",
+    "doc_type": "writeup",
+    "url": "https://research.nccgroup.com/2024/01/02/technical-advisory-multiple-vulnerabilities-in-pandorafms-enterprise/"
+  },
+  {
+    "query": "how to identify os for path traversal attack",
+    "document_id": 8638,
+    "chunk_idx": 1,
+    "title": "CAPEC-126: Path Traversal",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/126.html"
+  },
+  {
+    "query": "secure program invocation without search path",
+    "document_id": 8205,
+    "chunk_idx": 3,
+    "title": "CWE-427: Uncontrolled Search Path Element",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/427.html"
+  },
+  {
+    "query": "how to access private photos without unlocking device facebook",
+    "document_id": 4825,
+    "chunk_idx": 0,
+    "title": "How I could have accessed all your private videos/photos saved inside your device without even unlocking it?",
+    "doc_type": "writeup",
+    "url": "https://samiparyal.medium.com/how-i-could-have-accessed-all-your-private-videos-photos-saved-inside-your-device-without-even-1a7e455ddcc8"
+  },
+  {
+    "query": "django debug mode idor information disclosure access control",
+    "document_id": 2507,
+    "chunk_idx": 0,
+    "title": "From Django Debug Mode to PII Data Leak of more than 500+ Employees due Broken Access Control and IDOR",
+    "doc_type": "writeup",
+    "url": "https://medium.com/@ar_hawk/from-django-debug-mode-to-pii-data-leak-of-more-than-500-employees-due-broken-access-control-and-a3eb602a4207"
+  },
+  {
+    "query": "secure custom url scheme authorization design considerations",
+    "document_id": 8599,
+    "chunk_idx": 1,
+    "title": "CWE-939: Improper Authorization in Handler for Custom URL Scheme",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/939.html"
+  },
+  {
+    "query": "mobile phishing attack via sms message",
+    "document_id": 8678,
+    "chunk_idx": 0,
+    "title": "CAPEC-164: Mobile Phishing",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/164.html"
+  },
+  {
+    "query": "monitor api calls for code injection windows linux",
+    "document_id": 9133,
+    "chunk_idx": 2,
+    "title": "CAPEC-640: Inclusion of Code in Existing Process",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/640.html"
+  },
+  {
+    "query": "test privilege escalation changing user group order access",
+    "document_id": 859,
+    "chunk_idx": 0,
+    "title": "Testing for Privilege Escalation",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/05-Authorization_Testing/03-Testing_for_Privilege_Escalation.md#how-to-test"
+  },
+  {
+    "query": "garmin sport watches vulnerability memory corruption buffer overflow",
+    "document_id": 2473,
+    "chunk_idx": 0,
+    "title": "Compromising Garmin\u2019s Sport Watches: A Deep Dive into GarminOS and its MonkeyC Virtual Machine",
+    "doc_type": "writeup",
+    "url": "https://www.anvilsecure.com/blog/compromising-garmins-sport-watches-a-deep-dive-into-garminos-and-its-monkeyc-virtual-machine.html"
+  },
+  {
+    "query": "pre authenticated rce vmware vrealize operations manager",
+    "document_id": 3586,
+    "chunk_idx": 0,
+    "title": "From Shared Dash to Root Bash :: Pre-Authenticated RCE in VMWare vRealize Operations Manager",
+    "doc_type": "writeup",
+    "url": "https://srcincite.io/blog/2022/08/09/from-shared-dash-to-root-bash-pre-authenticated-rce-in-vmware-vrealize-operations-manager.html"
+  },
+  {
+    "query": "xss filter bypass missing charset iso-2022-jp",
+    "document_id": 614,
+    "chunk_idx": 0,
+    "title": "XSS Filter Bypass",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/XSS%20Injection/1%20-%20XSS%20Filter%20Bypass.md#bypass-using-missing-charset-header"
+  },
+  {
+    "query": "java deserialization tool generate payloads",
+    "document_id": 175,
+    "chunk_idx": 0,
+    "title": "Java Deserialization",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Insecure%20Deserialization/Java.md#tools"
+  },
+  {
+    "query": "code injection prevention strategies architecture design",
+    "document_id": 8600,
+    "chunk_idx": 2,
+    "title": "CWE-94: Improper Control of Generation of Code ('Code Injection')",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/94.html"
+  },
+  {
+    "query": "google earth pro macos local file read vulnerability",
+    "document_id": 4472,
+    "chunk_idx": 0,
+    "title": "Write Up \u2013 Google VRP N/A: Arbitrary Local File Read (Macos) Via &#x3c;&#x61;&#x3e; Tag And Null Byte (&#x25;&#x30;&#x30;) In Google Earth Pro Desktop App",
+    "doc_type": "writeup",
+    "url": "https://omespino.com/write-up-google-vrp-n-a-arbitrary-local-file-read-macos-via-a-tag-and-null-byte-in-google-earth-pro-desktop-app/"
+  },
+  {
+    "query": "GraphQL introspection query example schema",
+    "document_id": 1182,
+    "chunk_idx": 1,
+    "title": "Testing GraphQL",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/12-API_Testing/99-Testing_GraphQL.md#how-to-test"
+  },
+  {
+    "query": "test file permissions and cloud storage configurations",
+    "document_id": 801,
+    "chunk_idx": 0,
+    "title": "4.2 Configuration and Deployment Management Testing",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/README.md"
+  },
+  {
+    "query": "impersonation attack using multicast messages",
+    "document_id": 8631,
+    "chunk_idx": 0,
+    "title": "CAPEC-12: Choosing Message Identifier",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/12.html"
+  },
+  {
+    "query": "security issue malformed messages control plane",
+    "document_id": 8474,
+    "chunk_idx": 0,
+    "title": "CWE-707: Improper Neutralization",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/707.html"
+  },
+  {
+    "query": "disabling communication route between two entities",
+    "document_id": 9068,
+    "chunk_idx": 0,
+    "title": "CAPEC-582: Route Disabling",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/582.html"
+  },
+  {
+    "query": "utf-8 decoder behavior invalid input security",
+    "document_id": 9204,
+    "chunk_idx": 3,
+    "title": "CAPEC-80: Using UTF-8 Encoding to Bypass Validation Logic",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/80.html"
+  },
+  {
+    "query": "how to exploit jwt signature key injection attack",
+    "document_id": 234,
+    "chunk_idx": 5,
+    "title": "JWT - JSON Web Token",
+    "doc_type": "article",
+    "url": "https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/JSON%20Web%20Token/README.md#jwt-signature"
+  },
+  {
+    "query": "oauth public client improper grant types",
+    "document_id": 862,
+    "chunk_idx": 2,
+    "title": "Testing for OAuth Weaknesses",
+    "doc_type": "article",
+    "url": "https://github.com/OWASP/wstg/blob/master/4-Web_Application_Security_Testing/05-Authorization_Testing/05-Testing_for_OAuth_Weaknesses.md#how-to-test"
+  },
+  {
+    "query": "apache superset vulnerabilities rce insecure deserialization",
+    "document_id": 2046,
+    "chunk_idx": 0,
+    "title": "Apache Superset Part II: RCE, Credential Harvesting and More",
+    "doc_type": "writeup",
+    "url": "https://www.horizon3.ai/apache-superset-part-ii-rce-credential-harvesting-and-more/"
+  },
+  {
+    "query": "detecting vulnerabilities erxes microservices rce path traversal",
+    "document_id": 1610,
+    "chunk_idx": 0,
+    "title": "Micro Services, Major Headaches: Detecting Vulnerabilities in Erxes' Microservices",
+    "doc_type": "writeup",
+    "url": "https://www.sonarsource.com/blog/micro-services-major-headaches-detecting-vulnerabilities-in-erxes-microservices/"
+  },
+  {
+    "query": "google captcha bypass parameter pollution email spoofing",
+    "document_id": 4653,
+    "chunk_idx": 0,
+    "title": "Bypass Google Captcha+Parameter Pollution Leads to send email to any user on behalf of \u201cOrganization\u201d with any desired content",
+    "doc_type": "writeup",
+    "url": "https://medium.com/@viralbhatt100/bypass-google-captcha-parameter-pollution-leads-to-send-email-to-any-user-on-behalf-of-9013aebbabae"
+  },
+  {
+    "query": "signal handler race condition double free code execution",
+    "document_id": 8148,
+    "chunk_idx": 1,
+    "title": "CWE-364: Signal Handler Race Condition",
+    "doc_type": "weakness",
+    "url": "https://cwe.mitre.org/data/definitions/364.html"
+  },
+  {
+    "query": "dom xss account takeover oauth bounty",
+    "document_id": 1593,
+    "chunk_idx": 0,
+    "title": "How we escalated a DOM XSS to a sophisticated 1-click Account Takeover for $8000 - Part 1",
+    "doc_type": "writeup",
+    "url": "https://thefrogsec.github.io/2024/04/06/How-we-escalated-a-DOM-XSS-to-a-sophisticated-1-click-Account-Takeover-for-8000-Part-1/"
+  },
+  {
+    "query": "manipulating hidden fields online purchase discount",
+    "document_id": 8676,
+    "chunk_idx": 0,
+    "title": "CAPEC-162: Manipulating Hidden Fields",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/162.html"
+  },
+  {
+    "query": "how to create fake website for phishing attack",
+    "document_id": 8678,
+    "chunk_idx": 1,
+    "title": "CAPEC-164: Mobile Phishing",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/164.html"
+  },
+  {
+    "query": "local privilege escalation azure sphere bounty program",
+    "document_id": 5443,
+    "chunk_idx": 0,
+    "title": "Our Experiences Participating in Microsoft\u2019s Azure Sphere Bounty Program",
+    "doc_type": "writeup",
+    "url": "https://www.mcafee.com/blogs/other-blogs/mcafee-labs/our-experiences-participating-in-microsofts-azure-sphere-bounty-program/"
+  },
+  {
+    "query": "find vulnerabilities in processes with elevated privileges",
+    "document_id": 8751,
+    "chunk_idx": 0,
+    "title": "CAPEC-234: Hijacking a privileged process",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/234.html"
+  },
+  {
+    "query": "vulnerabilities pytorch model server torchserve",
+    "document_id": 1425,
+    "chunk_idx": 0,
+    "title": "Shelltorch Explained: Multiple Vulnerabilities in Pytorch Model Server (Torchserve) (CVSS 9.9, CVSS 9.8) Walkthrough",
+    "doc_type": "writeup",
+    "url": "https://www.oligo.security/blog/shelltorch-explained-multiple-vulnerabilities-in-pytorch-model-server"
+  },
+  {
+    "query": "adversary intercepts intent launches fake android activity",
+    "document_id": 8987,
+    "chunk_idx": 0,
+    "title": "CAPEC-501: Android Activity Hijack",
+    "doc_type": "technique",
+    "url": "https://capec.mitre.org/data/definitions/501.html"
+  }
+]

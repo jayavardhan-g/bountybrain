@@ -1,0 +1,97 @@
+{
+  "queries": 200,
+  "modes": {
+    "dense": {
+      "mode": "dense",
+      "n": 200,
+      "recall@1": 0.665,
+      "recall@5": 0.88,
+      "recall@10": 0.925,
+      "mrr": 0.7584,
+      "ndcg@10": 0.7904,
+      "median_latency_ms": 37.8,
+      "p95_latency_ms": 38.3
+    },
+    "bm25": {
+      "mode": "bm25",
+      "n": 200,
+      "recall@1": 0.655,
+      "recall@5": 0.85,
+      "recall@10": 0.89,
+      "mrr": 0.7351,
+      "ndcg@10": 0.7636,
+      "median_latency_ms": 15.5,
+      "p95_latency_ms": 21.8
+    },
+    "hybrid": {
+      "mode": "hybrid",
+      "n": 200,
+      "recall@1": 0.675,
+      "recall@5": 0.91,
+      "recall@10": 0.955,
+      "mrr": 0.7718,
+      "ndcg@10": 0.8079,
+      "median_latency_ms": 53.2,
+      "p95_latency_ms": 60.0
+    },
+    "hybrid_rerank": {
+      "mode": "hybrid_rerank",
+      "n": 200,
+      "recall@1": 0.8,
+      "recall@5": 0.965,
+      "recall@10": 0.975,
+      "mrr": 0.8613,
+      "ndcg@10": 0.8731,
+      "median_latency_ms": 148.6,
+      "p95_latency_ms": 166.3
+    }
+  },
+  "skipped_modes": [],
+  "by_doc_type": {
+    "article": {
+      "mode": "hybrid_rerank",
+      "n": 50,
+      "recall@1": 0.7,
+      "recall@5": 0.94,
+      "recall@10": 0.94,
+      "mrr": 0.794,
+      "ndcg@10": 0.803,
+      "median_latency_ms": 149.2,
+      "p95_latency_ms": 166.9
+    },
+    "technique": {
+      "mode": "hybrid_rerank",
+      "n": 50,
+      "recall@1": 0.82,
+      "recall@5": 0.98,
+      "recall@10": 0.98,
+      "mrr": 0.8807,
+      "ndcg@10": 0.8835,
+      "median_latency_ms": 149.8,
+      "p95_latency_ms": 160.1
+    },
+    "weakness": {
+      "mode": "hybrid_rerank",
+      "n": 50,
+      "recall@1": 0.76,
+      "recall@5": 0.94,
+      "recall@10": 0.98,
+      "mrr": 0.8188,
+      "ndcg@10": 0.842,
+      "median_latency_ms": 155.2,
+      "p95_latency_ms": 169.5
+    },
+    "writeup": {
+      "mode": "hybrid_rerank",
+      "n": 50,
+      "recall@1": 0.92,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 0.9517,
+      "ndcg@10": 0.9639,
+      "median_latency_ms": 138.4,
+      "p95_latency_ms": 162.3
+    }
+  },
+  "breakdown_mode": "hybrid_rerank"
+}

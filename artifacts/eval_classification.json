@@ -19,6 +19,15 @@
         "abstention_rate": 0.0,
         "macro_f1": 0.0441,
         "distinct_gold_classes": 51
+      },
+      "llm": {
+        "n": 500,
+        "accuracy": 0.368,
+        "hierarchy_match": 0.44,
+        "accuracy_when_answered": 0.5364,
+        "abstention_rate": 0.314,
+        "macro_f1": 0.0966,
+        "distinct_gold_classes": 51
       }
     },
     "pentesterland": {
@@ -38,6 +47,15 @@
         "accuracy_when_answered": 0.188,
         "abstention_rate": 0.0,
         "macro_f1": 0.0651,
+        "distinct_gold_classes": 53
+      },
+      "llm": {
+        "n": 500,
+        "accuracy": 0.28,
+        "hierarchy_match": 0.342,
+        "accuracy_when_answered": 0.4605,
+        "abstention_rate": 0.392,
+        "macro_f1": 0.1142,
         "distinct_gold_classes": 53
       }
     }
