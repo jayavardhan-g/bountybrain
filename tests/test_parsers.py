@@ -132,3 +132,45 @@ def test_nuclei_cve_id_list_still_works(tmp_path):
     )
     cves = {f.value for f in parse_recon_file(p, tool_hint="nuclei") if f.type == "cve"}
     assert cves == {"CVE-2020-1111", "CVE-2020-2222"}
+
+
+def test_host_is_normalised_across_tools(tmp_path):
+    """httpx says `git.acme.example`, nuclei says `https://git.acme.example`.
+
+    Without normalisation the same machine becomes two assets and its plan
+    is split in half.
+    """
+    from bountybrain.recon.parsers import _normalise_host
+
+    for raw in (
+        "git.acme.example",
+        "https://git.acme.example",
+        "https://git.acme.example/path",
+        "git.acme.example:8443",
+        "HTTPS://GIT.ACME.EXAMPLE",
+        "git.acme.example.",
+    ):
+        assert _normalise_host(raw) == "git.acme.example", raw
+
+
+def test_findings_from_different_tools_share_an_asset(tmp_path):
+    httpx = _write(
+        tmp_path,
+        "httpx.jsonl",
+        json.dumps(
+            {"url": "https://git.acme.example/", "host": "git.acme.example", "tech": ["GitLab"]}
+        ),
+    )
+    nuclei = _write(
+        tmp_path,
+        "nuclei.jsonl",
+        json.dumps(
+            {
+                "template-id": "CVE-2021-22205",
+                "host": "https://git.acme.example",
+                "info": {"name": "x", "classification": {"cve-id": "CVE-2021-22205"}},
+            }
+        ),
+    )
+    findings = parse_recon_file(httpx) + parse_recon_file(nuclei)
+    assert {f.asset for f in findings} == {"git.acme.example"}

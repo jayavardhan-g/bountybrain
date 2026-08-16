@@ -646,10 +646,16 @@ def plan_from_findings(
     top_k: int = 8,
     weights: ScoringWeights | None = None,
 ) -> list[AssetPlan]:
-    """Group recon findings by asset and build a plan for each."""
+    """Group recon findings by asset and build a plan for each.
+
+    Grouping is per **host**, not per registrable domain. `git.acme.example`
+    running GitLab and `jira.acme.example` running Jira are different attack
+    surfaces; merging their fingerprints yields one blended plan that cannot
+    say which host any of its advice applies to.
+    """
     by_asset: dict[str, list[ReconFinding]] = defaultdict(list)
     for f in findings:
-        by_asset[f.target].append(f)
+        by_asset[f.asset].append(f)
 
     plans: list[AssetPlan] = []
     with Session() as s:

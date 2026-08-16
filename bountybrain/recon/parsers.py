@@ -88,7 +88,13 @@ def _parse_subdomain_list(text: str, tool: str) -> list[ReconFinding]:
         if not host or not HOST_RE.match(host):
             continue
         out.append(
-            ReconFinding(target=_root_domain(host), type="subdomain", value=host, source_tool=tool)
+            ReconFinding(
+                target=_root_domain(host),
+                host=_normalise_host(host),
+                type="subdomain",
+                value=host,
+                source_tool=tool,
+            )
         )
     return out
 
@@ -102,7 +108,11 @@ def _parse_url_list(text: str, tool: str) -> list[ReconFinding]:
         host = url.split("//", 1)[-1].split("/", 1)[0]
         out.append(
             ReconFinding(
-                target=_root_domain(host), type="url", value=url, source_tool=tool
+                target=_root_domain(host),
+                host=_normalise_host(host),
+                type="url",
+                value=url,
+                source_tool=tool,
             )
         )
     return out
@@ -124,6 +134,7 @@ def _parse_httpx(text: str) -> list[ReconFinding]:
             out.append(
                 ReconFinding(
                     target=_root_domain(host),
+                    host=_normalise_host(host),
                     type="url",
                     value=url,
                     evidence=f"status={obj.get('status_code')}",
@@ -134,6 +145,7 @@ def _parse_httpx(text: str) -> list[ReconFinding]:
             out.append(
                 ReconFinding(
                     target=_root_domain(host),
+                    host=_normalise_host(host),
                     type="tech",
                     value=str(t),
                     source_tool="httpx",
@@ -167,6 +179,7 @@ def _parse_nuclei(text: str) -> list[ReconFinding]:
             out.append(
                 ReconFinding(
                     target=_root_domain(host or ""),
+                    host=_normalise_host(host) or None,
                     type="endpoint",
                     value=obj.get("matched-at") or template,
                     evidence=f"template={template} severity={severity} name={name}",
@@ -177,6 +190,7 @@ def _parse_nuclei(text: str) -> list[ReconFinding]:
             out.append(
                 ReconFinding(
                     target=_root_domain(host or ""),
+                    host=_normalise_host(host) or None,
                     type="cve",
                     value=str(c).upper(),
                     source_tool="nuclei",
@@ -200,6 +214,7 @@ def _parse_wappalyzer(text: str) -> list[ReconFinding]:
             out.append(
                 ReconFinding(
                     target=_root_domain(host),
+                    host=_normalise_host(host),
                     type="tech",
                     value=name,
                     source_tool="wappalyzer",
@@ -255,13 +270,18 @@ def _parse_generic(text: str) -> list[ReconFinding]:
             host = s.split("//", 1)[-1].split("/", 1)[0]
             out.append(
                 ReconFinding(
-                    target=_root_domain(host), type="url", value=s, source_tool="generic"
+                    target=_root_domain(host),
+                    host=_normalise_host(host),
+                    type="url",
+                    value=s,
+                    source_tool="generic",
                 )
             )
         elif HOST_RE.match(s):
             out.append(
                 ReconFinding(
                     target=_root_domain(s),
+                    host=_normalise_host(s),
                     type="subdomain",
                     value=s,
                     source_tool="generic",
@@ -270,7 +290,29 @@ def _parse_generic(text: str) -> list[ReconFinding]:
     return out
 
 
+def _normalise_host(value: str) -> str:
+    """Reduce whatever a tool called a 'host' to a bare hostname.
+
+    Tools are inconsistent: httpx reports `git.acme.example`, nuclei reports
+    `https://git.acme.example`, and either may carry a port. Left alone, the
+    same machine shows up as two separate assets and its plan is split in half.
+    """
+    if not value:
+        return ""
+    host = value.strip().lower()
+    if "//" in host:
+        host = host.split("//", 1)[1]
+    host = host.split("/", 1)[0]
+    host = host.rsplit("@", 1)[-1]  # strip any userinfo
+    if host.startswith("["):  # bracketed IPv6
+        return host.split("]", 1)[0] + "]"
+    if ":" in host:
+        host = host.split(":", 1)[0]
+    return host.rstrip(".")
+
+
 def _root_domain(host: str) -> str:
+    host = _normalise_host(host)
     parts = host.split(".")
     if len(parts) <= 2:
         return host
