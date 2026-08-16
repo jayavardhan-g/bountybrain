@@ -1,0 +1,17 @@
+[
+  {"query": "SSRF to AWS metadata", "expected_url_substrings": ["ssrf-"]},
+  {"query": "IDOR increment id", "expected_url_substrings": ["idor-"]},
+  {"query": "reflected XSS in search parameter", "expected_url_substrings": ["xss-"]},
+  {"query": "pandoc arbitrary code execution", "expected_url_substrings": ["rce-"]},
+  {"query": "ORDER BY sql injection", "expected_url_substrings": ["sqli-"]},
+  {"query": "email change CSRF", "expected_url_substrings": ["csrf-"]},
+  {"query": "Jinja2 template injection", "expected_url_substrings": ["ssti-"]},
+  {"query": "XML external entity in DOCX", "expected_url_substrings": ["xxe-"]},
+  {"query": "reset token leak", "expected_url_substrings": ["auth-bypass-"]},
+  {"query": "download file traversal", "expected_url_substrings": ["path-traversal-"]},
+  {"query": "SSO open redirect", "expected_url_substrings": ["open-redirect-"]},
+  {"query": "GraphQL introspection admin", "expected_url_substrings": ["graphql-"]},
+  {"query": "prototype pollution merge", "expected_url_substrings": ["prototype-pollution-"]},
+  {"query": "race condition coupon", "expected_url_substrings": ["race-condition-"]},
+  {"query": "negative quantity cart", "expected_url_substrings": ["business-logic-"]}
+]
