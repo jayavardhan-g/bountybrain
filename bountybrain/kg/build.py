@@ -105,6 +105,7 @@ class GraphBuilder:
     # -- entity loaders --------------------------------------------------
 
     def load_weaknesses(self, weaknesses: list[cwe_ds.Weakness], vrt_priority: dict[int, int]) -> None:
+        curated = cwe_ds.curated_aliases_by_cwe()
         rows = [
             {
                 "cwe_id": w.cwe_id,
@@ -114,7 +115,7 @@ class GraphBuilder:
                 "description": w.description,
                 "extended_description": w.extended_description or None,
                 "likelihood": w.likelihood,
-                "aliases_json": _json(w.aliases),
+                "aliases_json": _json(_merged_aliases(w, curated)),
                 "languages_json": _json(w.languages),
                 "technologies_json": _json(w.technologies),
                 "consequences_json": _json(w.consequences),
@@ -434,6 +435,24 @@ class GraphBuilder:
             ],
         )
         self._record("document_covers_weakness(labelled)", len(cover))
+
+
+def _merged_aliases(w: cwe_ds.Weakness, curated: dict[int, list[str]]) -> list[str]:
+    """MITRE's own Alternate_Terms plus the curated community shorthand.
+
+    Both layers are persisted so that a database-only consumer resolves the
+    same vocabulary `alias_map()` does. Deduplicated case-insensitively, with
+    the official terms first so the UI leads with MITRE's naming rather than
+    with "idor".
+    """
+    seen: set[str] = set()
+    out: list[str] = []
+    for term in [*w.aliases, *curated.get(w.cwe_id, [])]:
+        key = " ".join(term.strip().lower().split())
+        if key and key not in seen:
+            seen.add(key)
+            out.append(term)
+    return out
 
 
 def _useful_tech_keys(sig: nuclei_ds.Signature) -> set[str]:

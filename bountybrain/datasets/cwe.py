@@ -302,6 +302,25 @@ COMMUNITY_ALIASES: dict[str, int] = {
     "phishing": 451,
 }
 
+
+def curated_aliases_by_cwe() -> dict[int, list[str]]:
+    """Invert `COMMUNITY_ALIASES` into cwe_id -> [terms].
+
+    `alias_map()` folds the curated layer in at *query* time, reading this
+    catalogue from disk. Anything that instead reads the built graph — the UI,
+    the API, and the embedding/LLM classifiers, which embed each class from its
+    stored `aliases_json` — never saw these terms at all, so "IDOR" resolved
+    nowhere despite being the single most common label in the corpus. The graph
+    builder uses this to persist the curated layer alongside MITRE's own
+    Alternate_Terms.
+    """
+    out: dict[int, list[str]] = {}
+    for term, cwe_id in COMMUNITY_ALIASES.items():
+        out.setdefault(cwe_id, []).append(term)
+    for terms in out.values():
+        terms.sort()
+    return out
+
 # Labels that are legitimately NOT vulnerability classes: platform tags,
 # engagement types, research categories. They must not be force-mapped onto
 # a CWE, and coverage metrics should exclude them rather than counting them
