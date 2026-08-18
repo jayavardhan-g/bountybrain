@@ -148,6 +148,23 @@ fixes it (0.873). The impossible value is what exposed the bug.
 
 ## 3. CWE classification — and a negative result
 
+> **⚠️ These numbers are superseded and are being re-run.** The comparison
+> below was **confounded**: `classify_keyword` reads the alias table straight
+> from the CWE catalogue and so had all 109 curated community terms (IDOR,
+> SSTI, …), while `classify_embedding` and `classify_llm` shortlist from
+> `build_candidate_index()`, which embeds each class from its *stored*
+> `aliases_json` — and the builder never persisted the curated layer. The
+> baseline held vocabulary the other two arms were denied. The builder now
+> persists it (`_merged_aliases`), so re-running with a forced candidate-index
+> rebuild produces the first apples-to-apples comparison. Until then, treat
+> the tables below as a record of the confounded run, not as a finding.
+>
+> The confound is expected to have hurt the LLM and embedding arms most on the
+> **writeup-title** set, where practitioner slang dominates, and least on
+> nuclei, whose formal template prose rarely uses it — which is the pattern the
+> old numbers show. Whether the keyword baseline still wins after the fix is
+> genuinely open.
+
 Two independent gold sets, three strategies, identical inputs. 500 items each.
 
 **Gold set: nuclei templates** (name + description + impact)
@@ -251,6 +268,8 @@ Recorded because they are the substance of the work, not incidental:
 |---|---|---|
 | nDCG ideal assumed one relevant chunk | nDCG@10 = 1.113, impossible | normalise against all relevant hits found |
 | planner applicability saturated at 1.0 | lost to the trivial prior baseline | smoothed conditional P(weakness \| product) |
+| curated aliases never persisted to the graph | "IDOR" resolved nowhere in the UI/API, **and** the classification comparison was confounded — only the keyword baseline could see the curated vocabulary | builder merges the curated layer into `aliases_json` |
+| chain walk followed `CanPrecede` only | CAPEC states half its links as `CanFollow`, so the Attack Chains page was empty for every topic | traverse both directions |
 | nuclei `cve-id` is a string, not a list | `"CVE-2021-22205"` became 14 findings, one per character | normalise to a list before iterating |
 | every parser grouped by registrable domain | GitLab and Jira hosts merged into one blended plan | carry `host`; plan per host |
 | host spellings differ across tools | `git.acme.example` and `https://git.acme.example` became two assets | normalise at every assignment site |
@@ -265,8 +284,9 @@ Recorded because they are the substance of the work, not incidental:
 - **Writeup bodies were never fetched.** Only pentester.land metadata is
   ingested. Writeup "documents" are short records, not article text.
 - **Retrieval recall is a lower bound** (known-item relevance).
-- **The LLM classifier underperforms.** Not yet diagnosed beyond the analysis
-  above; see PROGRESS.md for the planned follow-up.
+- **The LLM classifier result is currently unmeasured**, not merely negative —
+  the run that produced it gave the keyword baseline a vocabulary advantage.
+  See the warning in §3 and step 1 of PROGRESS.md.
 - **Coverage is thin in places** — only 17.1% of weakness classes have a
   detection signature and 9.2% a disclosed writeup, which limits the planner to
   well-represented stacks.

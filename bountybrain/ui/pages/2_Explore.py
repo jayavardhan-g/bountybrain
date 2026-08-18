@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 import streamlit as st
 
+from bountybrain.agent.labs import find_practice_labs
 from bountybrain.kg import queries
 
 st.set_page_config(page_title="Explore — BountyBrain", page_icon="🕸️", layout="wide")
@@ -114,6 +115,13 @@ if term.strip():
             ],
             use_container_width=True,
             hide_index=True,
+            column_config={"url": st.column_config.LinkColumn("link")},
         )
     else:
         st.caption("No disclosed writeups in the corpus map to this class.")
+
+    labs = find_practice_labs(weakness["cwe_id"])
+    if labs:
+        st.subheader("Where to practise this")
+        for lab in labs:
+            st.markdown(f"- [{lab['name']}]({lab['url']}) ({lab['provider']})")

@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 import streamlit as st
 
 from bountybrain.agent import tools
+from bountybrain.kg import queries
 
 st.set_page_config(page_title="Learn — BountyBrain", page_icon="📚", layout="wide")
 st.title("📚 Learn")
@@ -72,12 +73,41 @@ if st.button("Explain", type="primary") and topic.strip():
 
         if context.get("writeups"):
             st.subheader("Real disclosures")
+            st.caption(
+                "Expand a report to see others connected to it — same weakness "
+                "class found elsewhere, or the same program yielding a different bug."
+            )
             for d in context["writeups"]:
                 amount = f" — **${d['bounty']:,.0f}**" if d.get("bounty") else ""
-                st.markdown(f"- [{d['title']}]({d['url']}){amount}")
+                program = f" · {d['program']}" if d.get("program") else ""
+                with st.expander(f"{d['title']}{program}"):
+                    st.markdown(f"[{d['url']}]({d['url']}){amount}")
+                    related = queries.related_writeups(d["id"], limit=6)
+                    if not related:
+                        st.caption("No other report in the corpus connects to this one.")
+                    for rel in related:
+                        why = []
+                        if rel["shared_weaknesses"]:
+                            why.append(
+                                "same class: "
+                                + ", ".join(f"CWE-{c}" for c in rel["shared_weaknesses"])
+                            )
+                        if rel["shared_program"]:
+                            why.append("same program")
+                        amt = f" — ${rel['bounty']:,.0f}" if rel["bounty"] else ""
+                        st.markdown(
+                            f"- [{rel['title'][:90]}]({rel['url']}){amt}  \n"
+                            f"  <sub>{' · '.join(why)}</sub>",
+                            unsafe_allow_html=True,
+                        )
 
         labs = tools.find_practice_labs(topic)
         if labs:
-            st.subheader("Practice labs")
+            st.subheader("Where to practise this")
             for lab in labs:
                 st.markdown(f"- [{lab['name']}]({lab['url']}) ({lab['provider']})")
+        elif weakness:
+            st.caption(
+                f"No curated practice lab for {weakness['key']} yet — "
+                "see `bountybrain/agent/labs.py` to add one."
+            )

@@ -149,3 +149,16 @@ def recon_plan(req: PlanReq) -> dict:
 @app.post("/chains")
 def chains(req: TopicReq) -> dict:
     return {"topic": req.topic, "chains": agent_tools.attack_chain(req.topic)}
+
+
+@app.get("/reports/related/{document_id}")
+def related_reports(document_id: int, limit: int = 8) -> dict:
+    """Reports connected to this one by shared weakness class or program."""
+    related = queries.related_writeups(document_id, limit=limit)
+    return {"document_id": document_id, "count": len(related), "related": related}
+
+
+@app.get("/labs")
+def labs(topic: str) -> dict:
+    """Where to practise a weakness class hands-on."""
+    return {"topic": topic, "labs": agent_tools.find_practice_labs(topic)}

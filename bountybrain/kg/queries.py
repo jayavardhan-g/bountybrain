@@ -6,6 +6,8 @@ and treats them as tools, so each one returns plain JSON-able dicts.
 from __future__ import annotations
 
 import json
+import re
+from collections.abc import Iterable
 from typing import Any
 
 from sqlalchemy import func, or_, select
@@ -189,11 +191,16 @@ def attack_chain(capec_id: int, depth: int = 3) -> list[list[dict]]:
 
         chains: list[list[dict]] = []
 
-        def walk(node: Technique, path: list[Technique], seen: set[int]) -> None:
-            if len(path) > depth:
-                chains.append([_technique_dict(p) for p in path])
-                return
-            nxt = s.execute(
+        def successors(node: Technique) -> list[Technique]:
+            """Patterns that can come after `node`.
+
+            CAPEC states each link from whichever side the pattern author was
+            writing: "A CanPrecede B" and "B CanFollow A" carry identical
+            information. Walking only the CanPrecede direction therefore drops
+            every chain the catalogue happened to record from the follower's
+            side — which is most of them, and why this returned nothing.
+            """
+            forward = s.execute(
                 select(Technique)
                 .join(TechniqueRelation, TechniqueRelation.dst_id == Technique.id)
                 .where(
@@ -201,7 +208,22 @@ def attack_chain(capec_id: int, depth: int = 3) -> list[list[dict]]:
                     TechniqueRelation.nature == "CanPrecede",
                 )
             ).scalars().all()
-            nxt = [t for t in nxt if t.id not in seen]
+            backward = s.execute(
+                select(Technique)
+                .join(TechniqueRelation, TechniqueRelation.src_id == Technique.id)
+                .where(
+                    TechniqueRelation.dst_id == node.id,
+                    TechniqueRelation.nature == "CanFollow",
+                )
+            ).scalars().all()
+            merged: dict[int, Technique] = {t.id: t for t in [*forward, *backward]}
+            return list(merged.values())
+
+        def walk(node: Technique, path: list[Technique], seen: set[int]) -> None:
+            if len(path) > depth:
+                chains.append([_technique_dict(p) for p in path])
+                return
+            nxt = [t for t in successors(node) if t.id not in seen]
             if not nxt:
                 if len(path) > 1:
                     chains.append([_technique_dict(p) for p in path])
@@ -237,6 +259,185 @@ def documents_for_weakness(cwe_id: int, limit: int = 10, doc_type: str | None = 
             }
             for d in s.execute(stmt).scalars().all()
         ]
+
+
+def _writeup_dict(row) -> dict:
+    return {
+        "id": row.id,
+        "title": row.title,
+        "url": row.url,
+        "bounty": row.bounty,
+        "program": row.program,
+        "published": row.published.isoformat() if row.published else None,
+    }
+
+
+def _product_matcher(products: list[str]) -> re.Pattern | None:
+    """Match fingerprinted product names inside free text.
+
+    Longest alternative first so "wordpress-plugin" wins over "wordpress", and
+    non-alphanumeric boundaries so "jira" does not fire inside "jirafe".
+    """
+    if not products:
+        return None
+    # The group is required, not cosmetic: `|` binds looser than the
+    # look-arounds, so without it the boundaries would apply to the first and
+    # last alternative only.
+    parts = "|".join(re.escape(p) for p in sorted(products, key=len, reverse=True))
+    return re.compile(rf"(?<![a-z0-9])(?:{parts})(?![a-z0-9])")
+
+
+def writeups_for_recon(
+    cwe_ids: Iterable[int],
+    product_names: Iterable[str] = (),
+    limit: int = 15,
+) -> list[dict]:
+    """Disclosed reports that match what a recon run actually found.
+
+    Two independent signals, both traceable to a row in the graph:
+
+    - the report is labelled with one of the weakness classes the planner
+      ranked for this asset, and
+    - its title or program names one of the technologies recon fingerprinted.
+
+    Reports carrying both rank first, because those are the ones describing
+    this bug class *on this stack* — the difference between "here is some SSRF
+    reading" and "here is SSRF found in the GitLab you are looking at".
+    """
+    cwes = [int(c) for c in cwe_ids]
+    if not cwes:
+        return []
+    products = sorted(
+        {p.strip().lower() for p in product_names if p and len(p.strip()) >= 3}
+    )
+    matcher = _product_matcher(products)
+
+    with Session() as s:
+        rows = s.execute(
+            select(
+                Document.id,
+                Document.title,
+                Document.url,
+                Document.bounty,
+                Document.program,
+                Document.published,
+                Vulnerability.cwe_id,
+                Vulnerability.name.label("weakness_name"),
+            )
+            .join(DocumentCoversWeakness, DocumentCoversWeakness.document_id == Document.id)
+            .join(Vulnerability, Vulnerability.id == DocumentCoversWeakness.vuln_id)
+            .where(Vulnerability.cwe_id.in_(cwes), Document.doc_type == "writeup")
+        ).all()
+
+    # One row per (document, weakness); fold back to one entry per report.
+    merged: dict[int, dict] = {}
+    for r in rows:
+        entry = merged.get(r.id)
+        if entry is None:
+            entry = _writeup_dict(r)
+            entry["weaknesses"] = []
+            haystack = " ".join(filter(None, [r.title or "", r.program or ""])).lower()
+            entry["matched_products"] = (
+                sorted(set(matcher.findall(haystack))) if matcher else []
+            )
+            merged[r.id] = entry
+        entry["weaknesses"].append({"cwe_id": r.cwe_id, "name": r.weakness_name})
+
+    out = sorted(
+        merged.values(),
+        key=lambda d: (
+            -len(d["matched_products"]),
+            -(d["bounty"] or 0.0),
+            d["title"] or "",
+        ),
+    )
+    return out[:limit]
+
+
+def related_writeups(document_id: int, limit: int = 8) -> list[dict]:
+    """Other disclosed reports connected to this one.
+
+    Two kinds of edge make two reports related, and they answer different
+    questions: a **shared weakness class** is the same bug found somewhere
+    else, and a **shared program** is the same target yielding a different bug.
+    Shared-weakness matches rank first, then bounty.
+    """
+    with Session() as s:
+        doc = s.execute(select(Document).where(Document.id == document_id)).scalar_one_or_none()
+        if doc is None:
+            return []
+        # Read what we need while the row is attached, rather than relying on
+        # the session's expiry policy after the block closes.
+        doc_program = doc.program
+
+        own_cwes = [
+            r[0]
+            for r in s.execute(
+                select(Vulnerability.cwe_id)
+                .join(
+                    DocumentCoversWeakness,
+                    DocumentCoversWeakness.vuln_id == Vulnerability.id,
+                )
+                .where(DocumentCoversWeakness.document_id == document_id)
+            ).all()
+        ]
+
+        clauses = []
+        if own_cwes:
+            clauses.append(Vulnerability.cwe_id.in_(own_cwes))
+        if doc_program:
+            clauses.append(Document.program == doc_program)
+        if not clauses:
+            return []
+
+        rows = s.execute(
+            select(
+                Document.id,
+                Document.title,
+                Document.url,
+                Document.bounty,
+                Document.program,
+                Document.published,
+                Vulnerability.cwe_id,
+            )
+            .join(
+                DocumentCoversWeakness,
+                DocumentCoversWeakness.document_id == Document.id,
+                isouter=True,
+            )
+            .join(
+                Vulnerability,
+                Vulnerability.id == DocumentCoversWeakness.vuln_id,
+                isouter=True,
+            )
+            .where(
+                Document.doc_type == "writeup",
+                Document.id != document_id,
+                or_(*clauses),
+            )
+        ).all()
+
+    merged: dict[int, dict] = {}
+    for r in rows:
+        entry = merged.get(r.id)
+        if entry is None:
+            entry = _writeup_dict(r)
+            entry["shared_weaknesses"] = []
+            entry["shared_program"] = bool(doc_program and r.program == doc_program)
+            merged[r.id] = entry
+        if r.cwe_id is not None and r.cwe_id in own_cwes:
+            if r.cwe_id not in entry["shared_weaknesses"]:
+                entry["shared_weaknesses"].append(r.cwe_id)
+
+    out = sorted(
+        merged.values(),
+        key=lambda d: (
+            -len(d["shared_weaknesses"]),
+            -int(d["shared_program"]),
+            -(d["bounty"] or 0.0),
+        ),
+    )
+    return out[:limit]
 
 
 def signatures_for_product(name: str, limit: int = 25) -> list[dict]:

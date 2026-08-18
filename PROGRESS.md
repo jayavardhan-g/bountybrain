@@ -23,8 +23,8 @@ evaluation → UI. Every headline number in the README is regenerated from
 | Classification evaluation | done — negative result, see below |
 | Planner evaluation | done — 400 held-out cases |
 | Streamlit UI (5 pages) | written, **not yet run end-to-end** |
-| FastAPI | written, **not yet exercised** |
-| Tests | 44 passing, no network/GPU needed |
+| FastAPI | 8 endpoints smoke-tested via TestClient, all 200/404 as expected |
+| Tests | 60 written (44 + 16 new graph-query tests), no network/GPU needed |
 | Lint | ruff clean |
 | CI | GitHub Actions workflow added, never executed |
 
@@ -35,7 +35,7 @@ launched against a browser or client.
 
 ## Git
 
-Nine commits on `main`, **not pushed** — there are no push credentials on this
+15 commits on `main`, 14 **not pushed** — there are no push credentials on this
 machine (no SSH key, no credential helper), and pushing is the user's job.
 
 ```bash
@@ -75,23 +75,47 @@ CSVs are not.
 
 ## What to do next, in priority order
 
-### 1. Diagnose the classification negative result
+### 0. Re-run the pipeline — REQUIRED, code has changed
 
-The retrieval-augmented LLM classifier loses to a keyword alias table
-(0.368 vs 0.398 on nuclei; 0.280 vs 0.402 on writeup titles). This is the most
-interesting open thread and the one an interviewer will push on.
+Three fixes landed that change stored data. Until this runs, the graph on disk
+predates them and RESULTS.md §3 carries a warning banner.
 
-Concrete steps:
-- Dump the LLM's disagreements with gold and read 50 of them by hand. The
-  hierarchy-aware score is nearly tied on nuclei (0.440 vs 0.444), which
-  suggests most errors are sibling confusions rather than category errors —
-  confirm or refute that.
+```bash
+export TMPDIR=/path/you/own/tmp
+python build_graph.py --rebuild                 # persists the curated aliases
+rm -f data/corpus/cwe_candidates.npz            # SEE BELOW — easy to miss
+python index_corpus.py
+python eval.py --classification                 # the arm the fix affects
+python report.py
+pytest -q                                       # 60 tests, no GPU/network
+```
+
+**The `rm` is not optional.** `build_candidate_index()` returns the cached
+`.npz` unless `force=True`, and that cache was built from the pre-fix text, so
+skipping it makes the whole fix a silent no-op that looks like it worked.
+
+### 1. Diagnose the classification result — now that the comparison is fair
+
+The previous run was **confounded**, not merely negative: `classify_keyword`
+loads the alias table from the CWE catalogue on disk and therefore saw all 109
+curated community terms, while the embedding and LLM arms shortlist from
+`build_candidate_index()`, which embeds each class from the *stored*
+`aliases_json` — and the builder never persisted the curated layer. The
+baseline was handed vocabulary the other two arms were denied.
+
+The builder now persists it, so step 0 produces the first honest comparison.
+Only then are these worth doing:
+
 - Check whether the embedding shortlist (k=12) even *contains* the gold class.
   If shortlist recall is low, the ceiling is the retriever's fault, not the
-  model's, and the fix is a better candidate generator. Measure this first —
-  it is cheap and it decides everything downstream.
-- Try feeding the model the CWE *descriptions* of the shortlisted candidates,
-  not just their names. It currently chooses from bare titles.
+  model's. Measure this first — it is cheap and it decides everything
+  downstream.
+- Try feeding the model the CWE *descriptions* of the shortlisted candidates.
+  It currently chooses from bare `CWE-{id}: {name}` lines, which is the same
+  impoverishment one level up.
+- Dump the LLM's disagreements with gold and read 50 by hand — the
+  hierarchy-aware score was nearly tied on nuclei (0.440 vs 0.444), suggesting
+  sibling confusions rather than category errors.
 - Consider an ensemble: keyword when it fires, LLM only on abstentions.
   Keyword abstains 35–52% of the time and is 0.62–0.85 accurate when it does
   answer, so that routing could plausibly beat both.
@@ -104,14 +128,22 @@ the cited passage entails it (LLM-judge, plus a cheap lexical-overlap floor).
 Report citation-support rate and hallucinated-citation rate. This is the last
 gap in the "grounded, never from memory" claim.
 
-### 3. Actually run the UI and API
+### 3. Actually run the UI
 
-Both are written and import cleanly but have never been launched.
+The API has now been exercised (`/health`, `/stats`, `/weakness/{id}`,
+`/weakness?q=`, `/product/signatures`, `/recon/parse`, `/chains` all return
+real data via `fastapi.testclient`). The Streamlit UI still has never been
+launched against a browser.
 
 ```bash
 streamlit run bountybrain/ui/streamlit_app.py     # then click all 5 pages
 uvicorn bountybrain.api.app:app --reload          # then hit /docs
 ```
+
+Worth checking specifically, because they are new and only unit-tested:
+Learn → "Real disclosures" expanders (report-to-report links), Learn → "Where
+to practise this", Attack Chains on SSRF and XSS (was empty for every topic
+before), and Recon Planner → "Disclosed reports matching this recon".
 
 Note: embedded Qdrant takes an **exclusive lock** on `data/qdrant`, so the UI
 and an eval run cannot both hold it. Run one at a time, or set `QDRANT_URL`.

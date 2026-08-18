@@ -142,6 +142,32 @@ if uploads and st.button("Build plan", type="primary"):
                         amt = f" — ${wu['bounty']:,.0f}" if wu["bounty"] else ""
                         st.markdown(f"- [{wu['title'][:80]}]({wu['url']}){amt}")
 
+        if plan.related_reports:
+            st.subheader("Disclosed reports matching this recon")
+            st.caption(
+                "Reports labelled with a weakness class ranked above **and** "
+                "naming a technology this asset actually runs are listed first — "
+                "those describe this bug class on this stack, not in general."
+            )
+            st.dataframe(
+                [
+                    {
+                        "report": rep["title"][:70],
+                        "matches stack": ", ".join(rep["matched_products"]) or "—",
+                        "weakness": ", ".join(
+                            f"CWE-{w['cwe_id']}" for w in rep["weaknesses"][:3]
+                        ),
+                        "bounty": rep["bounty"],
+                        "program": rep["program"],
+                        "url": rep["url"],
+                    }
+                    for rep in plan.related_reports
+                ],
+                use_container_width=True,
+                hide_index=True,
+                column_config={"url": st.column_config.LinkColumn("link")},
+            )
+
     st.divider()
     markdown = render_markdown(plans)
     st.download_button(

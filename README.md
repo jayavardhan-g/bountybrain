@@ -186,6 +186,14 @@ Per document type (hybrid_rerank):
 
 ### 2. CWE classification — against two independent gold sets
 
+> **⚠️ Being re-run — the numbers below are from a confounded comparison.**
+> The keyword baseline loads its alias table from the CWE catalogue and so saw
+> all 109 curated community terms; the embedding and LLM arms shortlist from a
+> candidate index built off the *stored* aliases, which the graph builder did
+> not persist. The baseline held vocabulary the other arms were denied. The
+> builder now persists it; see [RESULTS.md](RESULTS.md#3-cwe-classification--and-a-negative-result)
+> and step 0 of [PROGRESS.md](PROGRESS.md).
+
 Agreeing with one labeller could be an artefact of that labeller's conventions,
 so two are used: nuclei's community-assigned `cwe-id` (~7k templates) and
 pentester.land's curated labels (~6.4k writeups). Nothing in the keyword table,
@@ -314,6 +322,24 @@ Output is not a list of nouns. For each recommended class the planner pulls the
 matching CAPEC **execution flow** and surfaces its Explore and Experiment steps,
 each linked back to the pattern it came from, alongside the detection templates
 to run and the best-paying prior disclosures.
+
+---
+
+## What the UI does
+
+Five Streamlit pages, all reading the same local graph.
+
+| page | what it answers |
+|---|---|
+| **Learn** | "Explain this class." A cited tutorial grounded in retrieved passages, the CAPEC patterns that exploit it, the real disclosures, and where to go practise it. Each disclosure expands to show **other reports connected to it** — same weakness class found elsewhere, or the same program yielding a different bug. |
+| **Explore** | "How does this relate to everything else?" Parents, children, peers and chaining edges in the CWE taxonomy, plus every attack pattern and disclosed writeup attached to the class. |
+| **Attack Chains** | "What does this bug let me do next?" Walks CAPEC's chaining edges to turn isolated patterns into multi-step routes. |
+| **Recon Planner** | "I ran recon — what now?" A ranked, cited plan per host, **and the disclosed reports matching that fingerprint**: reports labelled with a ranked weakness class *and* naming a technology the asset actually runs are surfaced first, because those describe the bug class on this stack rather than in general. |
+| **Metrics** | The evaluation numbers, read from `artifacts/`. |
+
+Practice-lab lookup resolves through the graph rather than by string match, so
+"IDOR", "Insecure Direct Object Reference" and "CWE-639" all land on the same
+entry, and a class with no lab of its own inherits its parent's.
 
 ---
 

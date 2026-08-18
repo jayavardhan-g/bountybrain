@@ -37,6 +37,7 @@ from dataclasses import asdict, dataclass, field
 
 from sqlalchemy import func, select
 
+from bountybrain.kg import queries
 from bountybrain.kg.db import Session
 from bountybrain.kg.models import (
     CVE,
@@ -158,6 +159,9 @@ class AssetPlan:
     endpoints: list[str]
     recommendations: list[Recommendation]
     unmatched_technologies: list[str] = field(default_factory=list)
+    # Disclosed reports matching this asset's whole fingerprint, as opposed to
+    # `Recommendation.evidence.writeups`, which is per weakness class.
+    related_reports: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return {
@@ -167,6 +171,7 @@ class AssetPlan:
             "endpoints": self.endpoints[:25],
             "unmatched_technologies": self.unmatched_technologies,
             "recommendations": [r.to_dict() for r in self.recommendations],
+            "related_reports": self.related_reports,
         }
 
 
@@ -645,6 +650,7 @@ def plan_from_findings(
     findings: list[ReconFinding],
     top_k: int = 8,
     weights: ScoringWeights | None = None,
+    report_limit: int = 12,
 ) -> list[AssetPlan]:
     """Group recon findings by asset and build a plan for each.
 
@@ -680,10 +686,30 @@ def plan_from_findings(
                     unmatched_technologies=unmatched,
                 )
             )
+
+    # Attach matching disclosures outside the session above: these queries open
+    # their own, and nesting them under a held session buys nothing on SQLite.
+    for plan in plans:
+        plan.related_reports = _reports_for_plan(plan, limit=report_limit)
+
     plans.sort(
         key=lambda p: -(p.recommendations[0].score if p.recommendations else 0.0)
     )
     return plans
+
+
+def _reports_for_plan(plan: AssetPlan, limit: int = 12) -> list[dict]:
+    """Disclosed reports matching an asset's ranked classes *and* its stack.
+
+    The product names come from `evidence.matched_products` rather than from
+    the raw fingerprint, so they are already normalised to graph product nodes
+    — the same join key the signatures matched on.
+    """
+    if not plan.recommendations:
+        return []
+    cwe_ids = [r.cwe_id for r in plan.recommendations]
+    products = {p for r in plan.recommendations for p in r.evidence.matched_products}
+    return queries.writeups_for_recon(cwe_ids, products, limit=limit)
 
 
 def render_markdown(plans: list[AssetPlan]) -> str:
@@ -750,5 +776,26 @@ def render_markdown(plans: list[AssetPlan]) -> str:
                 for wu in r.evidence.writeups:
                     amt = f" — ${wu['bounty']:,.0f}" if wu["bounty"] else ""
                     out.append(f"- [{wu['title'][:80]}]({wu['url']}){amt}")
+            out.append("")
+
+        if p.related_reports:
+            out.append("### Disclosed reports matching this recon")
+            out.append("")
+            out.append(
+                "Ranked by whether the report names a technology this asset "
+                "actually runs, then by bounty."
+            )
+            out.append("")
+            out.append("| Report | Matches stack | Weakness | Bounty | Program |")
+            out.append("|--------|---------------|----------|--------|---------|")
+            for rep in p.related_reports:
+                stack = ", ".join(rep["matched_products"]) or "—"
+                cwes = ", ".join(f"CWE-{w['cwe_id']}" for w in rep["weaknesses"][:3])
+                money = f"${rep['bounty']:,.0f}" if rep["bounty"] else "—"
+                program = (rep["program"] or "—")[:30]
+                out.append(
+                    f"| [{rep['title'][:60]}]({rep['url']}) | {stack} | {cwes} | "
+                    f"{money} | {program} |"
+                )
             out.append("")
     return "\n".join(out)
