@@ -10,6 +10,10 @@ __pycache__/
 .DS_Store
 .streamlit/secrets.toml
 
+# Per-machine agent settings. Already covered by a global gitignore on this
+# box, but not by the repo's, so a fresh clone would offer it up as a new file.
+.claude/settings.local.json
+
 # Downloaded datasets — ~1 GB, rebuild with `python fetch_data.py`.
 # Not committed: they are other projects' repositories under their own
 # licences, and vendoring them here would be both huge and wrong.
@@ -24,11 +28,12 @@ data/*.sqlite-wal
 data/*.sqlite-shm
 
 # Graph exports — tens of MB, regenerate with `python export_graph.py`.
+# Matched by extension rather than by name: every CSV in here is a graph dump
+# running to millions of rows, so whatever the next export adds stays out too.
 # The small JSON metrics in artifacts/ *are* committed: they are the evidence
 # for the numbers quoted in the README.
 artifacts/*.graphml
-artifacts/kg_nodes.csv
-artifacts/kg_edges.csv
+artifacts/*.csv
 
 # Local run logs and compile caches.
 # Triton/Inductor caches must live on a local filesystem — creating them on a
