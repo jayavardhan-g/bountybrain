@@ -92,6 +92,12 @@ def main(
         "on a shared machine the 0.9 default hoards the whole card.",
     ),
     max_model_len: int = typer.Option(8192, "--max-len", help="Max context length."),
+    enforce_eager: bool = typer.Option(
+        sys.version_info < (3, 12),
+        "--enforce-eager/--no-enforce-eager",
+        help="Skip CUDA-graph/compile passes. On by default below Python 3.12, where "
+        "the compile pass imports a flashinfer module that fails to import (SETUP.md).",
+    ),
     status: bool = typer.Option(False, "--status", help="Show GPU + server status and exit."),
 ) -> None:
     if status:
@@ -160,6 +166,8 @@ def main(
         "--max-model-len",
         str(max_model_len),
     ]
+    if enforce_eager:
+        cmd.append("--enforce-eager")
     console.print(f"[cyan]Starting {model_id} on GPU {chosen}, port {listen_port}[/cyan]")
     console.print(f"[dim]{' '.join(cmd)}[/dim]")
     proc = subprocess.Popen(cmd, env=env)
