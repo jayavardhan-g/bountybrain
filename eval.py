@@ -5,6 +5,8 @@
     python eval.py --retrieval              # retrieval ablation only
     python eval.py --classification         # CWE classification only
     python eval.py --planner                # recon planner only
+    python eval.py --faithfulness           # tutorial citation faithfulness (needs an LLM)
+    python eval.py --learning-path          # learning-path completeness from the graph
 
 Results land in `artifacts/` as JSON, one file per suite, plus a combined
 `eval_summary.json`. Suites that need an LLM are skipped with a clear message
@@ -31,6 +33,18 @@ def main(
     retrieval: bool = typer.Option(False, "--retrieval", help="Retrieval ablation."),
     classification: bool = typer.Option(False, "--classification", help="CWE classification."),
     planner: bool = typer.Option(False, "--planner", help="Recon planner ranking."),
+    faithfulness: bool = typer.Option(
+        False, "--faithfulness", help="Citation faithfulness of generated tutorials (needs an LLM)."
+    ),
+    learning_path: bool = typer.Option(
+        False, "--learning-path", help="How often the graph fills a complete learning path."
+    ),
+    regenerate_tutorials: bool = typer.Option(
+        False,
+        "--regenerate-tutorials",
+        help="Regenerate the faithfulness tutorials instead of re-judging the committed ones. "
+        "Invalidates the hand labels.",
+    ),
     generate_queries: bool = typer.Option(
         False, "--generate-queries", help="Regenerate the retrieval query fixture (needs an LLM)."
     ),
@@ -40,7 +54,7 @@ def main(
     ),
     planner_cases: int = typer.Option(400, "--planner-cases", help="Held-out planner cases."),
 ) -> None:
-    if not any([all_suites, retrieval, classification, planner, generate_queries]):
+    if not any([all_suites, retrieval, classification, planner, faithfulness, learning_path, generate_queries]):
         all_suites = True
 
     has_llm = llm_available()
@@ -92,6 +106,21 @@ def main(
         from bountybrain.eval import planner as pl
 
         summary["planner"] = pl.evaluate_and_save(max_cases=planner_cases)
+
+    if all_suites or learning_path:
+        console.print(Rule("Learning path completeness"))
+        from bountybrain.eval import learning_path as lp
+
+        summary["learning_path"] = lp.evaluate_and_save()
+
+    if all_suites or faithfulness:
+        console.print(Rule("Tutorial faithfulness"))
+        if not has_llm:
+            console.print("[yellow]Faithfulness needs an LLM (generator and judge). Skipped.[/yellow]")
+        else:
+            from bountybrain.eval import faithfulness as faith
+
+            summary["faithfulness"] = faith.evaluate_and_save(regenerate=regenerate_tutorials)
 
     out = settings.artifact_dir / "eval_summary.json"
     out.write_text(json.dumps(summary, indent=2, default=str))

@@ -48,6 +48,7 @@ st.markdown(
 
 | page | what it does |
 |---|---|
+| **Learning Path** | An ordered study plan for one class: weakness → attack patterns → real disclosures → practice labs → what next. |
 | **Learn** | Ask about a vulnerability class; get a cited explanation grounded in the corpus. |
 | **Explore** | Walk the CWE hierarchy — parents, children, attack patterns, real disclosures. |
 | **Attack Chains** | Follow CAPEC `CanPrecede` edges to see how techniques chain together. |

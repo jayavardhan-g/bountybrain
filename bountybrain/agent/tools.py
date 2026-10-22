@@ -93,6 +93,26 @@ def plan_recon(findings: list[dict], top_k: int = 8) -> dict:
     }
 
 
+# How much of each source the tutorial prompt shows the model. The
+# faithfulness evaluation judges claims against exactly this much text.
+SOURCE_CHARS = 1200
+TUTORIAL_SYSTEM = "You write clear, accurate security tutorials for beginners."
+
+
+def tutorial_prompt(topic: str, sources: list[dict], context: dict | None = None) -> str:
+    """The user prompt for a cited tutorial, shared by the UI and the eval."""
+    numbered = "\n\n".join(
+        f"[{i}] {s['title']} ({s['url']})\n{s['text'][:SOURCE_CHARS]}"
+        for i, s in enumerate(sources, start=1)
+    )
+    return load_prompt(
+        "tutorial",
+        topic=topic,
+        sources=numbered,
+        kg_context=json.dumps(_context_brief(context), indent=2) if context else "{}",
+    )
+
+
 def generate_tutorial(topic: str, sources: list[dict], context: dict | None = None) -> str:
     """Write a cited tutorial. Falls back to a template when no LLM is up."""
     if not sources:
@@ -101,19 +121,10 @@ def generate_tutorial(topic: str, sources: list[dict], context: dict | None = No
             "The local corpus has no passages for this topic. Build the index "
             "with `python index_corpus.py`, or try a different phrasing."
         )
-    numbered = "\n\n".join(
-        f"[{i}] {s['title']} ({s['url']})\n{s['text'][:1200]}"
-        for i, s in enumerate(sources, start=1)
-    )
     try:
         return chat(
-            system="You write clear, accurate security tutorials for beginners.",
-            user=load_prompt(
-                "tutorial",
-                topic=topic,
-                sources=numbered,
-                kg_context=json.dumps(_context_brief(context), indent=2) if context else "{}",
-            ),
+            system=TUTORIAL_SYSTEM,
+            user=tutorial_prompt(topic, sources, context),
             max_tokens=2048,
         )
     except (LLMError, Exception):
@@ -157,7 +168,7 @@ def _template_tutorial(topic: str, sources: list[dict], context: dict | None) ->
     if techniques:
         lines += ["## Attack patterns", ""]
         for t in techniques[:6]:
-            lines.append(f"- [{t['key']}: {t['name']}]({t['url']}) — {t.get('description','')[:180]}")
+            lines.append(f"- [{t['key']}: {t['name']}]({t['url']}) — {(t.get('description') or '')[:180]}")
         lines.append("")
     lines += ["## Sources from the corpus", ""]
     for i, s in enumerate(sources, start=1):

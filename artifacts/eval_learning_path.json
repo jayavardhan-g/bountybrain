@@ -1,0 +1,45 @@
+{
+  "topics": {
+    "n": 29,
+    "complete": 0.8621,
+    "complete_direct_only": 0.6897,
+    "stage_filled": {
+      "weakness": 1.0,
+      "patterns": 0.9655,
+      "writeups": 1.0,
+      "labs": 0.8966
+    },
+    "stage_direct": {
+      "weakness": 1.0,
+      "patterns": 0.8276,
+      "writeups": 1.0,
+      "labs": 0.8621
+    },
+    "unresolved": [
+      "NoSQL injection"
+    ],
+    "incomplete": [
+      "Subdomain takeover",
+      "Clickjacking",
+      "Mass assignment",
+      "CRLF injection"
+    ]
+  },
+  "all_classes": {
+    "n": 969,
+    "complete": 0.162,
+    "complete_direct_only": 0.0248,
+    "stage_filled": {
+      "weakness": 1.0,
+      "patterns": 0.6667,
+      "writeups": 0.3117,
+      "labs": 0.1641
+    },
+    "stage_direct": {
+      "weakness": 1.0,
+      "patterns": 0.3467,
+      "writeups": 0.0918,
+      "labs": 0.0299
+    }
+  }
+}

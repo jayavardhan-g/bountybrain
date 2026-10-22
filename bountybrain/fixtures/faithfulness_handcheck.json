@@ -1,0 +1,206 @@
+{
+  "labeller": "Claude (Opus 5.5), blind to the judge's verdicts, against the cited excerpts only",
+  "sample": "artifacts/faithfulness_handcheck_blind.md (seed 7, stratified on judge label)",
+  "labels": {
+    "01-09": {
+      "label": "supported",
+      "note": "same URL example in the excerpt",
+      "text": "For instance, changing the URL to `https://example.com/profile?user_id=124` might reveal another user's profile details [2]."
+    },
+    "02-07": {
+      "label": "partial",
+      "note": "stored XSS is named; comments/forums/profiles are added",
+      "text": "**Stored XSS**: Check areas where user input is stored on the server and displayed to other users later, such as comments, forums, or profile sections. [5]"
+    },
+    "02-08": {
+      "label": "partial",
+      "note": "DOM XSS and sinks are there; the specific instruction is a paraphrase plus detail",
+      "text": "**DOM-Based XSS**: Identify parts of the application where JavaScript dynamically modifies the DOM based on user input. [3]"
+    },
+    "02-11": {
+      "label": "partial",
+      "note": "scripts run for other users is there; the impacts are added",
+      "text": "When another user reads the comment, the script executes in their browser, potentially revealing sensitive information or performing other malicious actions. [1]"
+    },
+    "03-06": {
+      "label": "unsupported",
+      "note": "definition does not say behaviour changes indicate unsanitised input",
+      "text": "This can indicate that user input is being directly used in SQL queries without proper handling [1]."
+    },
+    "03-08": {
+      "label": "unsupported",
+      "note": "excerpt is about second-order SQLi; no delay/content signal",
+      "text": "For example, if changing input causes a delay or changes the content returned, it might be a sign of SQL injection [5]."
+    },
+    "03-13": {
+      "label": "unsupported",
+      "note": "definition only; no comment-operator login bypass",
+      "text": "The `--` comment operator would disable the rest of the query, effectively bypassing the password check and allowing the attacker to log in as the admin user [1]."
+    },
+    "04-10": {
+      "label": "unsupported",
+      "note": "PHP SSTI definition only; no {{7*7}} probe",
+      "text": "For example, try injecting `{{7*7}}` to see if the template engine returns `49` instead of just displaying the text `{{7*7}}` [4]."
+    },
+    "06-07": {
+      "label": "supported",
+      "note": "follows from point 3: session relying only on browser-held information",
+      "text": "These actions should require additional verification beyond just the session cookie. [1]"
+    },
+    "06-08": {
+      "label": "unsupported",
+      "note": "summary never mentions anti-CSRF tokens",
+      "text": "**Check for Lack of Anti-CSRF Tokens**: Ensure that forms and other state-changing requests include unique anti-CSRF tokens that are validated on the server side. [1]"
+    },
+    "06-09": {
+      "label": "supported",
+      "note": "title states it",
+      "text": "Consider the case of a CSRF vulnerability found in the Facebook Partners platform [5]."
+    },
+    "07-07": {
+      "label": "supported",
+      "note": "excerpt is the methodology section",
+      "text": "Techniques for finding such vulnerabilities are detailed in [1]."
+    },
+    "07-08": {
+      "label": "supported",
+      "note": "title states it",
+      "text": "Consider the scenario described in [5], where a researcher found an open redirect vulnerability in Instagram.com."
+    },
+    "11-05": {
+      "label": "supported",
+      "note": "WSTG objective verbatim",
+      "text": "**Identify Entry Points**: Look for places where the application accepts serialized objects from untrusted sources, such as HTTP headers, parameters, or cookies. [3]"
+    },
+    "11-11": {
+      "label": "supported",
+      "note": "record labels it unauthenticated insecure deserialization -> RCE",
+      "text": "This allowed attackers to execute arbitrary code on the server simply by sending maliciously crafted serialized data. [6]"
+    },
+    "12-09": {
+      "label": "partial",
+      "note": "../ to read arbitrary files is there; the /etc/passwd example is added",
+      "text": "For instance, if the application accepts a filename parameter like `?file=notes.txt`, an attacker could change it to `?file=../../../../etc/passwd` to attempt to read the password file on the server [1]."
+    },
+    "13-10": {
+      "label": "supported",
+      "note": "title + author state exactly this",
+      "text": "In a real-world scenario, Jadek Mark (@mase289) found an unrestricted file upload vulnerability that led to remote code execution on a bug bounty program [5]."
+    },
+    "14-08": {
+      "label": "unsupported",
+      "note": "summary says JWTs are signed; never says test that invalid signatures are rejected",
+      "text": "Citing [2], ensure the application does not accept invalid signatures."
+    },
+    "14-10": {
+      "label": "unsupported",
+      "note": "no kid header in the excerpt",
+      "text": "Citing [5], misusing the kid header can lead to key exposure."
+    },
+    "14-15": {
+      "label": "unsupported",
+      "note": "excerpt is about the signing secret; no kid header",
+      "text": "Citing [5], this misuse of the kid header can lead to unauthorized access."
+    },
+    "16-09": {
+      "label": "partial",
+      "note": "can-i-take-over-xyz is listed, as a list of services, not an automation tool",
+      "text": "Tools like `can-i-take-over-xyz` can help automate this process. [2]"
+    },
+    "16-10": {
+      "label": "supported",
+      "note": "title states it",
+      "text": "Consider the example of a subdomain takeover via Fastly CDN [1]."
+    },
+    "17-06": {
+      "label": "partial",
+      "note": "Host-header cache poisoning is there; 'generate cache keys' is added",
+      "text": "Testing for Host Header Injection can help reveal if the server improperly uses these headers to generate cache keys `[1]`."
+    },
+    "17-10": {
+      "label": "partial",
+      "note": "cached script payload shown; serving to later visitors is not stated in the excerpt",
+      "text": "Subsequent visitors to the same URL will receive the poisoned content, executing the malicious script in their browser `[3]`."
+    },
+    "18-06": {
+      "label": "unsupported",
+      "note": "WSTG summary only; no '; ls' probe",
+      "text": "For example, sending `; ls` as input should result in the listing of files if the application is vulnerable `[1]`."
+    },
+    "18-07": {
+      "label": "unsupported",
+      "note": "a CAPEC name from the graph context; the CWE-78 definition says nothing about it",
+      "text": "**Exploiting Multiple Input Interpretation Layers**: Attackers can exploit multiple layers of input interpretation to bypass filters and execute commands `[3]`."
+    },
+    "18-10": {
+      "label": "supported",
+      "note": "the excerpt shows exactly this injected command",
+      "text": "This would not only ping the IP address but also display the contents of `/etc/passwd`, revealing sensitive information `[4]`."
+    },
+    "21-06": {
+      "label": "partial",
+      "note": "definition matches; 'check documentation and code' is added",
+      "text": "Check documentation and code for any mention of mass assignment or similar features, and ensure that only authorized fields are being updated [1]."
+    },
+    "21-07": {
+      "label": "partial",
+      "note": "mass assignment is there; the record says pre-account takeover, not admin access to a server",
+      "text": "In one notable disclosure, an attacker exploited a mass assignment vulnerability to gain admin access to a company's server [3]."
+    },
+    "22-12": {
+      "label": "supported",
+      "note": "example 1 is a price manipulation; 'only the correct price can be charged'",
+      "text": "This scenario illustrates a business logic flaw where the application fails to enforce proper pricing rules. [4]"
+    },
+    "23-07": {
+      "label": "unsupported",
+      "note": "writeup metadata only; nothing on environment variables",
+      "text": "**Subverting Environment Variable Values**: Check if environment variables are exposed in error responses or logs `[3]`."
+    },
+    "23-08": {
+      "label": "unsupported",
+      "note": "writeup metadata only; nothing on footprinting",
+      "text": "**Footprinting**: Gather publicly available information about the target, including server configurations and software versions `[3]`."
+    },
+    "24-06": {
+      "label": "unsupported",
+      "note": "writeup metadata only; nothing on brute force",
+      "text": "Another method involves testing if the system allows brute-forcing or guessing passwords easily [1]."
+    },
+    "24-09": {
+      "label": "supported",
+      "note": "bounty field is $4,100",
+      "text": "This led to a bounty of $4,100 [2]."
+    },
+    "26-07": {
+      "label": "supported",
+      "note": "WSTG summary states it",
+      "text": "This involves checking if the application correctly enforces access controls and prevents unauthorized actions. [1]"
+    },
+    "26-12": {
+      "label": "supported",
+      "note": "bounty field is $400",
+      "text": "This resulted in a bounty of $400. [2]"
+    },
+    "27-08": {
+      "label": "supported",
+      "note": "lead-in; the excerpt does contain the scenario",
+      "text": "Consider the following scenario from [3]:"
+    },
+    "28-10": {
+      "label": "supported",
+      "note": "verbatim in the methodology",
+      "text": "This would return all products with a price greater than zero, instead of a specific product, potentially leaking sensitive data ([1])."
+    },
+    "29-05": {
+      "label": "supported",
+      "note": "bypass by modifying URL parameter / calling internal page directly",
+      "text": "**URL Tampering**: Modify URL parameters to access restricted pages directly [1]."
+    },
+    "29-08": {
+      "label": "partial",
+      "note": "both labels present; the causal link is inferred",
+      "text": "In the case of the Google Assistant vulnerability [3], an attacker was able to bypass authentication by exploiting an information disclosure issue."
+    }
+  }
+}
