@@ -160,6 +160,16 @@ def table_counts(session) -> dict[str, int]:
     return counts
 
 
+# The ontology core: everything except the CVE and exploit records, most of
+# which sit in two-node CVE↔exploit components that no template references.
+CORE_KINDS = {"weakness", "technique", "signature", "product", "document"}
+
+
+def core_subgraph(g: nx.MultiDiGraph) -> nx.MultiDiGraph:
+    keep = [n for n, d in g.nodes(data=True) if d.get("kind") in CORE_KINDS]
+    return g.subgraph(keep).copy()
+
+
 def structural_metrics(g: nx.MultiDiGraph) -> dict[str, Any]:
     simple = nx.Graph(g)  # undirected, de-duplicated, for component/degree work
     degrees = [d for _, d in simple.degree()]
@@ -407,6 +417,7 @@ def compute_all() -> dict[str, Any]:
         result = {
             "tables": counts,
             "structure": structural_metrics(g),
+            "core_structure": structural_metrics(core_subgraph(g)),
             "hierarchy": hierarchy_metrics(s),
             "centrality": centrality_metrics(g, s),
             "coverage": coverage_metrics(s),

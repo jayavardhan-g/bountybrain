@@ -21,17 +21,11 @@ from rich.console import Console
 
 from bountybrain.config import settings
 from bountybrain.kg.db import Session
-from bountybrain.kg.metrics import build_networkx
+from bountybrain.kg.metrics import build_networkx, core_subgraph
 
 app = typer.Typer(add_completion=False, help="Export the knowledge graph")
 console = Console()
 
-CORE_KINDS = {"weakness", "technique", "signature", "product", "document"}
-
-
-def _filter_core(g: nx.MultiDiGraph) -> nx.MultiDiGraph:
-    keep = [n for n, d in g.nodes(data=True) if d.get("kind") in CORE_KINDS]
-    return g.subgraph(keep).copy()
 
 
 def _write_graphml(g: nx.MultiDiGraph, path: Path) -> None:
@@ -89,7 +83,7 @@ def main(
 
     if core_only:
         before = g.number_of_nodes()
-        g = _filter_core(g)
+        g = core_subgraph(g)
         console.print(f"  core-only: {before:,} → {g.number_of_nodes():,} nodes")
 
     suffix = "_core" if core_only else ""
