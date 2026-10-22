@@ -33,6 +33,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import networkx as nx
+import numpy as np
 from rich.console import Console
 from rich.table import Table
 from sqlalchemy import select
@@ -225,6 +226,73 @@ def score(
     }
 
 
+SHORTLIST_KS = (1, 5, 12, 20, 50)
+LLM_SHORTLIST_K = 12  # must match classify_llm's default k
+
+
+def shortlist_recall(
+    items: list[GoldItem],
+    index: classifier.CandidateIndex,
+    hierarchy: nx.DiGraph,
+    ks: tuple[int, ...] = SHORTLIST_KS,
+) -> tuple[dict, list[bool]]:
+    """How often the embedding shortlist even contains the gold class.
+
+    The LLM arm can only pick from its top-12 shortlist, so recall@12 is a hard
+    ceiling on its accuracy. If that ceiling is low the retriever, not the
+    model, is what limits the arm. Also returns, per item, whether gold was in
+    the top-12, so the LLM's accuracy can be split on it.
+    """
+    from bountybrain.clients import embeddings
+
+    qv = np.asarray(embeddings.embed_queries([i.text for i in items]), dtype=np.float32)
+    ranked = index.topk(qv, k=max(ks))
+    n = len(items)
+    out: dict = {}
+    in_llm_shortlist: list[bool] = []
+    for k in ks:
+        hits = hier_hits = 0
+        for item, row in zip(items, ranked, strict=True):
+            ids = [index.cwe_ids[int(p)] for p in row[:k]]
+            hit = item.gold_cwe in ids
+            hits += hit
+            hier_hits += hit or any(_related(hierarchy, c, item.gold_cwe) for c in ids)
+            if k == LLM_SHORTLIST_K:
+                in_llm_shortlist.append(hit)
+        out[f"recall@{k}"] = round(hits / n, 4) if n else 0.0
+        out[f"hierarchy_recall@{k}"] = round(hier_hits / n, 4) if n else 0.0
+    return out, in_llm_shortlist
+
+
+def split_by_shortlist(
+    items: list[GoldItem], preds: list[classifier.Prediction], in_shortlist: list[bool]
+) -> dict:
+    """LLM accuracy when gold was / was not on the shortlist it chose from."""
+    out = {}
+    for label, want in (("gold_in_shortlist", True), ("gold_not_in_shortlist", False)):
+        rows = [
+            (i, p) for i, p, s in zip(items, preds, in_shortlist, strict=True) if s == want
+        ]
+        correct = sum(p.cwe_id == i.gold_cwe for i, p in rows)
+        abstained = sum(p.cwe_id is None for _, p in rows)
+        out[label] = {
+            "n": len(rows),
+            "accuracy": round(correct / len(rows), 4) if rows else 0.0,
+            "abstention_rate": round(abstained / len(rows), 4) if rows else 0.0,
+        }
+    return out
+
+
+def route_keyword_then(
+    keyword: list[classifier.Prediction], fallback: list[classifier.Prediction], name: str
+) -> list[classifier.Prediction]:
+    """Keyword when it fires, the fallback strategy only on its abstentions."""
+    return [
+        k if k.cwe_id is not None else classifier.Prediction(f.cwe_id, f.confidence, name)
+        for k, f in zip(keyword, fallback, strict=True)
+    ]
+
+
 def evaluate(
     methods: list[str] | None = None,
     n_per_source: int = 500,
@@ -251,19 +319,39 @@ def evaluate(
         )
         texts = [i.text for i in items]
         per_method = {}
+        all_preds: dict[str, list[classifier.Prediction]] = {}
         for method in methods:
             if method in ("embedding", "llm") and index is None:
                 index = classifier.build_candidate_index()
             kwargs = {"index": index} if method in ("embedding", "llm") else {}
-            preds = classifier.classify(texts, method=method, **kwargs)
+            all_preds[method] = classifier.classify(texts, method=method, **kwargs)
+        # Derived arm, no extra model calls: keyword abstains often but is
+        # accurate when it fires, so route only its abstentions to the LLM.
+        if "keyword" in all_preds and "llm" in all_preds:
+            all_preds["keyword→llm"] = route_keyword_then(
+                all_preds["keyword"], all_preds["llm"], "keyword→llm"
+            )
+        for method, preds in all_preds.items():
             per_method[method] = score(items, preds, hierarchy)
             console.print(
-                f"  {method:10s} acc={per_method[method]['accuracy']:.3f}  "
+                f"  {method:12s} acc={per_method[method]['accuracy']:.3f}  "
                 f"hier={per_method[method]['hierarchy_match']:.3f}  "
                 f"macroF1={per_method[method]['macro_f1']:.3f}  "
                 f"abstain={per_method[method]['abstention_rate']:.3f}"
             )
         results["sets"][set_name] = per_method
+
+        if index is not None:
+            recall, in_shortlist = shortlist_recall(items, index, hierarchy)
+            results.setdefault("shortlist", {})[set_name] = recall
+            console.print(
+                "  shortlist  "
+                + "  ".join(f"R@{k}={recall[f'recall@{k}']:.3f}" for k in SHORTLIST_KS)
+            )
+            if "llm" in all_preds:
+                results.setdefault("llm_by_shortlist", {})[set_name] = split_by_shortlist(
+                    items, all_preds["llm"], in_shortlist
+                )
     return results
 
 

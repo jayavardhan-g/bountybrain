@@ -114,6 +114,40 @@ def classification_table() -> str:
                 f"| {m['macro_f1']:.3f} | {m['abstention_rate']:.3f} |"
             )
         blocks.append("")
+
+    shortlist = data.get("shortlist") or {}
+    if shortlist:
+        ks = [k.split("@")[1] for k in next(iter(shortlist.values())) if k.startswith("recall@")]
+        blocks += [
+            "**Embedding shortlist recall** — is the gold class among the top-k "
+            "candidates at all? The LLM chooses from the top 12, so recall@12 "
+            "caps its accuracy.",
+            "",
+            "| gold set | " + " | ".join(f"R@{k}" for k in ks) + " | hierarchy ±2 R@12 |",
+            "|---|" + "---:|" * (len(ks) + 1),
+        ]
+        for set_name, r in shortlist.items():
+            blocks.append(
+                f"| {set_name} | "
+                + " | ".join(f"{r[f'recall@{k}']:.3f}" for k in ks)
+                + f" | {r['hierarchy_recall@12']:.3f} |"
+            )
+        blocks.append("")
+
+    split = data.get("llm_by_shortlist") or {}
+    if split:
+        blocks += [
+            "**LLM accuracy, split by whether gold was on its shortlist**",
+            "",
+            "| gold set | gold on shortlist: n | accuracy | gold not on shortlist: n | accuracy |",
+            "|---|---:|---:|---:|---:|",
+        ]
+        for set_name, s in split.items():
+            a, b = s["gold_in_shortlist"], s["gold_not_in_shortlist"]
+            blocks.append(
+                f"| {set_name} | {a['n']} | {a['accuracy']:.3f} | {b['n']} | {b['accuracy']:.3f} |"
+            )
+        blocks.append("")
     return "\n".join(blocks).rstrip()
 
 
