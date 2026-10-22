@@ -11,11 +11,15 @@ Entry points:
     achat_many(requests)                -> concurrent batch, order preserved
     structured_many(schema, requests)   -> concurrent batch, validated
 
-Structured output uses vLLM's **guided decoding** (`guided_json`) where
-available, which constrains generation to the schema at the token level.
-That removes the whole class of "model returned prose around the JSON"
-failures rather than trying to repair them after the fact; the manual
-`_extract_json` path remains as a fallback for providers without it.
+Structured output sends the OpenAI-standard `response_format` json_schema,
+which vLLM enforces at the token level (guided decoding). That removes the
+whole class of "model returned prose around the JSON" failures rather than
+trying to repair them after the fact; the manual `_extract_json` path remains
+as a fallback for providers without it.
+
+An earlier version sent vLLM's old `extra_body={"guided_json": ...}`. vLLM
+0.27 ignores that field without an error or a warning, so every "constrained"
+call silently decoded unconstrained.
 """
 from __future__ import annotations
 
@@ -98,6 +102,13 @@ def is_available() -> bool:
     return False
 
 
+def _json_schema_format(schema: type[BaseModel]) -> dict[str, Any]:
+    return {
+        "type": "json_schema",
+        "json_schema": {"name": schema.__name__, "schema": schema.model_json_schema()},
+    }
+
+
 # --------------------------------------------------------------------------
 # single-shot
 # --------------------------------------------------------------------------
@@ -147,11 +158,7 @@ def structured(
 
     if provider in ("vllm", "openai"):
         client = _openai_style_client()
-        kwargs: dict[str, Any] = {}
-        if provider == "vllm":
-            kwargs["extra_body"] = {"guided_json": schema.model_json_schema()}
-        else:
-            kwargs["response_format"] = {"type": "json_object"}
+        kwargs: dict[str, Any] = {"response_format": _json_schema_format(schema)}
         resp = client.chat.completions.create(
             model=model,
             messages=[
@@ -215,8 +222,8 @@ async def _abatch(
     # rather than losing the whole batch. `guided_ok` is flipped once, on the
     # first rejection, so the remaining requests skip straight to the fallback.
     extra: dict[str, Any] = {}
-    if schema is not None and settings.llm_provider == "vllm":
-        extra["extra_body"] = {"guided_json": schema.model_json_schema()}
+    if schema is not None and settings.llm_provider in ("vllm", "openai"):
+        extra["response_format"] = _json_schema_format(schema)
     guided_ok = {"value": bool(extra)}
 
     async def _call(system: str, user: str, use_guided: bool):
@@ -242,7 +249,7 @@ async def _abatch(
                     if not guided_ok["value"]:
                         raise
                     text = str(e).lower()
-                    if "guided" not in text and "structured" not in text and "extra" not in text:
+                    if not any(k in text for k in ("guided", "structured", "response_format", "schema")):
                         raise
                     guided_ok["value"] = False
                     resp = await _call(system, user, False)
@@ -255,7 +262,13 @@ async def _abatch(
                     if progress_cb is not None:
                         progress_cb(done)
 
-    await asyncio.gather(*(one(i, s, u) for i, (s, u) in enumerate(requests)))
+    try:
+        await asyncio.gather(*(one(i, s, u) for i, (s, u) in enumerate(requests)))
+    finally:
+        # Close inside the loop that owns the connections. Left to garbage
+        # collection, the client closes after asyncio.run has shut the loop
+        # down and prints an "Event loop is closed" traceback per batch.
+        await client.close()
     return results
 
 

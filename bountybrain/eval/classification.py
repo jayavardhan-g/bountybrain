@@ -333,6 +333,13 @@ def evaluate(
             )
         for method, preds in all_preds.items():
             per_method[method] = score(items, preds, hierarchy)
+            if method == "llm":
+                # Unparseable or failed replies fall back to the nearest
+                # neighbour inside classify_llm; count them so a flaky server
+                # cannot pass for a model result.
+                per_method[method]["model_failures"] = sum(
+                    p.reasoning.startswith("model failed") for p in preds
+                )
             console.print(
                 f"  {method:12s} acc={per_method[method]['accuracy']:.3f}  "
                 f"hier={per_method[method]['hierarchy_match']:.3f}  "

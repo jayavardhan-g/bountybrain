@@ -22,12 +22,13 @@
       },
       "llm": {
         "n": 500,
-        "accuracy": 0.372,
-        "hierarchy_match": 0.452,
-        "accuracy_when_answered": 0.5225,
-        "abstention_rate": 0.288,
-        "macro_f1": 0.1026,
-        "distinct_gold_classes": 51
+        "accuracy": 0.374,
+        "hierarchy_match": 0.456,
+        "accuracy_when_answered": 0.5268,
+        "abstention_rate": 0.29,
+        "macro_f1": 0.1049,
+        "distinct_gold_classes": 51,
+        "model_failures": 0
       },
       "keyword\u2192llm": {
         "n": 500,
@@ -62,18 +63,19 @@
         "n": 500,
         "accuracy": 0.364,
         "hierarchy_match": 0.416,
-        "accuracy_when_answered": 0.5635,
-        "abstention_rate": 0.354,
-        "macro_f1": 0.1671,
-        "distinct_gold_classes": 53
+        "accuracy_when_answered": 0.5652,
+        "abstention_rate": 0.356,
+        "macro_f1": 0.168,
+        "distinct_gold_classes": 53,
+        "model_failures": 0
       },
       "keyword\u2192llm": {
         "n": 500,
         "accuracy": 0.474,
         "hierarchy_match": 0.526,
-        "accuracy_when_answered": 0.6639,
-        "abstention_rate": 0.286,
-        "macro_f1": 0.2306,
+        "accuracy_when_answered": 0.6657,
+        "abstention_rate": 0.288,
+        "macro_f1": 0.2327,
         "distinct_gold_classes": 53
       }
     }
@@ -108,13 +110,13 @@
     "nuclei": {
       "gold_in_shortlist": {
         "n": 225,
-        "accuracy": 0.8267,
+        "accuracy": 0.8311,
         "abstention_rate": 0.0444
       },
       "gold_not_in_shortlist": {
         "n": 275,
         "accuracy": 0.0,
-        "abstention_rate": 0.4873
+        "abstention_rate": 0.4909
       }
     },
     "pentesterland": {
@@ -126,7 +128,7 @@
       "gold_not_in_shortlist": {
         "n": 235,
         "accuracy": 0.0,
-        "abstention_rate": 0.6043
+        "abstention_rate": 0.6085
       }
     }
   }
