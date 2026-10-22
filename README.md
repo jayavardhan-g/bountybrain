@@ -2,13 +2,19 @@
 
 A knowledge graph and retrieval system for learning bug bounty hunting.
 
-It answers three questions:
+It answers four questions:
 
-1. **"Explain this vulnerability class"** — a cited explanation grounded in a
-   local corpus, never in model memory.
-2. **"How does this weakness relate to everything else?"** — a typed, traversable
+1. **"Where do I start?"** — a learning path for one vulnerability class:
+   the weakness, the attack patterns that exploit it (easiest first), real
+   disclosed reports, labs to practise in, and what it leads to next — each
+   step an edge in the graph.
+2. **"Explain this vulnerability class"** — an explanation generated from
+   passages retrieved from a local corpus, citing them by number. How far the
+   citations hold is measured, not assumed: 32.6% of sentences are cited *and*
+   supported by their source, and 45% cite nothing (see Evaluation §4).
+3. **"How does this weakness relate to everything else?"** — a typed, traversable
    graph built on MITRE CWE and CAPEC, not a flat list of labels.
-3. **"I ran recon and got this. What should I test next?"** — a ranked, cited
+4. **"I ran recon and got this. What should I test next?"** — a ranked, cited
    plan derived from what actually affects the fingerprinted stack.
 
 **BountyBrain never scans anything.** You run recon with your own tools against
@@ -87,7 +93,8 @@ because no nuclei template references them. Reporting only the core would flatte
 the numbers.
 
 Dropping that tail makes the shape explicit — the core is **35,278 nodes and
-63,340 edges**, a mean degree of ~3.6 rather than 1.73:
+63,340 edges**, a mean degree of 3.59 rather than 1.73, with a largest
+component of 32,457 nodes (`core_structure` in `artifacts/graph_metrics.json`):
 
 ```bash
 python export_graph.py --format both --core-only   # GraphML + node/edge CSV
@@ -144,7 +151,9 @@ not weaknesses, and would have produced dangling edges.
 
 ## Evaluation
 
-Three suites, each designed so the result could come out badly.
+Five suites, each designed so the result could come out badly, plus an
+end-to-end run of the API and every UI page against the real graph and model
+(`e2e.py` → `artifacts/e2e.json`: 13/13 API routes, 7/7 pages, live server 2/2).
 
 ### 1. Retrieval — a four-way ablation
 
@@ -168,10 +177,10 @@ to every arm, so the comparison stands.
 
 | mode | R@1 | R@5 | R@10 | MRR | nDCG@10 | median ms |
 |---|---:|---:|---:|---:|---:|---:|
-| dense (embeddings only) | 0.665 | 0.880 | 0.925 | 0.758 | 0.790 | 38 |
+| dense (embeddings only) | 0.665 | 0.885 | 0.925 | 0.759 | 0.791 | 39 |
 | BM25 (lexical only) | 0.655 | 0.850 | 0.890 | 0.735 | 0.764 | 16 |
-| hybrid (RRF fusion) | 0.675 | 0.910 | 0.955 | 0.772 | 0.808 | 53 |
-| **hybrid + cross-encoder rerank** | **0.800** | **0.965** | **0.975** | **0.861** | **0.873** | 149 |
+| hybrid (RRF fusion) | 0.675 | 0.910 | 0.955 | 0.773 | 0.809 | 56 |
+| **hybrid + cross-encoder rerank** | **0.800** | **0.965** | **0.975** | **0.861** | **0.873** | 154 |
 
 Per document type (hybrid_rerank):
 
@@ -185,14 +194,6 @@ Per document type (hybrid_rerank):
 <!-- /RETRIEVAL_TABLE -->
 
 ### 2. CWE classification — against two independent gold sets
-
-> **⚠️ Being re-run — the numbers below are from a confounded comparison.**
-> The keyword baseline loads its alias table from the CWE catalogue and so saw
-> all 109 curated community terms; the embedding and LLM arms shortlist from a
-> candidate index built off the *stored* aliases, which the graph builder did
-> not persist. The baseline held vocabulary the other arms were denied. The
-> builder now persists it; see [RESULTS.md](RESULTS.md#3-cwe-classification--and-a-negative-result)
-> and step 0 of [PROGRESS.md](PROGRESS.md).
 
 Agreeing with one labeller could be an artefact of that labeller's conventions,
 so two are used: nuclei's community-assigned `cwe-id` (~7k templates) and
@@ -220,45 +221,72 @@ declines often can post good accuracy on whatever remains.
 
 | strategy | n | accuracy | hierarchy ±2 | macro F1 | abstained |
 |---|---:|---:|---:|---:|---:|
-| **keyword** | 500 | **0.398** | 0.444 | 0.216 | 0.354 |
-| embedding | 500 | 0.184 | 0.300 | 0.044 | 0.000 |
-| llm | 500 | 0.368 | 0.440 | 0.097 | 0.314 |
+| keyword | 500 | 0.398 | 0.444 | 0.216 | 0.354 |
+| embedding | 500 | 0.210 | 0.314 | 0.050 | 0.000 |
+| llm | 500 | 0.374 | 0.456 | 0.105 | 0.290 |
+| **keyword→llm** | 500 | **0.404** | 0.452 | 0.165 | 0.276 |
 
 **Gold set: disclosed writeups (title only — a harder task)**
 
 | strategy | n | accuracy | hierarchy ±2 | macro F1 | abstained |
 |---|---:|---:|---:|---:|---:|
-| **keyword** | 500 | **0.402** | 0.426 | 0.299 | 0.524 |
-| embedding | 500 | 0.188 | 0.314 | 0.065 | 0.000 |
-| llm | 500 | 0.280 | 0.342 | 0.114 | 0.392 |
+| keyword | 500 | 0.402 | 0.426 | 0.299 | 0.524 |
+| embedding | 500 | 0.330 | 0.412 | 0.102 | 0.000 |
+| llm | 500 | 0.364 | 0.416 | 0.168 | 0.356 |
+| **keyword→llm** | 500 | **0.474** | 0.526 | 0.233 | 0.288 |
+
+**Embedding shortlist recall** — is the gold class among the top-k candidates at all? The LLM chooses from the top 12, so recall@12 caps its accuracy.
+
+| gold set | R@1 | R@5 | R@12 | R@20 | R@50 | hierarchy ±2 R@12 |
+|---|---:|---:|---:|---:|---:|---:|
+| nuclei | 0.210 | 0.372 | 0.450 | 0.508 | 0.622 | 0.618 |
+| pentesterland | 0.330 | 0.464 | 0.530 | 0.558 | 0.622 | 0.652 |
+
+**LLM accuracy, split by whether gold was on its shortlist**
+
+| gold set | gold on shortlist: n | accuracy | gold not on shortlist: n | accuracy |
+|---|---:|---:|---:|---:|
+| nuclei | 225 | 0.831 | 275 | 0.000 |
+| pentesterland | 265 | 0.687 | 235 | 0.000 |
 
 <!-- /CLASSIFICATION_TABLE -->
 
-**The retrieval-augmented LLM classifier does not beat the keyword alias
-table.** That is the result, and it stays in the README because a suite that
-can only confirm what you hoped is not an evaluation.
+A fourth row needs no extra model calls: **keyword→llm** uses the alias table
+when it fires and asks the LLM only when keyword abstains.
 
-On nuclei the two are close — 0.368 vs 0.398 exact, and 0.440 vs 0.444 once
-sibling classes count — so the model lands in the right neighbourhood about as
-often and just picks a sibling more frequently. On writeup *titles* it is
-clearly worse (0.280 vs 0.402): a title names an outcome, and inferring the
-root weakness from it is where the model commits confidently to a plausible
-wrong class. Its macro F1 is much lower on both sets, meaning it concentrates
-on common classes and fails on the tail — the opposite of what the shortlist
-was meant to buy.
+**The retrieval-augmented LLM classifier still does not beat the keyword
+alias table — now on a fair comparison.** An earlier run was confounded: the
+curated community aliases (IDOR, SSTI, …) reached the keyword baseline but
+were never stored in the graph, so the embedding and LLM arms, which shortlist
+from the stored aliases, never saw them. With the aliases persisted and the
+candidate index rebuilt, on the same 500 items per set:
+
+- On **nuclei** the fix changed almost nothing (LLM 0.368 → 0.374, keyword
+  0.398). Template prose rarely uses the slang.
+- On **writeup titles** it closed most of the gap (LLM 0.280 → 0.364,
+  embedding 0.188 → 0.330, keyword 0.402) — the confound hurt exactly where
+  practitioner slang dominates.
+
+**The shortlist, not the model, is the ceiling.** The gold class is among the
+12 candidates the LLM sees only 45% (nuclei) / 53% (titles) of the time; when
+it is, the LLM picks it 83% / 69% of the time, and it scores zero otherwise by
+construction. Fixing retrieval of candidate classes is worth more than a
+better model.
+
+**Routing beats both.** keyword→llm reaches 0.404 on nuclei (+0.006 over
+keyword, within noise) and 0.474 on titles (+0.072). The titles number
+carries the caveat below.
 
 One caveat limits the *writeup* comparison specifically: that set's gold labels
 come from applying the alias table to the curated `Bugs` field, while the
 keyword baseline searches the title using the same table. The inputs differ, so
 it is not straightforwardly circular, but the shared vocabulary hands the
-baseline free wins whenever a title happens to name the bug. **The nuclei set
-is the fair comparison**, and there the gap is small.
+keyword arm free wins whenever a title happens to name the bug. **The nuclei
+set is the fair comparison**, and there keyword and LLM are close.
 
 The practical consequence: keyword is the right default for bulk CWE
 assignment here — faster, free, and at least as accurate. The LLM earns its
-place generating cited prose, which the retrieval numbers support, not
-assigning labels. [RESULTS.md](RESULTS.md) records the follow-up analysis this
-needs.
+place generating cited prose, which the faithfulness numbers below measure.
 
 ### 3. Recon planner — next-move ranking
 
@@ -299,6 +327,79 @@ should: ranking by what a stack is most likely to expose is a different question
 from ranking by what is worth your afternoon. Both are exposed in the UI, and
 reporting only the flattering one would hide a real trade-off.
 
+### 4. Tutorial faithfulness — are the citations real?
+
+The Learn page promises an explanation where every claim is cited to a
+retrieved passage. This suite checks that promise on 30 fixed topics, through
+the page's own code path. Each tutorial is split into sentences without a
+model; each sentence's `[n]` markers are checked against the sources it was
+given (a number that points at nothing is a hallucinated citation, checkable
+exactly); and an LLM judge reads the cited excerpts — truncated exactly as the
+generator saw them — and labels the sentence supported, partial or
+unsupported. The judge is the generator's own model, so it is calibrated
+against blind hand labels rather than trusted.
+
+<!-- FAITHFULNESS_TABLE -->
+
+**30 fixed topics, 424 generated sentences** (baseline prompt: 530). Same retrieval and model; only the tutorial prompt differs.
+
+| | baseline prompt | current prompt |
+|---|---:|---:|
+| sentences carrying a citation | 13.2% | 54.5% |
+| citation numbers that point at no source | 0.0% | 0.0% |
+| cited sentences the judge calls supported | 15.7% | 42.4% |
+| cited sentences the judge calls unsupported | 22.9% | 9.1% |
+| cited sentences supported, hand-calibrated | 38.6% | 59.7% |
+| **all sentences cited *and* supported, hand-calibrated** | 5.1% | **32.6%** |
+
+**LLM judge vs blind hand labels** (40 sentences per prompt, stratified on the judge's verdict)
+
+| claims from | agreement (3-way) | Cohen's κ | agreement (supported or not) | κ |
+|---|---:|---:|---:|---:|
+| baseline prompt | 0.600 | 0.42 | 0.725 | 0.41 |
+| current prompt | 0.825 | 0.71 | 0.875 | 0.75 |
+
+<!-- /FAITHFULNESS_TABLE -->
+
+**The first measurement was bad, and it is kept.** With the original prompt,
+13% of sentences carried a citation and roughly one sentence in twenty was
+both cited and supported. Two causes were visible in the outputs: the
+knowledge-graph facts were given "for framing" with no number, so the model
+used them uncited (one SSRF tutorial pinned the class's top bounty, $288,500,
+onto an unrelated example); and the citation rules sat above ~7k characters of
+sources. The current prompt makes the graph summary the last numbered source
+and puts the rules, with an example, after the sources. It was tuned on 10
+separate dev topics and the 30 test topics were run once.
+
+**What is still wrong.** Under half the sentences cite anything. The judge's
+"partial" is a catch-all — on hand review it hides both supported and
+unsupported sentences — and half of the hand-unsupported sentences are safety
+reminders the model still tags with a source number despite being told not to.
+The hand labels were made by Claude, blind to the judge's verdicts; they and
+the notes behind each are in `bountybrain/fixtures/faithfulness_handcheck*.json`.
+
+### 5. Learning path completeness
+
+The Learning Path page orders one class's study plan from graph edges:
+weakness → attack patterns (lowest required skill first) → disclosed writeups
+→ practice labs → what to learn next. When a stage is empty it borrows from a
+parent or child class and says which. How often the graph can fill it:
+
+<!-- LEARNING_PATH_TABLE -->
+
+| population | n | complete path | complete, no borrowing | patterns | writeups | labs |
+|---|---:|---:|---:|---:|---:|---:|
+| learner topics | 29 | 86.2% | 69.0% | 96.5% | 100.0% | 89.7% |
+| all CWE classes | 969 | 16.2% | 2.5% | 66.7% | 31.2% | 16.4% |
+
+Unresolved topic: NoSQL injection. Incomplete: Subdomain takeover, Clickjacking, Mass assignment, CRLF injection.
+
+<!-- /LEARNING_PATH_TABLE -->
+
+For the topics a learner actually asks about the path is usually complete;
+across the whole catalogue it rarely is, because most CWE classes have no
+disclosed writeup and no curated lab. Borrowing is shown, never hidden.
+
 ---
 
 ## How the recon planner scores
@@ -327,11 +428,12 @@ to run and the best-paying prior disclosures.
 
 ## What the UI does
 
-Five Streamlit pages, all reading the same local graph.
+Six Streamlit pages, all reading the same local graph.
 
 | page | what it answers |
 |---|---|
-| **Learn** | "Explain this class." A cited tutorial grounded in retrieved passages, the CAPEC patterns that exploit it, the real disclosures, and where to go practise it. Each disclosure expands to show **other reports connected to it** — same weakness class found elsewhere, or the same program yielding a different bug. |
+| **Learning Path** | "Where do I start?" An ordered plan for one class — the weakness, the attack patterns that exploit it (easiest first), real disclosures, labs to practise in, and what it leads to next — every step an edge in the graph. |
+| **Learn** | "Explain this class." A cited tutorial grounded in retrieved passages, with the sources listed under the same numbers it cites them by, the CAPEC patterns that exploit it, the real disclosures, and where to go practise it. Each disclosure expands to show **other reports connected to it** — same weakness class found elsewhere, or the same program yielding a different bug. |
 | **Explore** | "How does this relate to everything else?" Parents, children, peers and chaining edges in the CWE taxonomy, plus every attack pattern and disclosed writeup attached to the class. |
 | **Attack Chains** | "What does this bug let me do next?" Walks CAPEC's chaining edges to turn isolated patterns into multi-step routes. |
 | **Recon Planner** | "I ran recon — what now?" A ranked, cited plan per host, **and the disclosed reports matching that fingerprint**: reports labelled with a ranked weakness class *and* naming a technology the asset actually runs are surfaced first, because those describe the bug class on this stack rather than in general. |
@@ -391,8 +493,8 @@ bountybrain/
   kg/          SQLAlchemy models, graph builder, metrics
   rag/         chunker, index builder, hybrid retrieval
   recon/       recon-file parsers + the planner
-  eval/        retrieval, classification, planner suites
-  agent/       tutorial generation tools
+  eval/        retrieval, classification, planner, faithfulness, learning-path suites
+  agent/       tutorial generation tools, the learning path
   ui/          Streamlit pages
   clients/     LLM, embeddings, vector store
 prompts/        every prompt, loaded from file — never inlined in code
@@ -405,6 +507,7 @@ build_graph.py  parse -> knowledge graph + metrics
 index_corpus.py chunk + embed -> vector store
 serve_llm.py    start a local vLLM server on a free GPU
 eval.py         run the evaluation suites
+e2e.py          drive the API and every UI page against the real graph and model
 report.py       render eval tables into this README
 export_graph.py GraphML / CSV export for Gephi, Neo4j, pandas
 ```
@@ -416,8 +519,8 @@ export_graph.py GraphML / CSV export for Gephi, Neo4j, pandas
 Full setup, including shared-GPU-server caveats, is in [SETUP.md](SETUP.md).
 
 ```bash
-mamba create -n bountybrain python=3.11 -y && conda activate bountybrain
-pip install vllm && pip install -r requirements.txt
+mamba create --name bountybrain python=3.11 -y && mamba activate bountybrain
+pip install vllm==0.27.1 && pip install -r requirements.txt   # vLLM first: it pins torch
 
 python fetch_data.py            # ~1 GB, bulk downloads only
 python build_graph.py --rebuild # graph + metrics
@@ -433,11 +536,40 @@ For generated tutorials and the LLM evaluation arms:
 ```bash
 python serve_llm.py             # picks a free GPU; local vLLM, nothing leaves the host
 python eval.py --all
+uvicorn bountybrain.api.app:app --port 8765 &   # API; /docs lists every route
+python e2e.py --api http://localhost:8765       # then stop the API (Qdrant lock)
+python e2e.py --ui                              # every page, real model
 ```
+
+### Environment this was last run in (2026-10-22)
+
+| | |
+|---|---|
+| mamba env | `bountybrain` |
+| Python | 3.11.17 |
+| torch | 2.13.0+cu130 |
+| vllm | 0.27.1 (`--enforce-eager` + the flashinfer patch in SETUP.md, both still required) |
+| flashinfer-python | 0.6.16.post3 |
+| transformers | 5.20.2 |
+| sentence-transformers | 6.2.0 |
+| xgrammar | 0.2.8 |
+| streamlit | 1.66.1 |
+| fastapi / uvicorn | 0.136.3 / 0.54.0 |
+| qdrant-client | 1.20.0 |
+| SQLAlchemy | 2.1.6 |
+| networkx | 3.6.1 |
+| numpy / pandas | 2.3.5 / 3.0.6 |
+| openai (client) | 3.36.1 |
+| pytest / ruff | 9.1.1 / 0.17.1 |
+
+Model: `Qwen/Qwen2.5-14B-Instruct` on one H100-class GPU at 40% memory;
+embeddings `BAAI/bge-small-en-v1.5`, reranker `BAAI/bge-reranker-base`.
+A full record (`environment.yml`, exact builds, `pip freeze`) is in the
+user's env registry; `pip check` reports no broken requirements.
 
 ### Design decisions worth knowing
 
-- **SQLite by default.** The graph is ~150 MB and needs no server, so
+- **SQLite by default.** The graph is ~40 MB and needs no server, so
   `git clone && python build_graph.py` reproduces the published metrics anywhere.
   Point `DATABASE_URL` at Postgres if you want concurrent writers.
 - **Qdrant embedded by default.** No server, no port to collide with on a shared
@@ -458,13 +590,18 @@ python eval.py --all
 ## Tests
 
 ```bash
-pytest          # 44 tests, no network, no GPU, no downloads
+pytest          # 84 tests, no network, no GPU, no downloads
 ```
 
 They cover the invariants that actually bite: code fences surviving chunking,
 chunks never becoming subsets of one another, ExploitDB's ~460 duplicate ids,
-coverage arithmetic excluding non-vulnerability labels, and every curated CWE
-alias pointing at a weakness that exists.
+coverage arithmetic excluding non-vulnerability labels, every curated CWE
+alias pointing at a weakness that exists, and an exact alias winning over a
+more specific name match ("SQL injection" is CWE-89, not the Hibernate
+variant). `tests/test_app_smoke.py` renders every Streamlit page with
+`streamlit.testing` and calls every API route, against a small fixture graph
+with retrieval and the model stubbed, so a page that crashes on render fails
+CI. The real-stack run is `e2e.py`.
 
 ## Licence
 

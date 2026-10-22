@@ -19,11 +19,17 @@ jobs:
       # The test suite runs on inline fixtures — no dataset downloads, no GPU,
       # no model weights — so CI installs only what the tests import rather
       # than the full runtime (which pulls torch and vLLM).
+      # fastapi, streamlit and their neighbours are here for the smoke tests,
+      # which render every page and call every route on a fixture graph;
+      # without them those tests skip and a crashing page would pass CI.
+      # torch, sentence-transformers and the model clients load lazily and
+      # are still not needed.
       - name: Install test dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pytest pydantic pydantic-settings sqlalchemy pyyaml lxml \
-                      networkx numpy rich typer httpx
+                      networkx numpy rich typer httpx \
+                      fastapi python-multipart streamlit pandas qdrant-client rank-bm25
 
       - name: Run tests
         run: pytest -q

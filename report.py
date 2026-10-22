@@ -27,6 +27,8 @@ README = Path("README.md")
 MARKERS = {
     "retrieval": "RETRIEVAL_TABLE",
     "classification": "CLASSIFICATION_TABLE",
+    "faithfulness": "FAITHFULNESS_TABLE",
+    "learning_path": "LEARNING_PATH_TABLE",
 }
 
 
@@ -151,6 +153,80 @@ def classification_table() -> str:
     return "\n".join(blocks).rstrip()
 
 
+def faithfulness_table() -> str:
+    cur, base = _load("eval_faithfulness.json"), _load("eval_faithfulness_v1.json")
+    if not cur:
+        return "_Not yet run — `python eval.py --faithfulness`._"
+
+    def pct(d: dict | None, key: str) -> str:
+        return f"{d[key]:.1%}" if d and key in d else "—"
+
+    def hand(d: dict | None, key: str) -> str:
+        return f"{d['judge_vs_hand'][key]:.1%}" if d and "judge_vs_hand" in d else "—"
+
+    rows = [
+        f"**{cur['topics']} fixed topics, {cur['claims']} generated sentences** "
+        "(baseline prompt: "
+        f"{base['claims'] if base else '—'}). Same retrieval and model; only the "
+        "tutorial prompt differs.",
+        "",
+        "| | baseline prompt | current prompt |",
+        "|---|---:|---:|",
+        f"| sentences carrying a citation | {pct(base, 'citation_rate')} | {pct(cur, 'citation_rate')} |",
+        f"| citation numbers that point at no source | {pct(base, 'invalid_citation_rate')} "
+        f"| {pct(cur, 'invalid_citation_rate')} |",
+        f"| cited sentences the judge calls supported | {pct(base, 'supported_rate')} "
+        f"| {pct(cur, 'supported_rate')} |",
+        f"| cited sentences the judge calls unsupported | {pct(base, 'unsupported_rate')} "
+        f"| {pct(cur, 'unsupported_rate')} |",
+        f"| cited sentences supported, hand-calibrated | {hand(base, 'hand_calibrated_supported_rate')} "
+        f"| {hand(cur, 'hand_calibrated_supported_rate')} |",
+        f"| **all sentences cited *and* supported, hand-calibrated** "
+        f"| {pct(base, 'hand_calibrated_supported_of_all_claims')} "
+        f"| **{pct(cur, 'hand_calibrated_supported_of_all_claims')}** |",
+    ]
+    jv = [d["judge_vs_hand"] for d in (base, cur) if d and "judge_vs_hand" in d]
+    if jv:
+        rows += [
+            "",
+            "**LLM judge vs blind hand labels** (40 sentences per prompt, stratified on the judge's verdict)",
+            "",
+            "| claims from | agreement (3-way) | Cohen's κ | agreement (supported or not) | κ |",
+            "|---|---:|---:|---:|---:|",
+        ]
+        for name, d in zip(("baseline prompt", "current prompt")[-len(jv):], jv, strict=True):
+            rows.append(
+                f"| {name} | {d['three_way']['agreement']:.3f} | {d['three_way']['cohen_kappa']:.2f} "
+                f"| {d['binary_supported']['agreement']:.3f} | {d['binary_supported']['cohen_kappa']:.2f} |"
+            )
+    return "\n".join(rows)
+
+
+def learning_path_table() -> str:
+    data = _load("eval_learning_path.json")
+    if not data:
+        return "_Not yet run — `python eval.py --learning-path`._"
+    rows = [
+        "| population | n | complete path | complete, no borrowing | patterns | writeups | labs |",
+        "|---|---:|---:|---:|---:|---:|---:|",
+    ]
+    for name, key in (("learner topics", "topics"), ("all CWE classes", "all_classes")):
+        d = data[key]
+        f = d["stage_filled"]
+        rows.append(
+            f"| {name} | {d['n']} | {d['complete']:.1%} | {d['complete_direct_only']:.1%} "
+            f"| {f['patterns']:.1%} | {f['writeups']:.1%} | {f['labs']:.1%} |"
+        )
+    t = data["topics"]
+    if t.get("unresolved") or t.get("incomplete"):
+        rows += [
+            "",
+            f"Unresolved topic: {', '.join(t['unresolved']) or 'none'}. "
+            f"Incomplete: {', '.join(t['incomplete']) or 'none'}.",
+        ]
+    return "\n".join(rows)
+
+
 def _replace(text: str, marker: str, block: str) -> str:
     """Replace whatever sits between <!-- MARKER --> and <!-- /MARKER -->."""
     open_tag, close_tag = f"<!-- {marker} -->", f"<!-- /{marker} -->"
@@ -175,6 +251,8 @@ def main(
     tables = {
         MARKERS["retrieval"]: retrieval_table(),
         MARKERS["classification"]: classification_table(),
+        MARKERS["faithfulness"]: faithfulness_table(),
+        MARKERS["learning_path"]: learning_path_table(),
     }
 
     if print_only:

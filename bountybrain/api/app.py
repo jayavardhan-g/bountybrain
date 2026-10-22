@@ -33,9 +33,9 @@ app = FastAPI(
 def _startup() -> None:
     init_db()
     # Load the embedder, the reranker and the BM25 index now, not on the first
-    # /search: that request otherwise pays ~20 s of model loading (174 s once,
-    # from a cold network-storage cache). Without a built index the API still
-    # serves everything graph-backed, so a failure here is logged, not fatal.
+    # /search: that request otherwise pays the whole model load — minutes from
+    # a cold network-storage cache. Without a built index the API still serves
+    # everything graph-backed, so a failure here is logged, not fatal.
     try:
         from bountybrain.rag.hybrid import search as rag_search
 

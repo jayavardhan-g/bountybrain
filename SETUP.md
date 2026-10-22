@@ -4,31 +4,50 @@
 
 | | |
 |---|---|
-| Conda env name | `bountybrain` |
-| Python | 3.11.15 |
+| Conda env name | `bountybrain` (created **by name**, not path) |
+| Python | 3.11.17 |
 | Package manager | `mamba` / `pip` (miniforge3) |
-| Env path | `$CONDA_PREFIX/envs/bountybrain` |
+| Rebuilt | 2026-10-22 (the August env had been deleted) |
 
 Created with:
 
 ```bash
-mamba create -n bountybrain python=3.11 -y
-conda activate bountybrain
-pip install vllm                 # pins torch; install first
+mamba create --name bountybrain python=3.11 pip -y
+mamba activate bountybrain
+pip install vllm==0.27.1         # pins torch 2.13.0; install first
 pip install -r requirements.txt
 ```
 
-Key pinned versions actually installed:
+If PyPI is slow, the two big pieces have faster byte-identical sources:
+`pip install --index-url https://download.pytorch.org/whl/cu130 torch==2.13.0`
+first, then the vLLM wheel from its GitHub release
+(`vllm-0.27.1-cp38-abi3-manylinux_2_28_x86_64.whl`; check its sha256 against
+`https://pypi.org/pypi/vllm/0.27.1/json`). `pip check` reports no broken
+requirements either way.
+
+Key versions actually installed:
 
 | package | version |
 |---|---|
 | torch | 2.13.0+cu130 |
 | vllm | 0.27.1 |
-| transformers | 5.15.0 |
-| sentence-transformers | (see `pip freeze`) |
-| sqlalchemy | 2.x |
+| flashinfer-python | 0.6.16.post3 (patched, below) |
+| transformers | 5.20.2 |
+| sentence-transformers | 6.2.0 |
+| xgrammar | 0.2.8 |
+| streamlit | 1.66.1 |
+| fastapi / uvicorn | 0.136.3 / 0.54.0 |
+| qdrant-client | 1.20.0 |
+| SQLAlchemy | 2.1.6 |
 | networkx | 3.6.1 |
-| numpy | 2.3.5 |
+| numpy / pandas | 2.3.5 / 3.0.6 |
+
+The env takes ~8.8 GB. Model weights and `HF_HOME` belong on bulk storage,
+not in the env or the home quota:
+
+```bash
+export HF_HOME=/mnt/warm_storage/<you>/bountybrain/hf
+```
 
 ## Shared-machine notes
 
@@ -61,6 +80,9 @@ everyone else for no benefit.
 
 Four things bit during setup on this machine. All are environment problems,
 not project bugs, but they cost hours to diagnose so they are recorded here.
+All four were re-checked on 2026-10-22: the flashinfer import still fails on
+3.11 without the patch, and `serve_llm.py` now passes `--enforce-eager`
+itself below Python 3.12.
 
 **vLLM needs `--enforce-eager` on Python 3.11.** `flashinfer` (a vLLM
 dependency) annotates with `array.array[int]`, which is only subscriptable on
@@ -68,7 +90,8 @@ Python 3.12+. vLLM imports it through its allreduce–RMS-norm fusion compile
 pass, so startup dies with `TypeError: type 'array.array' is not subscriptable`
 before the engine ever loads. The pass is useless for single-GPU inference, and
 `--enforce-eager` skips the compilation that triggers the import. Python 3.12
-would also fix it.
+would also fix it. `serve_llm.py` adds the flag automatically on 3.11
+(`--no-enforce-eager` to override).
 
 ### flashinfer patch (Python 3.11 only)
 
@@ -94,6 +117,9 @@ F=$CONDA_PREFIX/lib/python3.11/site-packages/flashinfer/comm/fd_exchange.py
 cp "$F" "$F.orig"
 sed -i '/^import array/i from __future__ import annotations\n' "$F"
 ```
+
+Verify with `python -c "import flashinfer.comm.fd_exchange"` — it raises
+`TypeError: type 'array.array' is not subscriptable` until patched.
 
 **Using Python 3.12 avoids all of this** and is the better choice for a fresh
 environment. The patch is documented because it unblocks an existing 3.11
@@ -122,8 +148,13 @@ shells out to `ninja`, which pip installs as `$CONDA_PREFIX/bin/ninja`. Launch
 vLLM from a bare environment (`env -i`, a bare `nohup`, most supervisors) and
 it fails with `FileNotFoundError: [Errno 2] No such file or directory: 'ninja'`
 — again *after* the full weight load, so it reads like a model problem rather
-than a PATH one. `conda activate` handles this; explicit launches need
+than a PATH one. `mamba activate` handles this; explicit launches need
 `PATH="$CONDA_PREFIX/bin:$PATH"`.
+
+**Structured output: use `response_format`, not `guided_json`.** vLLM 0.27
+accepts `extra_body={"guided_json": schema}` and ignores it — no error, no
+warning, unconstrained text back. The client sends the OpenAI-standard
+`response_format={"type": "json_schema", ...}`, which vLLM enforces.
 
 ## Running the pipeline
 
