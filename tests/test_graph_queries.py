@@ -263,3 +263,23 @@ def test_related_reports_excludes_the_report_itself(report_graph):
 
 def test_related_reports_of_unknown_document_is_empty(report_graph):
     assert queries.related_writeups(999_999) == []
+
+
+def test_exact_alias_beats_a_more_specific_name_match(graph):
+    """"SQL injection" is CWE-89's alias; it must not resolve to a Variant whose
+    *name* merely contains the phrase."""
+    with db.Session() as s:
+        s.add_all(
+            [
+                Vulnerability(
+                    cwe_id=89,
+                    name="Improper Neutralization ... ('SQL Injection')",
+                    abstraction="Base",
+                    aliases_json=json.dumps(["SQL injection", "SQLi"]),
+                ),
+                Vulnerability(cwe_id=564, name="SQL Injection: Hibernate", abstraction="Variant"),
+            ]
+        )
+    assert queries.find_weakness("SQL injection")["cwe_id"] == 89
+    assert queries.find_weakness("sql INJECTION")["cwe_id"] == 89
+    assert queries.find_weakness("Hibernate")["cwe_id"] == 564

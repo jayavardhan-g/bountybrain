@@ -97,16 +97,22 @@ def find_weakness(term: str | int) -> dict | None:
         if v:
             return _weakness_dict(v)
 
-        # fall back to a name / alias substring match, preferring the most
+        # An exact alias beats any substring hit. Without this, "SQL injection"
+        # substring-matched "SQL Injection: Hibernate" (a Variant) ahead of
+        # CWE-89, whose alias it is, and "path traversal" landed on CWE-24.
+        exact = s.execute(
+            select(Vulnerability).where(Vulnerability.aliases_json.ilike(f'%"{text}"%'))
+        ).scalars().all()
+        if exact:
+            rank = {"Base": 0, "Variant": 1, "Class": 2, "Compound": 3, "Pillar": 4}
+            exact.sort(key=lambda v: rank.get(v.abstraction or "", 9))
+            return _weakness_dict(exact[0])
+
+        # fall back to a name substring match, preferring the most
         # specific abstraction so "injection" does not return the Pillar
         rank = {"Variant": 0, "Base": 1, "Compound": 2, "Class": 3, "Pillar": 4}
         rows = s.execute(
-            select(Vulnerability).where(
-                or_(
-                    Vulnerability.name.ilike(f"%{text}%"),
-                    Vulnerability.aliases_json.ilike(f'%"{text}"%'),
-                )
-            )
+            select(Vulnerability).where(Vulnerability.name.ilike(f"%{text}%"))
         ).scalars().all()
         if not rows:
             return None
