@@ -115,7 +115,7 @@ if uploads and st.button("Build plan", type="primary"):
                 }
                 for r in plan.recommendations
             ],
-            use_container_width=True,
+            width="stretch",
             hide_index=True,
         )
 
@@ -163,7 +163,7 @@ if uploads and st.button("Build plan", type="primary"):
                     }
                     for rep in plan.related_reports
                 ],
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
                 column_config={"url": st.column_config.LinkColumn("link")},
             )

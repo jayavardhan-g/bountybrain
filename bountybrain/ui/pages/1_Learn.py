@@ -57,10 +57,12 @@ if st.button("Explain", type="primary") and topic.strip():
 
         st.divider()
         st.subheader("Sources")
-        for i, hit in enumerate(rag["hits"], start=1):
-            with st.expander(f"[{i}] {hit['title']} — {hit['doc_type']} ({hit['score']})"):
-                st.markdown(f"[{hit['url']}]({hit['url']})")
-                st.text(hit["text"][:2000])
+        st.caption("Numbered as the explanation cites them, and shown as the model saw them.")
+        for i, src in enumerate(tools.tutorial_sources(rag["hits"], context), start=1):
+            with st.expander(f"[{i}] {src['title']} — {src['doc_type']}"):
+                if src["url"]:
+                    st.markdown(f"[{src['url']}]({src['url']})")
+                st.text(src["text"])
 
         if context.get("techniques"):
             st.subheader("Attack patterns (CAPEC)")

@@ -113,7 +113,7 @@ if term.strip():
                 }
                 for d in writeups
             ],
-            use_container_width=True,
+            width="stretch",
             hide_index=True,
             column_config={"url": st.column_config.LinkColumn("link")},
         )

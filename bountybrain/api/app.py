@@ -7,6 +7,7 @@ or calls an external service.
 """
 from __future__ import annotations
 
+import logging
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -15,8 +16,11 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 
 from bountybrain.agent import tools as agent_tools
+from bountybrain.agent.path import learning_path
 from bountybrain.kg import queries
 from bountybrain.kg.db import init_db
+
+log = logging.getLogger(__name__)
 
 app = FastAPI(
     title="BountyBrain API",
@@ -28,6 +32,16 @@ app = FastAPI(
 @app.on_event("startup")
 def _startup() -> None:
     init_db()
+    # Load the embedder, the reranker and the BM25 index now, not on the first
+    # /search: that request otherwise pays ~20 s of model loading (174 s once,
+    # from a cold network-storage cache). Without a built index the API still
+    # serves everything graph-backed, so a failure here is logged, not fatal.
+    try:
+        from bountybrain.rag.hybrid import search as rag_search
+
+        rag_search("warm-up", top_k=1)
+    except Exception as e:  # noqa: BLE001
+        log.warning("retrieval warm-up failed, /search will load lazily: %s", e)
 
 
 # --------------------------------------------------------------- schemas
@@ -96,7 +110,8 @@ def learn(req: TopicReq) -> dict:
         "topic": req.topic,
         "weakness": context.get("weakness"),
         "techniques": context.get("techniques", []),
-        "sources": rag["hits"],
+        # Numbered as the tutorial cites them: retrieved passages, then the graph.
+        "sources": agent_tools.tutorial_sources(rag["hits"], context),
         "tutorial": agent_tools.generate_tutorial(req.topic, rag["hits"], context),
         "labs": agent_tools.find_practice_labs(req.topic),
     }
@@ -162,3 +177,12 @@ def related_reports(document_id: int, limit: int = 8) -> dict:
 def labs(topic: str) -> dict:
     """Where to practise a weakness class hands-on."""
     return {"topic": topic, "labs": agent_tools.find_practice_labs(topic)}
+
+
+@app.get("/path")
+def get_learning_path(topic: str) -> dict:
+    """Ordered study plan: weakness → attack patterns → disclosures → labs → next."""
+    result = learning_path(topic)
+    if not result:
+        raise HTTPException(status_code=404, detail=f"no weakness matched {topic!r}")
+    return result

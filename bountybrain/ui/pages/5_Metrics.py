@@ -76,7 +76,7 @@ with tab_graph:
                 ]
             ),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
 
         hier = graph.get("hierarchy") or {}
@@ -99,7 +99,7 @@ with tab_graph:
                 f"Best-paying weakness classes (≥{econ['min_paid_threshold']} paid writeups)"
             )
             st.dataframe(
-                pd.DataFrame(econ["top_by_mean_bounty"]), hide_index=True, use_container_width=True
+                pd.DataFrame(econ["top_by_mean_bounty"]), hide_index=True, width="stretch"
             )
 
 with tab_retr:
@@ -110,17 +110,19 @@ with tab_retr:
             f"{retrieval.get('queries', 0)} held-out queries. Each arm sees the same "
             "queries and the same corpus."
         )
+        # Each row already carries its own `mode`; transposing and resetting the
+        # index would try to insert a second one and crash the page.
         st.dataframe(
-            pd.DataFrame(retrieval["modes"]).T.reset_index(names="mode"),
+            pd.DataFrame(list(retrieval["modes"].values())),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )
         if retrieval.get("by_doc_type"):
             st.subheader(f"By document type ({retrieval.get('breakdown_mode')})")
             st.dataframe(
                 pd.DataFrame(retrieval["by_doc_type"]).T.reset_index(names="doc_type"),
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
 
 with tab_clf:
@@ -132,7 +134,7 @@ with tab_clf:
             st.dataframe(
                 pd.DataFrame(per_method).T.reset_index(names="strategy"),
                 hide_index=True,
-                use_container_width=True,
+                width="stretch",
             )
 
 with tab_plan:
@@ -149,5 +151,5 @@ with tab_plan:
         st.dataframe(
             pd.DataFrame(planner["strategies"]).T.reset_index(names="strategy"),
             hide_index=True,
-            use_container_width=True,
+            width="stretch",
         )

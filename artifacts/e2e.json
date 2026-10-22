@@ -1,0 +1,252 @@
+{
+  "api": {
+    "passed": 13,
+    "total": 13,
+    "llm_model": "Qwen/Qwen2.5-14B-Instruct",
+    "checks": [
+      {
+        "check": "GET /health",
+        "ok": true,
+        "ms": 6,
+        "facts": {},
+        "error": null
+      },
+      {
+        "check": "GET /stats",
+        "ok": true,
+        "ms": 28,
+        "facts": {
+          "weaknesses": 969,
+          "techniques": 615,
+          "documents": 9224,
+          "signatures": 13569,
+          "exploits": 46647,
+          "cves": 29971
+        },
+        "error": null
+      },
+      {
+        "check": "GET /weakness/918",
+        "ok": true,
+        "ms": 24,
+        "facts": {
+          "techniques": 1,
+          "writeups": 15
+        },
+        "error": null
+      },
+      {
+        "check": "GET /weakness/999999 \u2192 404",
+        "ok": true,
+        "ms": 5,
+        "facts": {},
+        "error": null
+      },
+      {
+        "check": "GET /weakness?q= (aliases)",
+        "ok": true,
+        "ms": 22,
+        "facts": {
+          "IDOR": 639,
+          "SQL injection": 89,
+          "path traversal": 22
+        },
+        "error": null
+      },
+      {
+        "check": "POST /search",
+        "ok": true,
+        "ms": 159,
+        "facts": {
+          "top_hit": "Server-Side Request Forgery",
+          "mode": "hybrid_rerank"
+        },
+        "error": null
+      },
+      {
+        "check": "POST /learn (LLM tutorial)",
+        "ok": true,
+        "ms": 9143,
+        "facts": {
+          "tutorial_chars": 1847,
+          "sources": 7,
+          "labs": 2
+        },
+        "error": null
+      },
+      {
+        "check": "POST /chains",
+        "ok": true,
+        "ms": 20,
+        "facts": {
+          "chains": 2
+        },
+        "error": null
+      },
+      {
+        "check": "GET /labs (3 spellings)",
+        "ok": true,
+        "ms": 15,
+        "facts": {
+          "IDOR": 2,
+          "CWE-639": 2,
+          "Insecure Direct Object Reference": 2
+        },
+        "error": null
+      },
+      {
+        "check": "GET /path",
+        "ok": true,
+        "ms": 18,
+        "facts": {
+          "weakness": 1,
+          "patterns": 1,
+          "writeups": 5,
+          "labs": 2,
+          "next": 0
+        },
+        "error": null
+      },
+      {
+        "check": "GET /reports/related/{id}",
+        "ok": true,
+        "ms": 67,
+        "facts": {
+          "related": 8
+        },
+        "error": null
+      },
+      {
+        "check": "POST /product/signatures",
+        "ok": true,
+        "ms": 92,
+        "facts": {
+          "signatures": 25,
+          "weaknesses": 15
+        },
+        "error": null
+      },
+      {
+        "check": "POST /recon/parse + /recon/plan",
+        "ok": true,
+        "ms": 760,
+        "facts": {
+          "findings": 36,
+          "assets": 6
+        },
+        "error": null
+      }
+    ]
+  },
+  "ui": {
+    "passed": 7,
+    "total": 7,
+    "llm_model": "Qwen/Qwen2.5-14B-Instruct",
+    "checks": [
+      {
+        "check": "Home",
+        "ok": true,
+        "ms": 515,
+        "facts": {
+          "weaknesses_metric": "969"
+        },
+        "error": null
+      },
+      {
+        "check": "Learning Path (SSRF)",
+        "ok": true,
+        "ms": 1620,
+        "facts": {
+          "stages": [
+            "1. Understand CWE-918: Server-Side Request Forgery (SSRF)",
+            "2. See how it is attacked",
+            "3. Read real disclosures",
+            "4. Practise it hands-on",
+            "5. Where to go next"
+          ]
+        },
+        "error": null
+      },
+      {
+        "check": "Learn \u2192 Explain (LLM tutorial)",
+        "ok": true,
+        "ms": 28820,
+        "facts": {
+          "expanders": 15,
+          "subheaders": [
+            "Sources",
+            "Attack patterns (CAPEC)",
+            "Real disclosures",
+            "Where to practise this"
+          ]
+        },
+        "error": null
+      },
+      {
+        "check": "Explore (SSRF)",
+        "ok": true,
+        "ms": 338,
+        "facts": {
+          "header": "CWE-918: Server-Side Request Forgery (SSRF)",
+          "subheaders": 4
+        },
+        "error": null
+      },
+      {
+        "check": "Attack Chains (XSS, SQLi, SSRF)",
+        "ok": true,
+        "ms": 1014,
+        "facts": {
+          "chains_rendered": {
+            "XSS": 2,
+            "SQL injection": 1,
+            "SSRF": 0
+          }
+        },
+        "error": null
+      },
+      {
+        "check": "Recon Planner (render)",
+        "ok": true,
+        "ms": 319,
+        "facts": {
+          "info_boxes": 1
+        },
+        "error": null
+      },
+      {
+        "check": "Metrics",
+        "ok": true,
+        "ms": 514,
+        "facts": {
+          "tabs": 4,
+          "dataframes": 7
+        },
+        "error": null
+      }
+    ]
+  },
+  "streamlit_server": {
+    "passed": 2,
+    "total": 2,
+    "llm_model": "Qwen/Qwen2.5-14B-Instruct",
+    "checks": [
+      {
+        "check": "GET /_stcore/health",
+        "ok": true,
+        "ms": 4,
+        "facts": {},
+        "error": null
+      },
+      {
+        "check": "GET / (app shell)",
+        "ok": true,
+        "ms": 5,
+        "facts": {
+          "bytes": 6467
+        },
+        "error": null
+      }
+    ]
+  }
+}
