@@ -1,0 +1,70 @@
+{
+  "topics": 10,
+  "tutorials_generated": 10,
+  "sources_per_tutorial": 6,
+  "claims": 174,
+  "claims_per_tutorial": 17.4,
+  "citation_rate": 0.1207,
+  "citation_markers": 22,
+  "invalid_citation_rate": 0.0,
+  "claims_with_invalid_citation": 0,
+  "low_overlap_rate": 0.0952,
+  "judged": 21,
+  "judge_failures": 0,
+  "supported_rate": 0.2381,
+  "partial_rate": 0.6667,
+  "unsupported_rate": 0.0952,
+  "supported_of_all_claims": 0.0287,
+  "per_topic": {
+    "HTML injection": {
+      "claims": 18,
+      "judged": 3,
+      "supported": 0.0
+    },
+    "Host header injection": {
+      "claims": 18,
+      "judged": 3,
+      "supported": 1.0
+    },
+    "Session fixation": {
+      "claims": 19,
+      "judged": 0,
+      "supported": null
+    },
+    "LDAP injection": {
+      "claims": 16,
+      "judged": 3,
+      "supported": 0.333
+    },
+    "XPath injection": {
+      "claims": 18,
+      "judged": 2,
+      "supported": 0.0
+    },
+    "Email header injection": {
+      "claims": 17,
+      "judged": 3,
+      "supported": 0.0
+    },
+    "Integer overflow": {
+      "claims": 16,
+      "judged": 1,
+      "supported": 0.0
+    },
+    "Missing rate limiting": {
+      "claims": 15,
+      "judged": 2,
+      "supported": 0.5
+    },
+    "Insecure cookie flags": {
+      "claims": 19,
+      "judged": 4,
+      "supported": 0.0
+    },
+    "Server-side include injection": {
+      "claims": 18,
+      "judged": 0,
+      "supported": null
+    }
+  }
+}

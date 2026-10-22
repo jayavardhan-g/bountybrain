@@ -55,6 +55,14 @@ TOPICS = [
     "Authentication bypass",
 ]
 
+# Disjoint from TOPICS. Prompt changes are tried on these and the test topics
+# are run once afterwards, so the reported numbers are not tuned on.
+DEV_TOPICS = [
+    "HTML injection", "Host header injection", "Session fixation", "LDAP injection",
+    "XPath injection", "Email header injection", "Integer overflow",
+    "Missing rate limiting", "Insecure cookie flags", "Server-side include injection",
+]
+
 TOP_K = 6
 SAMPLES_FILE = "faithfulness_samples.jsonl"
 JUDGED_FILE = "faithfulness_claims.jsonl"
@@ -88,9 +96,8 @@ def generate(topics: list[str] = TOPICS, top_k: int = TOP_K) -> list[dict]:
                 "topic": topic,
                 "weakness": (context.get("weakness") or {}).get("key"),
                 "sources": [
-                    {"n": i, "title": h["title"], "url": h["url"], "doc_type": h["doc_type"],
-                     "text": h["text"][: tools.SOURCE_CHARS]}
-                    for i, h in enumerate(hits, start=1)
+                    {"n": i, **src}
+                    for i, src in enumerate(tools.tutorial_sources(hits, context), start=1)
                 ],
             }
         )
@@ -256,7 +263,7 @@ def summarise(claims: list[dict], samples: list[dict]) -> dict:
     return {
         "topics": len(samples),
         "tutorials_generated": sum(bool(s.get("tutorial")) for s in samples),
-        "sources_per_tutorial": TOP_K,
+        "retrieved_sources_per_tutorial": TOP_K,
         "claims": n,
         "claims_per_tutorial": round(n / len(samples), 1) if samples else 0.0,
         "citation_rate": rate(len(cited), n),
@@ -369,6 +376,13 @@ def agreement(claims: list[dict], labels_path: Path = HANDCHECK_LABELS) -> dict:
     }
 
 
+def _calibrated_of_all(result: dict) -> float:
+    """Of every sentence written, the share that is cited *and* supported,
+    using the hand-calibrated rate for the cited ones."""
+    rate = result["judge_vs_hand"]["hand_calibrated_supported_rate"]
+    return round(rate * result["judged"] / result["claims"], 4) if result["claims"] else 0.0
+
+
 # --------------------------------------------------------------------------
 # entry point
 # --------------------------------------------------------------------------
@@ -384,24 +398,32 @@ def _read_jsonl(name: str) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
-def evaluate_and_save(regenerate: bool = True) -> dict:
-    """Generate (or reuse), judge, and score. Writes three artefacts."""
-    if regenerate or not (settings.artifact_dir / SAMPLES_FILE).exists():
-        samples = generate()
-        _write_jsonl(SAMPLES_FILE, samples)
+def evaluate_and_save(regenerate: bool = True, dev: bool = False) -> dict:
+    """Generate (or reuse), judge, and score. Writes three artefacts.
+
+    `dev` runs the dev topics into `*_dev` files with no hand check — the place
+    to try prompt changes before the one run on the test topics.
+    """
+    suffix = "_dev" if dev else ""
+    samples_file = SAMPLES_FILE.replace(".jsonl", f"{suffix}.jsonl")
+    judged_file = JUDGED_FILE.replace(".jsonl", f"{suffix}.jsonl")
+    if regenerate or not (settings.artifact_dir / samples_file).exists():
+        samples = generate(DEV_TOPICS if dev else TOPICS)
+        _write_jsonl(samples_file, samples)
     else:
-        samples = _read_jsonl(SAMPLES_FILE)
+        samples = _read_jsonl(samples_file)
 
     claims = judge(build_claims(samples), samples)
-    _write_jsonl(JUDGED_FILE, claims)
+    _write_jsonl(judged_file, claims)
     result = summarise(claims, samples)
-    if HANDCHECK_LABELS.exists():
+    if not dev and HANDCHECK_LABELS.exists():
         result["judge_vs_hand"] = agreement(claims)
-    else:
+        result["hand_calibrated_supported_of_all_claims"] = _calibrated_of_all(result)
+    elif not dev:
         path = export_handcheck(claims, samples)
         console.print(f"[yellow]No hand labels yet — blind sample written to {path}[/yellow]")
 
-    out = settings.artifact_dir / "eval_faithfulness.json"
+    out = settings.artifact_dir / f"eval_faithfulness{suffix}.json"
     out.write_text(json.dumps(result, indent=2))
     console.print(
         f"claims={result['claims']} cited={result['citation_rate']:.3f} "

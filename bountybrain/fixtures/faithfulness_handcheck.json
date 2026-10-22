@@ -1,206 +1,207 @@
 {
   "labeller": "Claude (Opus 5.5), blind to the judge's verdicts, against the cited excerpts only",
   "sample": "artifacts/faithfulness_handcheck_blind.md (seed 7, stratified on judge label)",
+  "prompt": "prompts/tutorial.md v3 (graph facts as a numbered source, rules after sources)",
   "labels": {
-    "01-09": {
+    "01-01": {
       "label": "supported",
-      "note": "same URL example in the excerpt",
-      "text": "For instance, changing the URL to `https://example.com/profile?user_id=124` might reveal another user's profile details [2]."
+      "note": "near-verbatim",
+      "text": "This means that if a user tweaks a parameter in a URL or API request, they might be able to see or alter data they shouldn't have access to [1]."
     },
-    "02-07": {
-      "label": "partial",
-      "note": "stored XSS is named; comments/forums/profiles are added",
-      "text": "**Stored XSS**: Check areas where user input is stored on the server and displayed to other users later, such as comments, forums, or profile sections. [5]"
+    "01-06": {
+      "label": "supported",
+      "note": "same user_id example",
+      "text": "For instance, if a profile page uses a `user_id` parameter, try changing it to another user's ID to see if you can view their profile [2]."
     },
-    "02-08": {
-      "label": "partial",
-      "note": "DOM XSS and sinks are there; the specific instruction is a paraphrase plus detail",
-      "text": "**DOM-Based XSS**: Identify parts of the application where JavaScript dynamically modifies the DOM based on user input. [3]"
+    "01-11": {
+      "label": "supported",
+      "note": "definition",
+      "text": "IDOR vulnerabilities occur when applications allow direct access to objects based on user input without proper authorization checks [1]."
     },
-    "02-11": {
+    "02-14": {
       "label": "partial",
-      "note": "scripts run for other users is there; the impacts are added",
-      "text": "When another user reads the comment, the script executes in their browser, potentially revealing sensitive information or performing other malicious actions. [1]"
+      "note": "script injection is there; the sanitisation mechanism is added",
+      "text": "XSS vulnerabilities occur when a server does not properly sanitize user input before displaying it on a webpage [1]."
     },
     "03-06": {
       "label": "unsupported",
-      "note": "definition does not say behaviour changes indicate unsanitised input",
-      "text": "This can indicate that user input is being directly used in SQL queries without proper handling [1]."
+      "note": "definition only; no special-character probing",
+      "text": "Test by injecting special characters and SQL keywords to see if they affect the query execution [1]."
     },
-    "03-08": {
+    "03-11": {
       "label": "unsupported",
-      "note": "excerpt is about second-order SQLi; no delay/content signal",
-      "text": "For example, if changing input causes a delay or changes the content returned, it might be a sign of SQL injection [5]."
+      "note": "safety rule cited to a definition",
+      "text": "Never perform tests on systems without permission [1]."
     },
-    "03-13": {
+    "03-12": {
+      "label": "partial",
+      "note": "interferes with queries is there; 'directly included without sanitization' is added",
+      "text": "SQL Injection occurs when user inputs are directly included in SQL queries without proper sanitization [1]."
+    },
+    "03-14": {
       "label": "unsupported",
-      "note": "definition only; no comment-operator login bypass",
-      "text": "The `--` comment operator would disable the rest of the query, effectively bypassing the password check and allowing the attacker to log in as the admin user [1]."
+      "note": "safety rule cited to a definition",
+      "text": "Testing for SQL injection should always be conducted in a safe and authorized environment [1]."
     },
-    "04-10": {
-      "label": "unsupported",
-      "note": "PHP SSTI definition only; no {{7*7}} probe",
-      "text": "For example, try injecting `{{7*7}}` to see if the template engine returns `49` instead of just displaying the text `{{7*7}}` [4]."
-    },
-    "06-07": {
+    "04-01": {
       "label": "supported",
-      "note": "follows from point 3: session relying only on browser-held information",
-      "text": "These actions should require additional verification beyond just the session cookie. [1]"
+      "note": "every excerpt states it",
+      "text": "This happens because user input is embedded into server-side templates without proper sanitization or validation [1, 2, 3, 4, 5, 6]."
     },
-    "06-08": {
+    "04-04": {
       "label": "unsupported",
-      "note": "summary never mentions anti-CSRF tokens",
-      "text": "**Check for Lack of Anti-CSRF Tokens**: Ensure that forms and other state-changing requests include unique anti-CSRF tokens that are validated on the server side. [1]"
+      "note": "definitions only; no indicators",
+      "text": "Common indicators include URLs, form fields, or query parameters that appear in the output of a web page [1, 2, 3, 4, 5, 6]."
     },
-    "06-09": {
+    "04-09": {
       "label": "supported",
-      "note": "title states it",
-      "text": "Consider the case of a CSRF vulnerability found in the Facebook Partners platform [5]."
+      "note": "every excerpt states it",
+      "text": "User input embedded in templates without sanitization can lead to SSTI [1, 2, 3, 4, 5, 6]."
     },
-    "07-07": {
+    "04-11": {
+      "label": "unsupported",
+      "note": "safety rule cited to the graph source",
+      "text": "Testing for SSTI requires a safe environment to avoid unauthorized access or damage [7]."
+    },
+    "05-04": {
       "label": "supported",
-      "note": "excerpt is the methodology section",
-      "text": "Techniques for finding such vulnerabilities are detailed in [1]."
+      "note": "external entities make the parser fetch the URI",
+      "text": "If the application does not properly restrict or validate these external references, an attacker can manipulate the XML input to make the parser fetch data from unintended locations [1]."
+    },
+    "05-06": {
+      "label": "supported",
+      "note": "the DOCTYPE external-entity payload",
+      "text": "For example, you might use a payload that includes a `DOCTYPE` declaration pointing to a specific file or resource [1]."
+    },
+    "05-09": {
+      "label": "unsupported",
+      "note": "writeup metadata only; no file read stated",
+      "text": "This allowed the attacker to read sensitive files on the server [3]."
+    },
+    "05-13": {
+      "label": "supported",
+      "note": "unauthorized file access, DoS, SSRF listed",
+      "text": "Attackers can use these vulnerabilities to read sensitive files or perform other malicious actions [1]."
+    },
+    "06-02": {
+      "label": "supported",
+      "note": "WSTG point 3 (session relies only on browser-held info) + cookies in point 1",
+      "text": "CSRF happens because web applications often rely solely on session cookies stored in the user\u2019s browser to authenticate requests [1, 3]."
+    },
+    "06-13": {
+      "label": "supported",
+      "note": "follows from the link-based attack and point 3",
+      "text": "Look for actions that can be triggered by simple links or forms without additional validation [1]."
     },
     "07-08": {
       "label": "supported",
-      "note": "title states it",
-      "text": "Consider the scenario described in [5], where a researcher found an open redirect vulnerability in Instagram.com."
+      "note": "bounty field is $500",
+      "text": "The researcher reported this issue and received a bounty of $500 [5]."
     },
-    "11-05": {
-      "label": "supported",
-      "note": "WSTG objective verbatim",
-      "text": "**Identify Entry Points**: Look for places where the application accepts serialized objects from untrusted sources, such as HTTP headers, parameters, or cookies. [3]"
-    },
-    "11-11": {
-      "label": "supported",
-      "note": "record labels it unauthenticated insecure deserialization -> RCE",
-      "text": "This allowed attackers to execute arbitrary code on the server simply by sending maliciously crafted serialized data. [6]"
-    },
-    "12-09": {
+    "09-04": {
       "label": "partial",
-      "note": "../ to read arbitrary files is there; the /etc/passwd example is added",
-      "text": "For instance, if the application accepts a filename parameter like `?file=notes.txt`, an attacker could change it to `?file=../../../../etc/passwd` to attempt to read the password file on the server [1]."
+      "note": "concurrency is there; gift cards / registration are added",
+      "text": "Also, search for scenarios where users can perform actions that depend on shared resources, like redeeming gift cards or registering accounts, without proper synchronization [1]."
     },
-    "13-10": {
+    "10-02": {
       "label": "supported",
-      "note": "title + author state exactly this",
-      "text": "In a real-world scenario, Jadek Mark (@mase289) found an unrestricted file upload vulnerability that led to remote code execution on a bug bounty program [5]."
+      "note": "verbatim",
+      "text": "Almost all objects in JavaScript inherit from Object.prototype, making it a potential attack vector [1]."
     },
-    "14-08": {
-      "label": "unsupported",
-      "note": "summary says JWTs are signed; never says test that invalid signatures are rejected",
-      "text": "Citing [2], ensure the application does not accept invalid signatures."
-    },
-    "14-10": {
-      "label": "unsupported",
-      "note": "no kid header in the excerpt",
-      "text": "Citing [5], misusing the kid header can lead to key exposure."
-    },
-    "14-15": {
-      "label": "unsupported",
-      "note": "excerpt is about the signing secret; no kid header",
-      "text": "Citing [5], this misuse of the kid header can lead to unauthorized access."
-    },
-    "16-09": {
-      "label": "partial",
-      "note": "can-i-take-over-xyz is listed, as a list of services, not an automation tool",
-      "text": "Tools like `can-i-take-over-xyz` can help automate this process. [2]"
-    },
-    "16-10": {
+    "10-05": {
       "label": "supported",
-      "note": "title states it",
-      "text": "Consider the example of a subdomain takeover via Fastly CDN [1]."
+      "note": "verbatim from CWE-1321 impact",
+      "text": "This can be problematic if the product depends on the existence or non-existence of certain attributes, or uses predefined attributes of the object prototype [2]."
     },
-    "17-06": {
-      "label": "partial",
-      "note": "Host-header cache poisoning is there; 'generate cache keys' is added",
-      "text": "Testing for Host Header Injection can help reveal if the server improperly uses these headers to generate cache keys `[1]`."
-    },
-    "17-10": {
-      "label": "partial",
-      "note": "cached script payload shown; serving to later visitors is not stated in the excerpt",
-      "text": "Subsequent visitors to the same URL will receive the poisoned content, executing the malicious script in their browser `[3]`."
-    },
-    "18-06": {
-      "label": "unsupported",
-      "note": "WSTG summary only; no '; ls' probe",
-      "text": "For example, sending `; ls` as input should result in the listing of files if the application is vulnerable `[1]`."
-    },
-    "18-07": {
-      "label": "unsupported",
-      "note": "a CAPEC name from the graph context; the CWE-78 definition says nothing about it",
-      "text": "**Exploiting Multiple Input Interpretation Layers**: Attackers can exploit multiple layers of input interpretation to bypass filters and execute commands `[3]`."
-    },
-    "18-10": {
+    "12-11": {
       "label": "supported",
-      "note": "the excerpt shows exactly this injected command",
-      "text": "This would not only ping the IP address but also display the contents of `/etc/passwd`, revealing sensitive information `[4]`."
+      "note": "CWE-22: external input used to construct a pathname",
+      "text": "Look for places where user input is used to construct file paths in applications [2]."
     },
-    "21-06": {
+    "13-03": {
+      "label": "supported",
+      "note": "CWE-434 impact: uploaded file executed as code",
+      "text": "Attackers can use this to upload files that can be executed as code, leading to unauthorized actions [1]."
+    },
+    "14-12": {
       "label": "partial",
-      "note": "definition matches; 'check documentation and code' is added",
-      "text": "Check documentation and code for any mention of mass assignment or similar features, and ensure that only authorized fields are being updated [1]."
+      "note": "secure transmission is there; 'especially for authentication' is added",
+      "text": "JWTs are used for secure transmission of information, especially for authentication [1]."
+    },
+    "15-08": {
+      "label": "supported",
+      "note": "verbatim",
+      "text": "This enabled the attacker to make requests from their site using the victim's credentials [1]."
+    },
+    "19-05": {
+      "label": "partial",
+      "note": "`page` is the parameter; `file` is a variable name, not a parameter",
+      "text": "Common parameters might be named `file`, `page`, or similar [3]."
+    },
+    "19-16": {
+      "label": "supported",
+      "note": "CAPEC-252 Explore + Experiment steps",
+      "text": "To find LFI vulnerabilities, explore the application for URLs that accept file input parameters and test path traversal sequences [6]."
+    },
+    "20-08": {
+      "label": "supported",
+      "note": "onclick redirects the iframe to malicious-site.com",
+      "text": "When the user clicks the button, the attacker redirects the iframe to a malicious site, exploiting the user's action [6]."
+    },
+    "21-04": {
+      "label": "supported",
+      "note": "excerpt's last sentence",
+      "text": "If the app doesn\u2019t check which fields users are allowed to change, attackers can slip in changes to fields they shouldn\u2019t be able to touch [2]."
     },
     "21-07": {
-      "label": "partial",
-      "note": "mass assignment is there; the record says pre-account takeover, not admin access to a server",
-      "text": "In one notable disclosure, an attacker exploited a mass assignment vulnerability to gain admin access to a company's server [3]."
-    },
-    "22-12": {
       "label": "supported",
-      "note": "example 1 is a price manipulation; 'only the correct price can be charged'",
-      "text": "This scenario illustrates a business logic flaw where the application fails to enforce proper pricing rules. [4]"
+      "note": "adding an extra isAdmin field is the excerpt's example",
+      "text": "Try adding extra fields to the request and see if the app processes them [2]."
     },
-    "23-07": {
-      "label": "unsupported",
-      "note": "writeup metadata only; nothing on environment variables",
-      "text": "**Subverting Environment Variable Values**: Check if environment variables are exposed in error responses or logs `[3]`."
+    "22-11": {
+      "label": "supported",
+      "note": "paraphrase of flaws stemming from business rules",
+      "text": "Business logic errors occur when software doesn't enforce its intended rules properly [1]."
     },
     "23-08": {
       "label": "unsupported",
-      "note": "writeup metadata only; nothing on footprinting",
-      "text": "**Footprinting**: Gather publicly available information about the target, including server configurations and software versions `[3]`."
+      "note": "titles only; nothing on public responses",
+      "text": "Check for sensitive details in public request responses [1, 2, 3]."
     },
-    "24-06": {
+    "24-07": {
+      "label": "supported",
+      "note": "title + labels: response manipulation -> auth bypass, ATO",
+      "text": "By manipulating these responses, the attacker was able to bypass authentication and take over accounts [2]."
+    },
+    "24-11": {
+      "label": "partial",
+      "note": "self-XSS and ATO labels present; 'bypass authentication' is added",
+      "text": "Check for self-XSS vulnerabilities that can be used to bypass authentication [4]."
+    },
+    "24-12": {
       "label": "unsupported",
-      "note": "writeup metadata only; nothing on brute force",
-      "text": "Another method involves testing if the system allows brute-forcing or guessing passwords easily [1]."
+      "note": "safety rule cited to the graph source, which says nothing about it",
+      "text": "Always test in a safe environment with proper authorization [7]."
     },
-    "24-09": {
-      "label": "supported",
-      "note": "bounty field is $4,100",
-      "text": "This led to a bounty of $4,100 [2]."
+    "25-05": {
+      "label": "partial",
+      "note": "excerpt: unprotected tokens lead to unauthorized resource access, not access to the tokens",
+      "text": "Allows unauthorized access to tokens or credentials [2]."
     },
-    "26-07": {
+    "25-12": {
       "label": "supported",
-      "note": "WSTG summary states it",
-      "text": "This involves checking if the application correctly enforces access controls and prevents unauthorized actions. [1]"
+      "note": "improper configuration leads to severe vulnerabilities",
+      "text": "OAuth misconfigurations can lead to serious security issues [1]."
     },
     "26-12": {
       "label": "supported",
-      "note": "bounty field is $400",
-      "text": "This resulted in a bounty of $400. [2]"
+      "note": "verify a user cannot modify their privileges or roles",
+      "text": "Look for areas where users can change their roles or permissions without proper checks [1]."
     },
-    "27-08": {
+    "29-04": {
       "label": "supported",
-      "note": "lead-in; the excerpt does contain the scenario",
-      "text": "Consider the following scenario from [3]:"
-    },
-    "28-10": {
-      "label": "supported",
-      "note": "verbatim in the methodology",
-      "text": "This would return all products with a price greater than zero, instead of a specific product, potentially leaking sensitive data ([1])."
-    },
-    "29-05": {
-      "label": "supported",
-      "note": "bypass by modifying URL parameter / calling internal page directly",
-      "text": "**URL Tampering**: Modify URL parameters to access restricted pages directly [1]."
-    },
-    "29-08": {
-      "label": "partial",
-      "note": "both labels present; the causal link is inferred",
-      "text": "In the case of the Google Assistant vulnerability [3], an attacker was able to bypass authentication by exploiting an information disclosure issue."
+      "note": "skip the log-in page and call an internal page directly",
+      "text": "Look for URLs that can be directly accessed without a login request [1]."
     }
   }
 }

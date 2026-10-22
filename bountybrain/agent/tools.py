@@ -99,18 +99,39 @@ SOURCE_CHARS = 1200
 TUTORIAL_SYSTEM = "You write clear, accurate security tutorials for beginners."
 
 
+def tutorial_sources(sources: list[dict], context: dict | None = None) -> list[dict]:
+    """The numbered sources a tutorial may cite, exactly as the model sees them.
+
+    The knowledge-graph facts are the last numbered source rather than a
+    separate "for framing" block: unnumbered, they were used without a
+    citation — a CAPEC name here, a class's top bounty pinned onto an
+    unrelated example there — and nothing could check them.
+    """
+    numbered = [
+        {"title": s["title"], "url": s["url"], "doc_type": s.get("doc_type"),
+         "text": s["text"][:SOURCE_CHARS]}
+        for s in sources
+    ]
+    brief = _context_brief(context)
+    if brief:
+        numbered.append(
+            {
+                "title": "BountyBrain knowledge graph (MITRE CWE/CAPEC, disclosed-report metadata)",
+                "url": (context or {}).get("weakness", {}).get("url", ""),
+                "doc_type": "graph",
+                "text": json.dumps(brief, indent=2),
+            }
+        )
+    return numbered
+
+
 def tutorial_prompt(topic: str, sources: list[dict], context: dict | None = None) -> str:
     """The user prompt for a cited tutorial, shared by the UI and the eval."""
     numbered = "\n\n".join(
-        f"[{i}] {s['title']} ({s['url']})\n{s['text'][:SOURCE_CHARS]}"
-        for i, s in enumerate(sources, start=1)
+        f"[{i}] {s['title']} ({s['url']})\n{s['text']}"
+        for i, s in enumerate(tutorial_sources(sources, context), start=1)
     )
-    return load_prompt(
-        "tutorial",
-        topic=topic,
-        sources=numbered,
-        kg_context=json.dumps(_context_brief(context), indent=2) if context else "{}",
-    )
+    return load_prompt("tutorial", topic=topic, sources=numbered)
 
 
 def generate_tutorial(topic: str, sources: list[dict], context: dict | None = None) -> str:

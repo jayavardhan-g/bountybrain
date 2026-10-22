@@ -1,208 +1,207 @@
 {
   "topics": 30,
   "tutorials_generated": 30,
-  "sources_per_tutorial": 6,
-  "claims": 530,
-  "claims_per_tutorial": 17.7,
-  "citation_rate": 0.1321,
-  "citation_markers": 72,
+  "retrieved_sources_per_tutorial": 6,
+  "claims": 424,
+  "claims_per_tutorial": 14.1,
+  "citation_rate": 0.5448,
+  "citation_markers": 318,
   "invalid_citation_rate": 0.0,
   "claims_with_invalid_citation": 0,
-  "low_overlap_rate": 0.4286,
-  "judged": 70,
+  "low_overlap_rate": 0.3074,
+  "judged": 231,
   "judge_failures": 0,
-  "supported_rate": 0.1571,
-  "partial_rate": 0.6143,
-  "unsupported_rate": 0.2286,
-  "supported_of_all_claims": 0.0208,
+  "supported_rate": 0.4242,
+  "partial_rate": 0.4848,
+  "unsupported_rate": 0.0909,
+  "supported_of_all_claims": 0.2311,
   "per_topic": {
     "SSRF": {
-      "claims": 18,
-      "judged": 0,
-      "supported": null
+      "claims": 13,
+      "judged": 7,
+      "supported": 0.714
     },
     "IDOR": {
-      "claims": 15,
-      "judged": 2,
-      "supported": 0.5
+      "claims": 14,
+      "judged": 7,
+      "supported": 0.571
     },
     "Cross-site scripting": {
-      "claims": 18,
-      "judged": 4,
-      "supported": 0.0
+      "claims": 17,
+      "judged": 8,
+      "supported": 0.25
     },
     "SQL injection": {
-      "claims": 19,
-      "judged": 3,
-      "supported": 0.0
+      "claims": 15,
+      "judged": 8,
+      "supported": 0.125
     },
     "SSTI": {
-      "claims": 23,
-      "judged": 3,
-      "supported": 0.0
+      "claims": 12,
+      "judged": 9,
+      "supported": 0.444
     },
     "XXE": {
       "claims": 15,
-      "judged": 2,
-      "supported": 0.0
+      "judged": 7,
+      "supported": 0.714
     },
     "CSRF": {
-      "claims": 20,
-      "judged": 3,
-      "supported": 0.333
+      "claims": 14,
+      "judged": 12,
+      "supported": 0.417
     },
     "Open redirect": {
-      "claims": 17,
-      "judged": 2,
-      "supported": 0.5
+      "claims": 14,
+      "judged": 5,
+      "supported": 0.6
     },
     "HTTP request smuggling": {
-      "claims": 18,
-      "judged": 0,
-      "supported": null
+      "claims": 15,
+      "judged": 7,
+      "supported": 0.857
     },
     "Race condition": {
-      "claims": 16,
-      "judged": 2,
-      "supported": 0.5
-    },
-    "Prototype pollution": {
-      "claims": 18,
-      "judged": 0,
-      "supported": null
-    },
-    "Insecure deserialization": {
-      "claims": 17,
-      "judged": 4,
-      "supported": 0.25
-    },
-    "Path traversal": {
-      "claims": 15,
-      "judged": 4,
-      "supported": 0.0
-    },
-    "Unrestricted file upload": {
-      "claims": 18,
-      "judged": 1,
-      "supported": 1.0
-    },
-    "JWT": {
-      "claims": 22,
-      "judged": 3,
-      "supported": 0.0
-    },
-    "CORS misconfiguration": {
-      "claims": 20,
-      "judged": 3,
-      "supported": 0.0
-    },
-    "Subdomain takeover": {
-      "claims": 21,
-      "judged": 3,
-      "supported": 0.333
-    },
-    "Web cache poisoning": {
-      "claims": 17,
-      "judged": 2,
-      "supported": 0.0
-    },
-    "OS command injection": {
-      "claims": 16,
-      "judged": 3,
-      "supported": 0.333
-    },
-    "Local file inclusion": {
-      "claims": 21,
-      "judged": 0,
-      "supported": null
-    },
-    "Clickjacking": {
-      "claims": 22,
-      "judged": 0,
-      "supported": null
-    },
-    "Mass assignment": {
-      "claims": 15,
-      "judged": 2,
-      "supported": 0.0
-    },
-    "Business logic": {
-      "claims": 18,
-      "judged": 3,
-      "supported": 0.0
-    },
-    "Information disclosure": {
-      "claims": 16,
-      "judged": 4,
-      "supported": 0.0
-    },
-    "Account takeover": {
-      "claims": 15,
-      "judged": 5,
+      "claims": 12,
+      "judged": 10,
       "supported": 0.2
     },
-    "OAuth": {
-      "claims": 14,
-      "judged": 2,
-      "supported": 0.0
+    "Prototype pollution": {
+      "claims": 17,
+      "judged": 8,
+      "supported": 0.625
     },
-    "Privilege escalation": {
-      "claims": 18,
-      "judged": 3,
-      "supported": 0.0
+    "Insecure deserialization": {
+      "claims": 13,
+      "judged": 9,
+      "supported": 0.556
     },
-    "CRLF injection": {
-      "claims": 16,
-      "judged": 1,
-      "supported": 0.0
+    "Path traversal": {
+      "claims": 12,
+      "judged": 7,
+      "supported": 0.286
     },
-    "NoSQL injection": {
-      "claims": 16,
-      "judged": 2,
+    "Unrestricted file upload": {
+      "claims": 13,
+      "judged": 6,
       "supported": 0.5
     },
-    "Authentication bypass": {
-      "claims": 16,
+    "JWT": {
+      "claims": 15,
+      "judged": 7,
+      "supported": 0.143
+    },
+    "CORS misconfiguration": {
+      "claims": 14,
       "judged": 4,
       "supported": 0.25
+    },
+    "Subdomain takeover": {
+      "claims": 14,
+      "judged": 5,
+      "supported": 0.0
+    },
+    "Web cache poisoning": {
+      "claims": 15,
+      "judged": 4,
+      "supported": 0.25
+    },
+    "OS command injection": {
+      "claims": 15,
+      "judged": 11,
+      "supported": 0.455
+    },
+    "Local file inclusion": {
+      "claims": 17,
+      "judged": 12,
+      "supported": 0.833
+    },
+    "Clickjacking": {
+      "claims": 14,
+      "judged": 7,
+      "supported": 0.429
+    },
+    "Mass assignment": {
+      "claims": 16,
+      "judged": 7,
+      "supported": 0.429
+    },
+    "Business logic": {
+      "claims": 14,
+      "judged": 7,
+      "supported": 0.429
+    },
+    "Information disclosure": {
+      "claims": 10,
+      "judged": 8,
+      "supported": 0.125
+    },
+    "Account takeover": {
+      "claims": 13,
+      "judged": 8,
+      "supported": 0.125
+    },
+    "OAuth": {
+      "claims": 15,
+      "judged": 9,
+      "supported": 0.222
+    },
+    "Privilege escalation": {
+      "claims": 13,
+      "judged": 7,
+      "supported": 0.714
+    },
+    "CRLF injection": {
+      "claims": 15,
+      "judged": 7,
+      "supported": 0.143
+    },
+    "NoSQL injection": {
+      "claims": 15,
+      "judged": 7,
+      "supported": 0.714
+    },
+    "Authentication bypass": {
+      "claims": 13,
+      "judged": 11,
+      "supported": 0.364
     }
   },
   "judge_vs_hand": {
     "stale_labels": 0,
-    "hand_calibrated_supported_rate": 0.3864,
+    "hand_calibrated_supported_rate": 0.5974,
     "three_way": {
       "n": 40,
-      "agreement": 0.6,
-      "cohen_kappa": 0.4182
+      "agreement": 0.825,
+      "cohen_kappa": 0.7065
     },
     "binary_supported": {
       "n": 40,
-      "agreement": 0.725,
-      "cohen_kappa": 0.4054
+      "agreement": 0.875,
+      "cohen_kappa": 0.75
     },
     "judge_precision": {
       "supported": {
-        "judge_said": 10,
-        "hand_agreed": 8
+        "judge_said": 20,
+        "hand_agreed": 20
       },
       "partial": {
-        "judge_said": 20,
-        "hand_agreed": 8
+        "judge_said": 14,
+        "hand_agreed": 7
       },
       "unsupported": {
-        "judge_said": 10,
-        "hand_agreed": 8
+        "judge_said": 6,
+        "hand_agreed": 6
       }
     },
     "confusion": {
-      "judge=partial / hand=partial": 8,
-      "judge=partial / hand=supported": 7,
-      "judge=partial / hand=unsupported": 5,
-      "judge=supported / hand=partial": 2,
-      "judge=supported / hand=supported": 8,
-      "judge=unsupported / hand=supported": 2,
-      "judge=unsupported / hand=unsupported": 8
+      "judge=partial / hand=partial": 7,
+      "judge=partial / hand=supported": 5,
+      "judge=partial / hand=unsupported": 2,
+      "judge=supported / hand=supported": 20,
+      "judge=unsupported / hand=unsupported": 6
     },
     "note": "Sample is stratified on the judge's label (up to half supported), so raw agreement is not the population agreement; read per-label precision, and hand_calibrated_supported_rate for the population estimate."
-  }
+  },
+  "hand_calibrated_supported_of_all_claims": 0.3255
 }

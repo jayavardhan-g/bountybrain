@@ -36,6 +36,9 @@ def main(
     faithfulness: bool = typer.Option(
         False, "--faithfulness", help="Citation faithfulness of generated tutorials (needs an LLM)."
     ),
+    dev_topics: bool = typer.Option(
+        False, "--dev-topics", help="Faithfulness on the dev topics (for prompt work), not the test set."
+    ),
     learning_path: bool = typer.Option(
         False, "--learning-path", help="How often the graph fills a complete learning path."
     ),
@@ -120,7 +123,9 @@ def main(
         else:
             from bountybrain.eval import faithfulness as faith
 
-            summary["faithfulness"] = faith.evaluate_and_save(regenerate=regenerate_tutorials)
+            summary["faithfulness"] = faith.evaluate_and_save(
+                regenerate=regenerate_tutorials or dev_topics, dev=dev_topics
+            )
 
     out = settings.artifact_dir / "eval_summary.json"
     out.write_text(json.dumps(summary, indent=2, default=str))
