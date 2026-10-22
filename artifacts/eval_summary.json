@@ -6,12 +6,12 @@
         "mode": "dense",
         "n": 200,
         "recall@1": 0.665,
-        "recall@5": 0.88,
+        "recall@5": 0.885,
         "recall@10": 0.925,
-        "mrr": 0.7584,
-        "ndcg@10": 0.7904,
-        "median_latency_ms": 37.8,
-        "p95_latency_ms": 38.3
+        "mrr": 0.7588,
+        "ndcg@10": 0.7908,
+        "median_latency_ms": 39.4,
+        "p95_latency_ms": 42.3
       },
       "bm25": {
         "mode": "bm25",
@@ -21,8 +21,8 @@
         "recall@10": 0.89,
         "mrr": 0.7351,
         "ndcg@10": 0.7636,
-        "median_latency_ms": 15.5,
-        "p95_latency_ms": 21.8
+        "median_latency_ms": 15.6,
+        "p95_latency_ms": 22.7
       },
       "hybrid": {
         "mode": "hybrid",
@@ -30,10 +30,10 @@
         "recall@1": 0.675,
         "recall@5": 0.91,
         "recall@10": 0.955,
-        "mrr": 0.7718,
-        "ndcg@10": 0.8079,
-        "median_latency_ms": 53.2,
-        "p95_latency_ms": 60.0
+        "mrr": 0.7731,
+        "ndcg@10": 0.8089,
+        "median_latency_ms": 56.3,
+        "p95_latency_ms": 64.5
       },
       "hybrid_rerank": {
         "mode": "hybrid_rerank",
@@ -41,10 +41,10 @@
         "recall@1": 0.8,
         "recall@5": 0.965,
         "recall@10": 0.975,
-        "mrr": 0.8613,
-        "ndcg@10": 0.8731,
-        "median_latency_ms": 148.6,
-        "p95_latency_ms": 166.3
+        "mrr": 0.8614,
+        "ndcg@10": 0.8732,
+        "median_latency_ms": 153.9,
+        "p95_latency_ms": 175.2
       }
     },
     "skipped_modes": [],
@@ -57,8 +57,8 @@
         "recall@10": 0.94,
         "mrr": 0.794,
         "ndcg@10": 0.803,
-        "median_latency_ms": 149.2,
-        "p95_latency_ms": 166.9
+        "median_latency_ms": 153.2,
+        "p95_latency_ms": 167.1
       },
       "technique": {
         "mode": "hybrid_rerank",
@@ -68,8 +68,8 @@
         "recall@10": 0.98,
         "mrr": 0.8807,
         "ndcg@10": 0.8835,
-        "median_latency_ms": 149.8,
-        "p95_latency_ms": 160.1
+        "median_latency_ms": 155.3,
+        "p95_latency_ms": 172.6
       },
       "weakness": {
         "mode": "hybrid_rerank",
@@ -77,10 +77,10 @@
         "recall@1": 0.76,
         "recall@5": 0.94,
         "recall@10": 0.98,
-        "mrr": 0.8188,
-        "ndcg@10": 0.842,
-        "median_latency_ms": 155.2,
-        "p95_latency_ms": 169.5
+        "mrr": 0.8192,
+        "ndcg@10": 0.8424,
+        "median_latency_ms": 156.3,
+        "p95_latency_ms": 171.6
       },
       "writeup": {
         "mode": "hybrid_rerank",
@@ -90,10 +90,493 @@
         "recall@10": 1.0,
         "mrr": 0.9517,
         "ndcg@10": 0.9639,
-        "median_latency_ms": 138.4,
-        "p95_latency_ms": 162.3
+        "median_latency_ms": 139.9,
+        "p95_latency_ms": 160.8
       }
     },
     "breakdown_mode": "hybrid_rerank"
+  },
+  "classification": {
+    "seed": 17,
+    "sets": {
+      "nuclei": {
+        "keyword": {
+          "n": 500,
+          "accuracy": 0.398,
+          "hierarchy_match": 0.444,
+          "accuracy_when_answered": 0.6161,
+          "abstention_rate": 0.354,
+          "macro_f1": 0.2157,
+          "distinct_gold_classes": 51
+        },
+        "embedding": {
+          "n": 500,
+          "accuracy": 0.21,
+          "hierarchy_match": 0.314,
+          "accuracy_when_answered": 0.21,
+          "abstention_rate": 0.0,
+          "macro_f1": 0.0502,
+          "distinct_gold_classes": 51
+        },
+        "llm": {
+          "n": 500,
+          "accuracy": 0.374,
+          "hierarchy_match": 0.456,
+          "accuracy_when_answered": 0.5268,
+          "abstention_rate": 0.29,
+          "macro_f1": 0.1049,
+          "distinct_gold_classes": 51,
+          "model_failures": 0
+        },
+        "keyword\u2192llm": {
+          "n": 500,
+          "accuracy": 0.404,
+          "hierarchy_match": 0.452,
+          "accuracy_when_answered": 0.558,
+          "abstention_rate": 0.276,
+          "macro_f1": 0.1653,
+          "distinct_gold_classes": 51
+        }
+      },
+      "pentesterland": {
+        "keyword": {
+          "n": 500,
+          "accuracy": 0.402,
+          "hierarchy_match": 0.426,
+          "accuracy_when_answered": 0.8445,
+          "abstention_rate": 0.524,
+          "macro_f1": 0.2986,
+          "distinct_gold_classes": 53
+        },
+        "embedding": {
+          "n": 500,
+          "accuracy": 0.33,
+          "hierarchy_match": 0.412,
+          "accuracy_when_answered": 0.33,
+          "abstention_rate": 0.0,
+          "macro_f1": 0.1018,
+          "distinct_gold_classes": 53
+        },
+        "llm": {
+          "n": 500,
+          "accuracy": 0.364,
+          "hierarchy_match": 0.416,
+          "accuracy_when_answered": 0.5652,
+          "abstention_rate": 0.356,
+          "macro_f1": 0.168,
+          "distinct_gold_classes": 53,
+          "model_failures": 0
+        },
+        "keyword\u2192llm": {
+          "n": 500,
+          "accuracy": 0.474,
+          "hierarchy_match": 0.526,
+          "accuracy_when_answered": 0.6657,
+          "abstention_rate": 0.288,
+          "macro_f1": 0.2327,
+          "distinct_gold_classes": 53
+        }
+      }
+    },
+    "shortlist": {
+      "nuclei": {
+        "recall@1": 0.21,
+        "hierarchy_recall@1": 0.314,
+        "recall@5": 0.372,
+        "hierarchy_recall@5": 0.518,
+        "recall@12": 0.45,
+        "hierarchy_recall@12": 0.618,
+        "recall@20": 0.508,
+        "hierarchy_recall@20": 0.704,
+        "recall@50": 0.622,
+        "hierarchy_recall@50": 0.88
+      },
+      "pentesterland": {
+        "recall@1": 0.33,
+        "hierarchy_recall@1": 0.412,
+        "recall@5": 0.464,
+        "hierarchy_recall@5": 0.56,
+        "recall@12": 0.53,
+        "hierarchy_recall@12": 0.652,
+        "recall@20": 0.558,
+        "hierarchy_recall@20": 0.696,
+        "recall@50": 0.622,
+        "hierarchy_recall@50": 0.788
+      }
+    },
+    "llm_by_shortlist": {
+      "nuclei": {
+        "gold_in_shortlist": {
+          "n": 225,
+          "accuracy": 0.8311,
+          "abstention_rate": 0.0444
+        },
+        "gold_not_in_shortlist": {
+          "n": 275,
+          "accuracy": 0.0,
+          "abstention_rate": 0.4909
+        }
+      },
+      "pentesterland": {
+        "gold_in_shortlist": {
+          "n": 265,
+          "accuracy": 0.6868,
+          "abstention_rate": 0.1321
+        },
+        "gold_not_in_shortlist": {
+          "n": 235,
+          "accuracy": 0.0,
+          "abstention_rate": 0.6085
+        }
+      }
+    }
+  },
+  "planner": {
+    "cases": 400,
+    "products": 147,
+    "top_k": 10,
+    "seed": 31,
+    "strategies": {
+      "planner (value-weighted)": {
+        "n": 400,
+        "precision@1": 0.4275,
+        "precision@3": 0.5625,
+        "precision@5": 0.65,
+        "precision@10": 0.72,
+        "mrr": 0.5174,
+        "unranked": 112
+      },
+      "planner (likelihood-only)": {
+        "n": 400,
+        "precision@1": 0.4225,
+        "precision@3": 0.57,
+        "precision@5": 0.6625,
+        "precision@10": 0.7375,
+        "mrr": 0.5216,
+        "unranked": 105
+      },
+      "prior": {
+        "n": 400,
+        "precision@1": 0.325,
+        "precision@3": 0.5325,
+        "precision@5": 0.5975,
+        "precision@10": 0.72,
+        "mrr": 0.4446,
+        "unranked": 112
+      },
+      "random": {
+        "n": 400,
+        "precision@1": 0.095,
+        "precision@3": 0.2825,
+        "precision@5": 0.44,
+        "precision@10": 0.72,
+        "mrr": 0.2455,
+        "unranked": 112
+      }
+    },
+    "per_product_top": [
+      {
+        "product": "tcp",
+        "precision@3": 1.0,
+        "cases": 3
+      },
+      {
+        "product": "deserialization",
+        "precision@3": 1.0,
+        "cases": 5
+      },
+      {
+        "product": "time-based-sqli",
+        "precision@3": 1.0,
+        "cases": 6
+      },
+      {
+        "product": "token",
+        "precision@3": 1.0,
+        "cases": 3
+      },
+      {
+        "product": "jndi",
+        "precision@3": 1.0,
+        "cases": 4
+      },
+      {
+        "product": "discovery",
+        "precision@3": 0.98,
+        "cases": 49
+      },
+      {
+        "product": "default-login",
+        "precision@3": 0.8,
+        "cases": 5
+      },
+      {
+        "product": "joomla",
+        "precision@3": 0.778,
+        "cases": 9
+      },
+      {
+        "product": "auth-bypass",
+        "precision@3": 0.75,
+        "cases": 8
+      },
+      {
+        "product": "vmware",
+        "precision@3": 0.75,
+        "cases": 4
+      }
+    ]
+  },
+  "learning_path": {
+    "topics": {
+      "n": 29,
+      "complete": 0.8621,
+      "complete_direct_only": 0.6897,
+      "stage_filled": {
+        "weakness": 1.0,
+        "patterns": 0.9655,
+        "writeups": 1.0,
+        "labs": 0.8966
+      },
+      "stage_direct": {
+        "weakness": 1.0,
+        "patterns": 0.8276,
+        "writeups": 1.0,
+        "labs": 0.8621
+      },
+      "unresolved": [
+        "NoSQL injection"
+      ],
+      "incomplete": [
+        "Subdomain takeover",
+        "Clickjacking",
+        "Mass assignment",
+        "CRLF injection"
+      ]
+    },
+    "all_classes": {
+      "n": 969,
+      "complete": 0.162,
+      "complete_direct_only": 0.0248,
+      "stage_filled": {
+        "weakness": 1.0,
+        "patterns": 0.6667,
+        "writeups": 0.3117,
+        "labs": 0.1641
+      },
+      "stage_direct": {
+        "weakness": 1.0,
+        "patterns": 0.3467,
+        "writeups": 0.0918,
+        "labs": 0.0299
+      }
+    }
+  },
+  "faithfulness": {
+    "topics": 30,
+    "tutorials_generated": 30,
+    "retrieved_sources_per_tutorial": 6,
+    "claims": 424,
+    "claims_per_tutorial": 14.1,
+    "citation_rate": 0.5448,
+    "citation_markers": 318,
+    "invalid_citation_rate": 0.0,
+    "claims_with_invalid_citation": 0,
+    "low_overlap_rate": 0.3074,
+    "judged": 231,
+    "judge_failures": 0,
+    "supported_rate": 0.4242,
+    "partial_rate": 0.4848,
+    "unsupported_rate": 0.0909,
+    "supported_of_all_claims": 0.2311,
+    "per_topic": {
+      "SSRF": {
+        "claims": 13,
+        "judged": 7,
+        "supported": 0.714
+      },
+      "IDOR": {
+        "claims": 14,
+        "judged": 7,
+        "supported": 0.571
+      },
+      "Cross-site scripting": {
+        "claims": 17,
+        "judged": 8,
+        "supported": 0.25
+      },
+      "SQL injection": {
+        "claims": 15,
+        "judged": 8,
+        "supported": 0.125
+      },
+      "SSTI": {
+        "claims": 12,
+        "judged": 9,
+        "supported": 0.444
+      },
+      "XXE": {
+        "claims": 15,
+        "judged": 7,
+        "supported": 0.714
+      },
+      "CSRF": {
+        "claims": 14,
+        "judged": 12,
+        "supported": 0.417
+      },
+      "Open redirect": {
+        "claims": 14,
+        "judged": 5,
+        "supported": 0.6
+      },
+      "HTTP request smuggling": {
+        "claims": 15,
+        "judged": 7,
+        "supported": 0.857
+      },
+      "Race condition": {
+        "claims": 12,
+        "judged": 10,
+        "supported": 0.2
+      },
+      "Prototype pollution": {
+        "claims": 17,
+        "judged": 8,
+        "supported": 0.625
+      },
+      "Insecure deserialization": {
+        "claims": 13,
+        "judged": 9,
+        "supported": 0.556
+      },
+      "Path traversal": {
+        "claims": 12,
+        "judged": 7,
+        "supported": 0.286
+      },
+      "Unrestricted file upload": {
+        "claims": 13,
+        "judged": 6,
+        "supported": 0.5
+      },
+      "JWT": {
+        "claims": 15,
+        "judged": 7,
+        "supported": 0.143
+      },
+      "CORS misconfiguration": {
+        "claims": 14,
+        "judged": 4,
+        "supported": 0.25
+      },
+      "Subdomain takeover": {
+        "claims": 14,
+        "judged": 5,
+        "supported": 0.0
+      },
+      "Web cache poisoning": {
+        "claims": 15,
+        "judged": 4,
+        "supported": 0.25
+      },
+      "OS command injection": {
+        "claims": 15,
+        "judged": 11,
+        "supported": 0.455
+      },
+      "Local file inclusion": {
+        "claims": 17,
+        "judged": 12,
+        "supported": 0.833
+      },
+      "Clickjacking": {
+        "claims": 14,
+        "judged": 7,
+        "supported": 0.429
+      },
+      "Mass assignment": {
+        "claims": 16,
+        "judged": 7,
+        "supported": 0.429
+      },
+      "Business logic": {
+        "claims": 14,
+        "judged": 7,
+        "supported": 0.429
+      },
+      "Information disclosure": {
+        "claims": 10,
+        "judged": 8,
+        "supported": 0.125
+      },
+      "Account takeover": {
+        "claims": 13,
+        "judged": 8,
+        "supported": 0.125
+      },
+      "OAuth": {
+        "claims": 15,
+        "judged": 9,
+        "supported": 0.222
+      },
+      "Privilege escalation": {
+        "claims": 13,
+        "judged": 7,
+        "supported": 0.714
+      },
+      "CRLF injection": {
+        "claims": 15,
+        "judged": 7,
+        "supported": 0.143
+      },
+      "NoSQL injection": {
+        "claims": 15,
+        "judged": 7,
+        "supported": 0.714
+      },
+      "Authentication bypass": {
+        "claims": 13,
+        "judged": 11,
+        "supported": 0.364
+      }
+    },
+    "judge_vs_hand": {
+      "stale_labels": 0,
+      "hand_calibrated_supported_rate": 0.5974,
+      "three_way": {
+        "n": 40,
+        "agreement": 0.825,
+        "cohen_kappa": 0.7065
+      },
+      "binary_supported": {
+        "n": 40,
+        "agreement": 0.875,
+        "cohen_kappa": 0.75
+      },
+      "judge_precision": {
+        "supported": {
+          "judge_said": 20,
+          "hand_agreed": 20
+        },
+        "partial": {
+          "judge_said": 14,
+          "hand_agreed": 7
+        },
+        "unsupported": {
+          "judge_said": 6,
+          "hand_agreed": 6
+        }
+      },
+      "confusion": {
+        "judge=partial / hand=partial": 7,
+        "judge=partial / hand=supported": 5,
+        "judge=partial / hand=unsupported": 2,
+        "judge=supported / hand=supported": 20,
+        "judge=unsupported / hand=unsupported": 6
+      },
+      "note": "Sample is stratified on the judge's label (up to half supported), so raw agreement is not the population agreement; read per-label precision, and hand_calibrated_supported_rate for the population estimate."
+    },
+    "hand_calibrated_supported_of_all_claims": 0.3255
   }
 }

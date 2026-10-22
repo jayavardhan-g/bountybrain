@@ -5,12 +5,12 @@
       "mode": "dense",
       "n": 200,
       "recall@1": 0.665,
-      "recall@5": 0.88,
+      "recall@5": 0.885,
       "recall@10": 0.925,
-      "mrr": 0.7584,
-      "ndcg@10": 0.7904,
-      "median_latency_ms": 37.8,
-      "p95_latency_ms": 38.3
+      "mrr": 0.7588,
+      "ndcg@10": 0.7908,
+      "median_latency_ms": 39.4,
+      "p95_latency_ms": 42.3
     },
     "bm25": {
       "mode": "bm25",
@@ -20,8 +20,8 @@
       "recall@10": 0.89,
       "mrr": 0.7351,
       "ndcg@10": 0.7636,
-      "median_latency_ms": 15.5,
-      "p95_latency_ms": 21.8
+      "median_latency_ms": 15.6,
+      "p95_latency_ms": 22.7
     },
     "hybrid": {
       "mode": "hybrid",
@@ -29,10 +29,10 @@
       "recall@1": 0.675,
       "recall@5": 0.91,
       "recall@10": 0.955,
-      "mrr": 0.7718,
-      "ndcg@10": 0.8079,
-      "median_latency_ms": 53.2,
-      "p95_latency_ms": 60.0
+      "mrr": 0.7731,
+      "ndcg@10": 0.8089,
+      "median_latency_ms": 56.3,
+      "p95_latency_ms": 64.5
     },
     "hybrid_rerank": {
       "mode": "hybrid_rerank",
@@ -40,10 +40,10 @@
       "recall@1": 0.8,
       "recall@5": 0.965,
       "recall@10": 0.975,
-      "mrr": 0.8613,
-      "ndcg@10": 0.8731,
-      "median_latency_ms": 148.6,
-      "p95_latency_ms": 166.3
+      "mrr": 0.8614,
+      "ndcg@10": 0.8732,
+      "median_latency_ms": 153.9,
+      "p95_latency_ms": 175.2
     }
   },
   "skipped_modes": [],
@@ -56,8 +56,8 @@
       "recall@10": 0.94,
       "mrr": 0.794,
       "ndcg@10": 0.803,
-      "median_latency_ms": 149.2,
-      "p95_latency_ms": 166.9
+      "median_latency_ms": 153.2,
+      "p95_latency_ms": 167.1
     },
     "technique": {
       "mode": "hybrid_rerank",
@@ -67,8 +67,8 @@
       "recall@10": 0.98,
       "mrr": 0.8807,
       "ndcg@10": 0.8835,
-      "median_latency_ms": 149.8,
-      "p95_latency_ms": 160.1
+      "median_latency_ms": 155.3,
+      "p95_latency_ms": 172.6
     },
     "weakness": {
       "mode": "hybrid_rerank",
@@ -76,10 +76,10 @@
       "recall@1": 0.76,
       "recall@5": 0.94,
       "recall@10": 0.98,
-      "mrr": 0.8188,
-      "ndcg@10": 0.842,
-      "median_latency_ms": 155.2,
-      "p95_latency_ms": 169.5
+      "mrr": 0.8192,
+      "ndcg@10": 0.8424,
+      "median_latency_ms": 156.3,
+      "p95_latency_ms": 171.6
     },
     "writeup": {
       "mode": "hybrid_rerank",
@@ -89,8 +89,8 @@
       "recall@10": 1.0,
       "mrr": 0.9517,
       "ndcg@10": 0.9639,
-      "median_latency_ms": 138.4,
-      "p95_latency_ms": 162.3
+      "median_latency_ms": 139.9,
+      "p95_latency_ms": 160.8
     }
   },
   "breakdown_mode": "hybrid_rerank"

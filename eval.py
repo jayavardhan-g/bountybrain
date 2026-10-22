@@ -127,8 +127,11 @@ def main(
                 regenerate=regenerate_tutorials or dev_topics, dev=dev_topics
             )
 
+    # Merge rather than overwrite: running one suite should not erase the
+    # others' last results from the summary.
     out = settings.artifact_dir / "eval_summary.json"
-    out.write_text(json.dumps(summary, indent=2, default=str))
+    previous = json.loads(out.read_text()) if out.exists() else {}
+    out.write_text(json.dumps({**previous, **summary}, indent=2, default=str))
     console.print(f"\n[green]Wrote {out}[/green]")
 
 
